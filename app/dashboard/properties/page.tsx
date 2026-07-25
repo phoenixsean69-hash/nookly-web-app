@@ -1,1010 +1,610 @@
 "use client";
-import { updateOrganizationPropertyCount } from "@/lib/appwrite/helpers";
-import { cacheService } from "@/lib/cache.service";
-import { CACHE_KEYS } from "@/lib/cache-keys";
-import { ProtectedRoute } from "@/components/protected-route";
-import { Sidebar } from "@/components/dashboard/sidebar";
+
+import {
+  Bath,
+  Bed,
+  Building2,
+  CheckCircle,
+  Edit,
+  Eye,
+  Heart,
+  Home,
+  MapPin,
+  PlusCircle,
+  RefreshCw,
+  Search,
+  Trash2,
+  Users,
+  WifiOff,
+  X,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { Query } from "appwrite";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
+
 import { Header } from "@/components/dashboard/header";
-import { useEffect, useState, useCallback } from "react";
+import { Sidebar } from "@/components/dashboard/sidebar";
+import { ProtectedRoute } from "@/components/protected-route";
 import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
-import Link from "next/link";
 import { databases, storage } from "@/lib/appwrite/config";
-import { Query } from "appwrite";
-import Image from "next/image";
-import { Property } from "@/types/property";
 import {
-  Home,
-  Building2,
-  Bed,
-  Bath,
-  Ruler,
-  DollarSign,
-  MapPin,
-  Eye,
-  Edit,
-  Trash2,
-  PlusCircle,
-  Search,
-  X,
-  CheckCircle,
-  Clock,
-  Heart,
-  Users,
-  Calendar,
-  Moon,
-  WifiOff,
-  RefreshCw,
-  Star,
-  TrendingUp,
-  Shield,
-  Award,
-  User,
-  Phone,
-  Mail,
-} from "lucide-react";
+  listOrganizationProperties,
+  syncOrganizationPropertyCount,
+} from "@/lib/appwrite/helpers";
+import { cacheService } from "@/lib/cache.service";
+import { CACHE_KEYS } from "@/lib/cache-keys";
+import type { Property } from "@/types/property";
+import type { Tenant } from "@/types/tenant";
 
-interface Tenant {
-  $id: string;
-  name: string;
-  identifier: string;
-  phone: string;
-  email: string;
-  propertyName: string;
-  status: string;
-  monthlyRent: number;
-  leaseStartDate: string;
-  avatar?: string;
-  propertyId?: string;
+function useDashboardMargin(): string {
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobile, setMobile] = useState(false);
+
+  useEffect(() => {
+    const update = () => {
+      setMobile(window.innerWidth < 768);
+      setCollapsed(localStorage.getItem("sidebarCollapsed") === "true");
+    };
+
+    const handleToggle = (event: Event) => {
+      const detail = (event as CustomEvent<{ isCollapsed?: boolean }>).detail;
+      setCollapsed(
+        detail?.isCollapsed ??
+          localStorage.getItem("sidebarCollapsed") === "true",
+      );
+    };
+
+    update();
+    window.addEventListener("resize", update);
+    window.addEventListener("storage", update);
+    window.addEventListener("sidebarToggle", handleToggle);
+
+    return () => {
+      window.removeEventListener("resize", update);
+      window.removeEventListener("storage", update);
+      window.removeEventListener("sidebarToggle", handleToggle);
+    };
+  }, []);
+
+  if (mobile) return "ml-0";
+  return collapsed ? "ml-16" : "ml-64";
+}
+
+function getFileIdFromUrl(url: string): string | null {
+  try {
+    const match = url.match(/\/files\/([^/?]+)/);
+    return match?.[1] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function formatPrice(property: Property): string {
+  const amount = new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 0,
+  }).format(property.price || 0);
+
+  const type = property.type?.toLowerCase();
+  if (type === "land" || type === "workplace") {
+    return `$${amount}`;
+  }
+
+  return `$${amount}/month`;
 }
 
 export default function PropertiesPage() {
   const { organization, isOffline } = useAuth();
   const { theme } = useTheme();
+  const margin = useDashboardMargin();
+
   const [properties, setProperties] = useState<Property[]>([]);
   const [tenants, setTenants] = useState<Tenant[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState<string>("all");
-  const [filterType, setFilterType] = useState<string>("all");
-  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [propertyToDelete, setPropertyToDelete] = useState<Property | null>(
+    null,
+  );
 
-  // Check if device is mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  const cacheKey = organization
+    ? CACHE_KEYS.organizationProperties(organization.$id)
+    : null;
 
-  // Function to check sidebar state from localStorage
-  const checkSidebarState = useCallback(() => {
-    if (isMobile) {
-      const mobileState = sessionStorage.getItem('mobileSidebarOpen');
-      setIsSidebarCollapsed(mobileState !== 'true');
-      return;
-    }
-    const savedState = localStorage.getItem('sidebarCollapsed');
-    setIsSidebarCollapsed(savedState === 'true');
-  }, [isMobile]);
-
-  // Listen for sidebar collapse state changes
-  useEffect(() => {
-    // Initial check
-    checkSidebarState();
-
-    // Listen for storage changes
-    const handleStorage = (e: StorageEvent) => {
-      if (e.key === 'sidebarCollapsed') {
-        setIsSidebarCollapsed(e.newValue === 'true');
-      }
-    };
-
-    // Custom event listener for sidebar toggle
-    const handleCustomEvent = (e: CustomEvent) => {
-      if (e.detail?.isCollapsed !== undefined) {
-        setIsSidebarCollapsed(e.detail.isCollapsed);
-      } else {
-        checkSidebarState();
-      }
-    };
-
-    // Mobile sidebar toggle event
-    const handleMobileToggle = (e: CustomEvent) => {
-      if (e.detail?.isOpen !== undefined) {
-        setIsSidebarCollapsed(!e.detail.isOpen);
-      } else {
-        checkSidebarState();
-      }
-    };
-
-    // Also check on window focus
-    const handleFocus = () => {
-      checkSidebarState();
-    };
-
-    window.addEventListener('storage', handleStorage);
-    window.addEventListener('sidebarToggle', handleCustomEvent as EventListener);
-    window.addEventListener('mobileSidebarToggle', handleMobileToggle as EventListener);
-    window.addEventListener('focus', handleFocus);
-
-    // Poll for changes as a fallback
-    const interval = setInterval(() => {
-      if (isMobile) {
-        const mobileState = sessionStorage.getItem('mobileSidebarOpen');
-        setIsSidebarCollapsed(mobileState !== 'true');
-      } else {
-        const savedState = localStorage.getItem('sidebarCollapsed');
-        const isCollapsed = savedState === 'true';
-        setIsSidebarCollapsed(prev => {
-          if (prev !== isCollapsed) {
-            return isCollapsed;
-          }
-          return prev;
-        });
-      }
-    }, 100);
-
-    return () => {
-      window.removeEventListener('storage', handleStorage);
-      window.removeEventListener('sidebarToggle', handleCustomEvent as EventListener);
-      window.removeEventListener('mobileSidebarToggle', handleMobileToggle as EventListener);
-      window.removeEventListener('focus', handleFocus);
-      clearInterval(interval);
-    };
-  }, [checkSidebarState, isMobile]);
-
-  useEffect(() => {
-    Promise.all([fetchProperties(), fetchTenants()]);
-  }, [organization?.$id]);
-
-  const fetchProperties = async () => {
-    try {
-      const cachedProperties = cacheService.get<Property[]>(CACHE_KEYS.PROPERTIES);
-      if (cachedProperties && cachedProperties.length > 0) {
-        setProperties(cachedProperties);
-        setLastUpdated(new Date());
-        console.log('📦 Loaded properties from cache');
-      }
-      
-      if (!navigator.onLine) {
-        setIsLoading(false);
-        console.log('📴 Offline mode - using cached properties');
-        return;
-      }
-      
-      if (!organization?.$id) {
-        setIsLoading(false);
+  const loadProperties = useCallback(
+    async (force = false) => {
+      if (!organization) {
+        setProperties([]);
+        setTenants([]);
+        setLoading(false);
         return;
       }
 
-      const response = await databases.listDocuments(
-        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-        process.env.NEXT_PUBLIC_APPWRITE_PROPERTIES_COLLECTION_ID!,
-        [
-          Query.equal("creatorId", organization.userId),
-          Query.orderDesc("$createdAt"),
-        ]
-      );
-
-      const props = response.documents as unknown as Property[];
-      setProperties(props);
-      
-      cacheService.set(CACHE_KEYS.PROPERTIES, props, 5 * 60 * 1000);
-      setLastUpdated(new Date());
-      console.log('✅ Properties cached successfully');
-      
-    } catch (error) {
-      console.error("Error fetching properties:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const fetchTenants = async () => {
-    try {
-      if (!navigator.onLine) {
-        console.log('📴 Offline - using cached tenants');
-        return;
-      }
-
-      const response = await databases.listDocuments(
-        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-        process.env.NEXT_PUBLIC_APPWRITE_ORGANIZATION_TENANTS_COLLECTION_ID!,
-        [Query.orderDesc("$createdAt")]
-      );
-      
-      const fetchedTenants = response.documents as unknown as Tenant[];
-      setTenants(fetchedTenants);
-      console.log('✅ Tenants fetched successfully');
-    } catch (error) {
-      console.error("Error fetching tenants:", error);
-    }
-  };
-
-  const getTenantsForProperty = (propertyName: string) => {
-    return tenants.filter(t => t.propertyName === propertyName && t.status === 'active');
-  };
-
-  const handleRefresh = async () => {
-    if (isOffline) {
-      alert("You're offline. Please connect to the internet to refresh properties.");
-      return;
-    }
-    
-    setIsRefreshing(true);
-    try {
-      await Promise.all([fetchProperties(), fetchTenants()]);
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!selectedProperty) return;
-
-    try {
-      const imageIds = [
-        selectedProperty.image1,
-        selectedProperty.image2,
-        selectedProperty.image3,
-      ].filter(Boolean);
-
-      for (const imageUrl of imageIds) {
-        if (imageUrl) {
-          const fileId = imageUrl.split("/files/")[1]?.split("/")[0];
-          if (fileId) {
-            try {
-              await storage.deleteFile(
-                process.env.NEXT_PUBLIC_APPWRITE_PROPERTIES_BUCKET_ID!,
-                fileId
-              );
-            } catch (error) {
-              console.error("Error deleting image:", error);
-            }
-          }
+      if (!force && cacheKey) {
+        const cached = cacheService.get<Property[]>(cacheKey);
+        if (cached) {
+          setProperties(cached);
+          setLoading(false);
         }
       }
+
+      if (!navigator.onLine) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const [ownedProperties, tenantResponse] = await Promise.all([
+          listOrganizationProperties(organization.userId, [
+            Query.orderDesc("$createdAt"),
+          ]),
+          databases.listDocuments(
+            process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+            process.env.NEXT_PUBLIC_APPWRITE_ORGANIZATION_TENANTS_COLLECTION_ID!,
+            [
+              Query.equal("organizationId", organization.$id),
+              Query.orderDesc("$createdAt"),
+              Query.limit(1000),
+            ],
+          ),
+        ]);
+
+        const nextProperties = ownedProperties as unknown as Property[];
+        const nextTenants = tenantResponse.documents as unknown as Tenant[];
+
+        setProperties(nextProperties);
+        setTenants(nextTenants);
+
+        if (cacheKey) {
+          cacheService.set(cacheKey, nextProperties, 5 * 60 * 1000);
+        }
+      } catch (error) {
+        console.error("Unable to load properties:", error);
+        toast.error("Failed to load organization properties.");
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
+      }
+    },
+    [cacheKey, organization],
+  );
+
+  useEffect(() => {
+    void loadProperties();
+
+    const refresh = () => void loadProperties(true);
+    window.addEventListener("cacheRefreshed", refresh);
+
+    return () => window.removeEventListener("cacheRefreshed", refresh);
+  }, [loadProperties]);
+
+  const filteredProperties = useMemo(() => {
+    const search = searchTerm.trim().toLowerCase();
+
+    return properties.filter((property) => {
+      const matchesSearch =
+        !search ||
+        property.propertyName.toLowerCase().includes(search) ||
+        property.address.toLowerCase().includes(search) ||
+        property.type.toLowerCase().includes(search);
+
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "available"
+          ? property.isAvailable !== false
+          : property.isAvailable === false);
+
+      const matchesType =
+        typeFilter === "all" || property.type === typeFilter;
+
+      return matchesSearch && matchesStatus && matchesType;
+    });
+  }, [properties, searchTerm, statusFilter, typeFilter]);
+
+  const propertyTypes = useMemo(
+    () =>
+      Array.from(new Set(properties.map((property) => property.type))).sort(),
+    [properties],
+  );
+
+  const activeTenantsFor = (property: Property): Tenant[] =>
+    tenants.filter(
+      (tenant) =>
+        tenant.status === "active" &&
+        tenant.propertyName === property.propertyName,
+    );
+
+  const deleteProperty = async () => {
+    if (!organization || !propertyToDelete) return;
+
+    const activeTenants = activeTenantsFor(propertyToDelete);
+    if (activeTenants.length > 0) {
+      toast.error(
+        "Move or remove active tenants before deleting this property.",
+      );
+      return;
+    }
+
+    setDeleting(true);
+
+    try {
+      const latestProperty = await databases.getDocument(
+        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_PROPERTIES_COLLECTION_ID!,
+        propertyToDelete.$id,
+      );
+
+      if (String(latestProperty.creatorId ?? "") !== organization.userId) {
+        throw new Error("You cannot delete another organization's property.");
+      }
+
+      const imageUrls = [
+        propertyToDelete.image1,
+        propertyToDelete.image2,
+        propertyToDelete.image3,
+      ].filter(Boolean);
 
       await databases.deleteDocument(
         process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
         process.env.NEXT_PUBLIC_APPWRITE_PROPERTIES_COLLECTION_ID!,
-        selectedProperty.$id
+        propertyToDelete.$id,
       );
 
-      if (organization?.userId) {
-        await updateOrganizationPropertyCount(organization.userId, 'decrement');
+      await Promise.allSettled(
+        imageUrls.map(async (url) => {
+          const fileId = getFileIdFromUrl(url);
+          if (!fileId) return;
+
+          await storage.deleteFile(
+            process.env.NEXT_PUBLIC_APPWRITE_PROPERTIES_BUCKET_ID!,
+            fileId,
+          );
+        }),
+      );
+
+      const nextProperties = properties.filter(
+        (property) => property.$id !== propertyToDelete.$id,
+      );
+
+      setProperties(nextProperties);
+      if (cacheKey) {
+        cacheService.set(cacheKey, nextProperties, 5 * 60 * 1000);
       }
 
-      const updatedProperties = properties.filter(p => p.$id !== selectedProperty.$id);
-      cacheService.set(CACHE_KEYS.PROPERTIES, updatedProperties, 5 * 60 * 1000);
-      setProperties(updatedProperties);
-
-      setShowDeleteModal(false);
-      setSelectedProperty(null);
+      await syncOrganizationPropertyCount(organization.userId);
+      setPropertyToDelete(null);
+      toast.success("Property deleted.");
     } catch (error) {
-      console.error("Error deleting property:", error);
-      alert("Failed to delete property");
-    }
-  };
-
-  const getPricingDisplay = (property: Property) => {
-    const type = property.type?.toLowerCase();
-    
-    if (type === "luxury") {
-      return `${property.price}/night`;
-    } else if (type === "boarding") {
-      return `${property.price}/month per head`;
-    } else if (type === "land") {
-      return `${property.price}/sq meter`;
-    } else if (type === "workplace" || type === "commercial") {
-      return `${property.price}/month for office`;
-    } else {
-      return `${property.price}/month`;
-    }
-  };
-
-  const getCurfewDisplay = (property: Property) => {
-    const type = property.type?.toLowerCase();
-    const curfew = property.curfew;
-    
-    if (type === "boarding") {
-      if (!curfew || curfew.toLowerCase() === "no curfew") {
-        return "No curfew";
-      }
-      return curfew;
-    }
-    
-    if (curfew && curfew.toLowerCase() !== "no curfew" && curfew !== "") {
-      return curfew;
-    }
-    return null;
-  };
-
-  const getAdditionalInfo = (property: Property) => {
-    const type = property.type?.toLowerCase();
-    
-    if (type === "boarding") {
-      const areaPerPerson = property.area && property.roomFor 
-        ? Math.round(property.area / property.roomFor) 
-        : null;
-      const availableRooms = property.roomFor || 0;
-      
-      return (
-        <div className="grid grid-cols-2 gap-2 pt-2 mt-2 border-t border-gray-100/50 dark:border-gray-700/50">
-          <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
-            <Users className="w-3.5 h-3.5 text-[var(--accent-500)] dark:text-[var(--accent-400)]" />
-            <span>Rooms for {availableRooms} {availableRooms === 1 ? 'person' : 'people'}</span>
-          </div>
-        </div>
+      console.error("Unable to delete property:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to delete property.",
       );
-    } else if (type === "luxury") {
-      return (
-        <div className="flex items-center gap-1.5 pt-2 mt-2 border-t border-gray-100/50 dark:border-gray-700/50 text-xs text-gray-500 dark:text-gray-400">
-          <Calendar className="w-3.5 h-3.5 text-purple-500 dark:text-purple-400" />
-          <span>Premium nightly rental</span>
-        </div>
-      );
-    } else if (type === "land") {
-      return (
-        <div className="flex items-center gap-1.5 pt-2 mt-2 border-t border-gray-100/50 dark:border-gray-700/50 text-xs text-gray-500 dark:text-gray-400">
-          <Ruler className="w-3.5 h-3.5 text-green-500 dark:text-green-400" />
-          <span>Total land area: {property.area} m²</span>
-        </div>
-      );
-    } else if (type === "workplace") {
-      return (
-        <div className="flex items-center gap-1.5 pt-2 mt-2 border-t border-gray-100/50 dark:border-gray-700/50 text-xs text-gray-500 dark:text-gray-400">
-          <Building2 className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
-          <span>Commercial/Office space</span>
-        </div>
-      );
+    } finally {
+      setDeleting(false);
     }
-    return null;
   };
 
-  const filteredProperties = properties.filter((property) => {
-    const matchesSearch = property.propertyName
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase()) ||
-      property.address.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = filterStatus === "all" || 
-      (filterStatus === "available" && property.isAvailable === true) ||
-      (filterStatus === "rented" && property.isAvailable === false);
-    
-    const matchesType = filterType === "all" || 
-      property.type?.toLowerCase() === filterType.toLowerCase();
-    
-    return matchesSearch && matchesStatus && matchesType;
-  });
-
-  const getStatusBadge = (isAvailable: boolean) => {
-    if (isAvailable) {
-      return {
-        text: "Available",
-        icon: CheckCircle,
-        className: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300",
-      };
-    }
-    return {
-      text: "Rented",
-      icon: Clock,
-      className: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
-    };
-  };
-
-  const propertyTypes = ["all", ...new Set(properties.map(p => p.type).filter(Boolean))];
-
-  // Calculate margin based on device and sidebar state
-  const getMargin = () => {
-    if (isMobile) {
-      // On mobile, sidebar slides over content
-      return 'ml-0';
-    }
-    return isSidebarCollapsed ? 'ml-16' : 'ml-64';
-  };
-
-  if (isLoading) {
-    return (
-      <ProtectedRoute>
-        <div className={`min-h-screen transition-colors duration-300 ${
-          theme === "dark" 
-            ? "bg-gray-900" 
-            : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
-        }`}>
-          <Sidebar />
-          <div className={`transition-all duration-300 ease-in-out ${getMargin()}`}>
-            <Header />
-            <main className="p-6">
-              <div className="flex items-center justify-center h-96">
-                <div className="text-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--accent-500)] mx-auto" />
-                  <p className={`mt-4 transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-600"
-                  }`}>
-                    Loading properties...
-                  </p>
-                </div>
-              </div>
-            </main>
-          </div>
-        </div>
-      </ProtectedRoute>
-    );
-  }
+  const availableCount = properties.filter(
+    (property) => property.isAvailable !== false,
+  ).length;
+  const occupiedCount = properties.length - availableCount;
+  const dark = theme === "dark";
 
   return (
     <ProtectedRoute>
-      <div className={`min-h-screen transition-colors duration-300 ${
-        theme === "dark" 
-          ? "bg-gray-900" 
-          : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
-      }`}>
+      <div
+        className={`min-h-screen ${
+          dark
+            ? "bg-gray-950 text-white"
+            : "bg-gradient-to-br from-blue-50 via-white to-orange-50 text-gray-900"
+        }`}
+      >
         <Sidebar />
-        <div className={`transition-all duration-300 ease-in-out ${getMargin()}`}>
+
+        <div className={`${margin} transition-all duration-300`}>
           <Header />
-          <main className="p-6">
-            {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+
+          <main className="p-3 sm:p-5 lg:p-6">
+            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <div className="flex items-center gap-3">
-                  <h1 className={`text-2xl font-bold transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-100" : "text-gray-800"
-                  }`}>
-                    Properties
-                  </h1>
-                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    theme === "dark" 
-                      ? "bg-gray-700 text-gray-300" 
-                      : "bg-gray-100 text-gray-600"
-                  }`}>
-                    {filteredProperties.length}
-                  </span>
-                </div>
-                <div className="flex items-center gap-3 mt-1">
-                  <p className={`text-sm transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
-                  }`}>
-                    Manage all your property listings
-                  </p>
-                  {isOffline && (
-                    <span className="inline-flex items-center gap-1 text-xs text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30 px-2 py-0.5 rounded-full">
-                      <WifiOff className="w-3 h-3" />
-                      Offline Mode
-                    </span>
-                  )}
-                  {!isOffline && lastUpdated && (
-                    <span className={`text-xs transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-500" : "text-gray-400"
-                    }`}>
-                      Updated: {lastUpdated.toLocaleTimeString()}
-                    </span>
-                  )}
-                </div>
+                <h1 className="text-2xl font-bold">Properties</h1>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  Manage listings created by {organization?.name}.
+                </p>
               </div>
+
               <div className="flex gap-2">
                 <button
-                  onClick={handleRefresh}
-                  disabled={isRefreshing || isOffline}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg transition ${
-                    isOffline 
-                      ? "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
-                      : `bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600`
-                  }`}
+                  type="button"
+                  onClick={() => {
+                    setRefreshing(true);
+                    void loadProperties(true);
+                  }}
+                  disabled={refreshing || isOffline}
+                  className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
                 >
-                  <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                  {isRefreshing ? 'Refreshing...' : 'Refresh'}
+                  {isOffline ? (
+                    <WifiOff className="h-4 w-4" />
+                  ) : (
+                    <RefreshCw
+                      className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
+                    />
+                  )}
+                  Refresh
                 </button>
+
                 <Link
                   href="/dashboard/properties/new"
-                  className="flex items-center gap-2 px-4 py-2 bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition shadow-sm hover:shadow-md"
+                  className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent-500)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90"
                 >
-                  <PlusCircle className="w-4 h-4" />
-                  Add New Property
+                  <PlusCircle className="h-4 w-4" />
+                  Add property
                 </Link>
               </div>
             </div>
 
-            {/* Search and Filter Bar */}
-            <div className={`rounded-xl shadow-sm p-4 mb-6 transition-colors duration-300 border ${
-              theme === "dark" 
-                ? "bg-gray-800/80 border-gray-700" 
-                : "bg-white/80 border-gray-100 backdrop-blur-sm"
-            }`}>
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Search className={`w-4 h-4 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-400"
-                    }`} />
+            <div className="mb-5 grid gap-3 sm:grid-cols-3">
+              {[
+                {
+                  label: "Total properties",
+                  value: properties.length,
+                  icon: Building2,
+                  className: "text-blue-600 bg-blue-100 dark:bg-blue-950",
+                },
+                {
+                  label: "Available",
+                  value: availableCount,
+                  icon: CheckCircle,
+                  className: "text-green-600 bg-green-100 dark:bg-green-950",
+                },
+                {
+                  label: "Occupied",
+                  value: occupiedCount,
+                  icon: Users,
+                  className: "text-orange-600 bg-orange-100 dark:bg-orange-950",
+                },
+              ].map((stat) => {
+                const Icon = stat.icon;
+
+                return (
+                  <div
+                    key={stat.label}
+                    className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`rounded-xl p-2.5 ${stat.className}`}>
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold">{stat.value}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          {stat.label}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <input
-                    type="text"
-                    placeholder="Search by property name or address..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                      theme === "dark" 
-                        ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
-                        : "border border-gray-200 text-gray-900 bg-white"
-                    }`}
-                  />
-                </div>
-                <div className="flex gap-2 flex-wrap">
-                  <select
-                    value={filterType}
-                    onChange={(e) => setFilterType(e.target.value)}
-                    className={`px-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                      theme === "dark" 
-                        ? "bg-gray-700 border-gray-600 text-gray-100" 
-                        : "border border-gray-200 text-gray-900 bg-white"
-                    }`}
-                  >
-                    {propertyTypes.map((type) => (
-                      <option key={type} value={type}>
-                        {type === "all" ? "All Types" : type}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    onClick={() => setFilterStatus("all")}
-                    className={`px-4 py-2.5 rounded-lg transition text-sm font-medium ${
-                      filterStatus === "all"
-                        ? "bg-[var(--accent-500)] text-white shadow-sm"
-                        : theme === "dark"
-                        ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}
-                  >
-                    All
-                  </button>
-                  <button
-                    onClick={() => setFilterStatus("available")}
-                    className={`px-4 py-2.5 rounded-lg transition text-sm font-medium ${
-                      filterStatus === "available"
-                        ? "bg-green-600 text-white shadow-sm"
-                        : theme === "dark"
-                        ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}
-                  >
-                    Available
-                  </button>
-                  <button
-                    onClick={() => setFilterStatus("rented")}
-                    className={`px-4 py-2.5 rounded-lg transition text-sm font-medium ${
-                      filterStatus === "rented"
-                        ? "bg-blue-600 text-white shadow-sm"
-                        : theme === "dark"
-                        ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}
-                  >
-                    Rented
-                  </button>
-                </div>
-              </div>
+                );
+              })}
             </div>
 
-            {/* Offline Warning */}
-            {isOffline && properties.length > 0 && (
-              <div className={`mb-6 border rounded-xl p-4 flex items-center gap-3 ${
-                theme === "dark" 
-                  ? "bg-yellow-900/20 border-yellow-800" 
-                  : "bg-yellow-50/80 border-yellow-200 backdrop-blur-sm"
-              }`}>
-                <div className={`p-2 rounded-full ${
-                  theme === "dark" ? "bg-yellow-900/30" : "bg-yellow-100"
-                }`}>
-                  <WifiOff className={`w-4 h-4 ${
-                    theme === "dark" ? "text-yellow-400" : "text-yellow-600"
-                  }`} />
-                </div>
-                <div>
-                  <p className={`text-sm font-medium ${
-                    theme === "dark" ? "text-yellow-300" : "text-yellow-700"
-                  }`}>
-                    You're offline
-                  </p>
-                  <p className={`text-xs ${
-                    theme === "dark" ? "text-yellow-400/70" : "text-yellow-600/70"
-                  }`}>
-                    Showing cached properties from your last visit
+            <div className="mb-5 grid gap-3 md:grid-cols-[1fr_auto_auto]">
+              <label className="relative">
+                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <input
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                  placeholder="Search by name, address or type"
+                  className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-500)] dark:border-gray-700 dark:bg-gray-900"
+                />
+              </label>
+
+              <select
+                value={statusFilter}
+                onChange={(event) => setStatusFilter(event.target.value)}
+                className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm dark:border-gray-700 dark:bg-gray-900"
+              >
+                <option value="all">All statuses</option>
+                <option value="available">Available</option>
+                <option value="occupied">Occupied</option>
+              </select>
+
+              <select
+                value={typeFilter}
+                onChange={(event) => setTypeFilter(event.target.value)}
+                className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm dark:border-gray-700 dark:bg-gray-900"
+              >
+                <option value="all">All property types</option>
+                {propertyTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {loading ? (
+              <div className="flex h-80 items-center justify-center">
+                <div className="text-center">
+                  <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent-500)] dark:border-gray-700" />
+                  <p className="mt-4 text-sm text-gray-500">
+                    Loading properties…
                   </p>
                 </div>
               </div>
-            )}
-
-            {/* Properties Grid */}
-            {filteredProperties.length === 0 ? (
-              <div className={`rounded-2xl shadow-sm p-16 text-center transition-colors duration-300 border ${
-                theme === "dark" 
-                  ? "bg-gray-800/80 border-gray-700" 
-                  : "bg-white/80 border-gray-100 backdrop-blur-sm"
-              }`}>
-                <div className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                  theme === "dark" ? "bg-gray-700" : "bg-gray-100"
-                }`}>
-                  <Home className={`w-12 h-12 ${
-                    theme === "dark" ? "text-gray-500" : "text-gray-400"
-                  }`} />
-                </div>
-                <h3 className={`text-xl font-semibold mb-2 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-200" : "text-gray-800"
-                }`}>
-                  No properties found
-                </h3>
-                <p className={`mb-6 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
-                }`}>
-                  {searchTerm || filterStatus !== "all" || filterType !== "all"
-                    ? "Try adjusting your search or filter criteria"
-                    : "Get started by adding your first property"}
+            ) : filteredProperties.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-12 text-center dark:border-gray-700 dark:bg-gray-900">
+                <Home className="mx-auto h-12 w-12 text-gray-300" />
+                <h2 className="mt-4 font-bold">No properties found</h2>
+                <p className="mt-1 text-sm text-gray-500">
+                  Add a property or adjust the current filters.
                 </p>
-                {!searchTerm && filterStatus === "all" && filterType === "all" && !isOffline && (
-                  <Link
-                    href="/dashboard/properties/new"
-                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition shadow-sm hover:shadow-md"
-                  >
-                    <PlusCircle className="w-4 h-4" />
-                    Add New Property
-                  </Link>
-                )}
-                {isOffline && (
-                  <p className={`text-sm mt-2 transition-colors duration-300 ${
-                    theme === "dark" ? "text-yellow-400" : "text-yellow-600"
-                  }`}>
-                    Connect to the internet to add new properties
-                  </p>
-                )}
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 {filteredProperties.map((property) => {
-                  const status = getStatusBadge(property.isAvailable ?? true);
-                  const StatusIcon = status.icon;
-                  const mainImage = property.image1 || property.image2 || property.image3;
-                  const type = property.type || "N/A";
-                  const curfewDisplay = getCurfewDisplay(property);
-                  const propertyTenants = getTenantsForProperty(property.propertyName);
-                  const hasTenants = propertyTenants.length > 0;
-                  
+                  const activeTenants = activeTenantsFor(property);
+
                   return (
-                    <div
+                    <article
                       key={property.$id}
-                      className={`group rounded-2xl overflow-hidden transition-all duration-300 border ${
-                        theme === "dark" 
-                          ? "bg-gray-800/80 border-gray-700 hover:border-gray-600 hover:shadow-xl hover:shadow-gray-900/50" 
-                          : "bg-white/80 border-gray-100 hover:border-[var(--accent-200)] hover:shadow-xl backdrop-blur-sm"
-                      }`}
+                      className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg dark:border-gray-800 dark:bg-gray-900"
                     >
-                      {/* Image Section */}
-                      <div className="relative h-52 bg-gradient-to-br from-blue-500 to-blue-600 shrink-0 overflow-hidden">
-                        {mainImage ? (
+                      <Link
+                        href={`/dashboard/properties/${property.$id}`}
+                        className="relative block h-52 bg-gray-100 dark:bg-gray-800"
+                      >
+                        {property.image1 ? (
                           <Image
-                            src={mainImage}
+                            src={property.image1}
                             alt={property.propertyName}
                             fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            sizes="(max-width: 768px) 100vw, 33vw"
+                            className="object-cover"
+                            unoptimized
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <Building2 className="w-16 h-16 text-white/30" />
-                          </div>
-                        )}
-                        
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                        
-                        {/* Status Badge */}
-                        <div className="absolute top-3 right-3">
-                          <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium shadow-lg backdrop-blur-sm ${status.className} ${
-                            theme === "dark" ? "bg-opacity-90" : ""
-                          }`}>
-                            <StatusIcon className="w-3.5 h-3.5" />
-                            {status.text}
-                          </span>
-                        </div>
-                        
-                        {/* Type Badge */}
-                        <div className="absolute bottom-3 left-3">
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-black/50 text-white backdrop-blur-sm border border-white/10">
-                            <Award className="w-3.5 h-3.5" />
-                            {type}
-                          </span>
-                        </div>
-                        
-                        {/* Price Badge */}
-                        <div className="absolute bottom-3 right-3">
-                          <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-bold bg-black/60 text-white backdrop-blur-sm border border-white/10">
-                            Prices/month <DollarSign className="w-3.5 h-3.5" />
-                            {property.price.toLocaleString()}
-                            <span className="text-[10px] font-normal text-white/70">
-                              {property.type?.toLowerCase() === "luxury" ? "/night" : 
-                               property.type?.toLowerCase() === "land" ? "/sq m" :
-                               property.type?.toLowerCase() === "boarding" ? "/head" :
-                               property.type?.toLowerCase() === "workplace" ? "/mo" :
-                               "/mo"}
-                            </span>
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Content Section */}
-                      <div className="p-5">
-                        {/* Property Name & Likes */}
-                        <div className="flex justify-between items-start mb-2">
-                          <h3 className={`text-lg font-bold line-clamp-1 flex-1 transition-colors duration-300 group-hover:text-[var(--accent-500)] ${
-                            theme === "dark" ? "text-gray-100" : "text-gray-800"
-                          }`}>
-                            {property.propertyName}
-                          </h3>
-                          <div className="flex items-center gap-1 text-red-500 ml-2 shrink-0">
-                            <Heart className="w-4 h-4 fill-red-500" />
-                            <span className="text-sm font-semibold">{property.likes || 0}</span>
-                          </div>
-                        </div>
-                        
-                        {/* Location */}
-                        <div className={`flex items-center gap-1.5 text-sm mb-3 transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-500"
-                        }`}>
-                          <MapPin className="w-3.5 h-3.5 shrink-0" />
-                          <span className="line-clamp-1">{property.address}</span>
-                        </div>
-
-                        {/* Tenants Section */}
-                        {hasTenants ? (
-                          <div className="mb-3">
-                            <div className="flex items-center gap-1.5 mb-1.5">
-                              <Users className={`w-3.5 h-3.5 ${
-                                theme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-500)]"
-                              }`} />
-                              <span className={`text-xs font-medium ${
-                                theme === "dark" ? "text-gray-300" : "text-gray-700"
-                              }`}>
-                                {propertyTenants.length} Tenant{propertyTenants.length > 1 ? 's' : ''}
-                              </span>
-                            </div>
-                            <div className="space-y-1.5">
-                              {propertyTenants.slice(0, 2).map((tenant) => (
-                                <div key={tenant.$id} className={`flex items-center gap-2 p-1.5 rounded-lg ${
-                                  theme === "dark" ? "bg-gray-700/50" : "bg-gray-50"
-                                }`}>
-                                  {tenant.avatar ? (
-                                    <Image
-                                      src={tenant.avatar}
-                                      alt={tenant.name}
-                                      width={24}
-                                      height={24}
-                                      className="rounded-full object-cover w-6 h-6"
-                                    />
-                                  ) : (
-                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                                      theme === "dark" ? "bg-gray-600" : "bg-blue-100"
-                                    }`}>
-                                      <User className={`w-3.5 h-3.5 ${
-                                        theme === "dark" ? "text-gray-400" : "text-blue-600"
-                                      }`} />
-                                    </div>
-                                  )}
-                                  <div className="flex-1 min-w-0">
-                                    <p className={`text-xs font-medium truncate ${
-                                      theme === "dark" ? "text-gray-200" : "text-gray-800"
-                                    }`}>
-                                      {tenant.name}
-                                    </p>
-                                    <p className={`text-[10px] truncate ${
-                                      theme === "dark" ? "text-gray-400" : "text-gray-500"
-                                    }`}>
-                                      ${tenant.monthlyRent}/mo
-                                    </p>
-                                  </div>
-                                </div>
-                              ))}
-                              {propertyTenants.length > 2 && (
-                                <p className={`text-[10px] text-center ${
-                                  theme === "dark" ? "text-gray-400" : "text-gray-500"
-                                }`}>
-                                  +{propertyTenants.length - 2} more tenant{propertyTenants.length - 2 > 1 ? 's' : ''}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className={`mb-3 p-2 rounded-lg border border-dashed ${
-                            theme === "dark" 
-                              ? "border-gray-600 text-gray-400" 
-                              : "border-gray-300 text-gray-500"
-                          }`}>
-                            <div className="flex items-center justify-center gap-1.5">
-                              <Users className="w-3.5 h-3.5" />
-                              <span className="text-xs">No tenants yet</span>
-                            </div>
+                          <div className="flex h-full items-center justify-center">
+                            <Home className="h-12 w-12 text-gray-300" />
                           </div>
                         )}
 
-                        {/* Specs Grid */}
-                        <div className="grid grid-cols-3 gap-2 mb-3">
-                          <div className={`flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-sm transition-colors duration-300 ${
-                            theme === "dark" 
-                              ? "bg-gray-700/50 text-gray-300" 
-                              : "bg-gray-50 text-gray-600"
-                          }`}>
-                            <Bed className="w-3.5 h-3.5" />
-                            <span>{property.bedrooms}</span>
+                        <span
+                          className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-semibold ${
+                            property.isAvailable !== false
+                              ? "bg-green-500 text-white"
+                              : "bg-gray-900/80 text-white"
+                          }`}
+                        >
+                          {property.isAvailable !== false
+                            ? "Available"
+                            : "Occupied"}
+                        </span>
+                      </Link>
+
+                      <div className="p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <h2 className="truncate text-lg font-bold">
+                              {property.propertyName}
+                            </h2>
+                            <p className="mt-1 flex items-center gap-1 truncate text-xs text-gray-500">
+                              <MapPin className="h-3.5 w-3.5 shrink-0" />
+                              {property.address}
+                            </p>
                           </div>
-                          <div className={`flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-sm transition-colors duration-300 ${
-                            theme === "dark" 
-                              ? "bg-gray-700/50 text-gray-300" 
-                              : "bg-gray-50 text-gray-600"
-                          }`}>
-                            <Bath className="w-3.5 h-3.5" />
-                            <span>{property.bathrooms}</span>
+                          <p className="shrink-0 font-bold text-[var(--accent-500)]">
+                            {formatPrice(property)}
+                          </p>
+                        </div>
+
+                        <div className="mt-4 grid grid-cols-3 gap-2 rounded-xl bg-gray-50 p-3 text-center dark:bg-gray-800">
+                          <div>
+                            <Bed className="mx-auto h-4 w-4 text-gray-500" />
+                            <p className="mt-1 text-xs">
+                              {property.bedrooms || 0} beds
+                            </p>
                           </div>
-                          <div className={`flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-sm transition-colors duration-300 ${
-                            theme === "dark" 
-                              ? "bg-gray-700/50 text-gray-300" 
-                              : "bg-gray-50 text-gray-600"
-                          }`}>
-                            <Ruler className="w-3.5 h-3.5" />
-                            <span>{property.area}m²</span>
+                          <div>
+                            <Bath className="mx-auto h-4 w-4 text-gray-500" />
+                            <p className="mt-1 text-xs">
+                              {property.bathrooms || 0} baths
+                            </p>
+                          </div>
+                          <div>
+                            <Users className="mx-auto h-4 w-4 text-gray-500" />
+                            <p className="mt-1 text-xs">
+                              {activeTenants.length}/{property.roomFor || 1}
+                            </p>
                           </div>
                         </div>
 
-                        {/* Views & Engagement */}
-                        <div className={`flex items-center justify-between text-xs mb-2 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-400"
-                        }`}>
-                          <div className="flex items-center gap-3">
-                            <span className="flex items-center gap-1">
-                              <Eye className="w-3 h-3" />
-                              {property.views || 0} views
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <TrendingUp className="w-3 h-3" />
-                              {property.likes || 0} likes
-                            </span>
-                          </div>
+                        <div className="mt-3 flex items-center gap-4 text-xs text-gray-500">
+                          <span className="flex items-center gap-1">
+                            <Eye className="h-3.5 w-3.5" />
+                            {property.views || 0}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Heart className="h-3.5 w-3.5" />
+                            {property.likes || 0}
+                          </span>
+                          <span className="ml-auto rounded-full bg-gray-100 px-2 py-1 dark:bg-gray-800">
+                            {property.type}
+                          </span>
                         </div>
 
-                        {/* Curfew & Additional Info */}
-                        {curfewDisplay && (
-                          <div className="flex items-center gap-1.5 mb-2 text-xs">
-                            <Moon className={`w-3.5 h-3.5 ${
-                              type === "boarding" 
-                                ? "text-[var(--accent-500)] dark:text-[var(--accent-400)]" 
-                                : "text-gray-400 dark:text-gray-500"
-                            }`} />
-                            <span className={type === "boarding" ? "text-gray-700 dark:text-gray-300" : "text-gray-500 dark:text-gray-400"}>
-                              Curfew: {curfewDisplay}
-                            </span>
-                          </div>
-                        )}
-
-                        {/* Type-specific additional info */}
-                        {getAdditionalInfo(property)}
-
-                        {/* Action Buttons */}
-                        <div className={`flex gap-2 pt-3 mt-3 border-t transition-colors duration-300 ${
-                          theme === "dark" ? "border-gray-700" : "border-gray-100"
-                        }`}>
-                          <Link
-                            href={`/dashboard/properties/${property.$id}`}
-                            className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg transition text-sm font-medium ${
-                              theme === "dark"
-                                ? "bg-blue-900/30 text-blue-400 hover:bg-blue-900/50"
-                                : "bg-blue-50 text-blue-600 hover:bg-blue-100"
-                            }`}
-                          >
-                            <Eye className="w-4 h-4" />
-                            View
-                          </Link>
+                        <div className="mt-4 flex gap-2">
                           <Link
                             href={`/dashboard/properties/${property.$id}/edit`}
-                            className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg transition text-sm font-medium ${
-                              theme === "dark"
-                                ? "bg-green-900/30 text-green-400 hover:bg-green-900/50"
-                                : "bg-green-50 text-green-600 hover:bg-green-100"
-                            }`}
+                            className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-gray-200 px-3 py-2 text-sm font-semibold hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
                           >
-                            <Edit className="w-4 h-4" />
+                            <Edit className="h-4 w-4" />
                             Edit
                           </Link>
                           <button
-                            onClick={() => {
-                              setSelectedProperty(property);
-                              setShowDeleteModal(true);
-                            }}
-                            className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg transition text-sm font-medium ${
-                              theme === "dark"
-                                ? "bg-red-900/30 text-red-400 hover:bg-red-900/50"
-                                : "bg-red-50 text-red-600 hover:bg-red-100"
-                            }`}
+                            type="button"
+                            onClick={() => setPropertyToDelete(property)}
+                            className="inline-flex items-center justify-center rounded-xl border border-red-200 px-3 py-2 text-red-600 hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950/30"
+                            aria-label={`Delete ${property.propertyName}`}
                           >
-                            <Trash2 className="w-4 h-4" />
-                            Delete
+                            <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
                       </div>
-                    </div>
+                    </article>
                   );
                 })}
-              </div>
-            )}
-
-            {/* Delete Confirmation Modal */}
-            {showDeleteModal && selectedProperty && (
-              <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-                <div className={`rounded-2xl p-6 max-w-md w-full mx-4 transition-colors duration-300 shadow-2xl ${
-                  theme === "dark" ? "bg-gray-800" : "bg-white"
-                }`}>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className={`text-xl font-bold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-800"
-                    }`}>
-                      Delete Property
-                    </h3>
-                    <button
-                      onClick={() => setShowDeleteModal(false)}
-                      className={`transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-400 hover:text-gray-300" : "text-gray-400 hover:text-gray-600"
-                      }`}
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
-                  </div>
-                  <div className="mb-6">
-                    <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                      theme === "dark" ? "bg-red-900/30" : "bg-red-100"
-                    }`}>
-                      <Trash2 className={`w-10 h-10 ${
-                        theme === "dark" ? "text-red-400" : "text-red-600"
-                      }`} />
-                    </div>
-                    <p className={`text-center transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-300" : "text-gray-700"
-                    }`}>
-                      Are you sure you want to delete{" "}
-                      <span className="font-semibold">{selectedProperty.propertyName}</span>?
-                    </p>
-                    <p className={`text-center text-sm mt-2 transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
-                    }`}>
-                      This action cannot be undone. All images and data will be permanently removed.
-                    </p>
-                  </div>
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => setShowDeleteModal(false)}
-                      className={`flex-1 px-4 py-2.5 rounded-lg transition font-medium ${
-                        theme === "dark"
-                          ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                      }`}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleDelete}
-                      className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition font-medium shadow-sm"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
               </div>
             )}
           </main>
         </div>
       </div>
+
+      {propertyToDelete && (
+        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-900">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-bold">Delete property?</h2>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                  {propertyToDelete.propertyName} and its uploaded images will
+                  be permanently deleted.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPropertyToDelete(null)}
+                className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="mt-6 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setPropertyToDelete(null)}
+                disabled={deleting}
+                className="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold dark:border-gray-700"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => void deleteProperty()}
+                disabled={deleting}
+                className="flex-1 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+              >
+                {deleting ? "Deleting…" : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </ProtectedRoute>
   );
 }

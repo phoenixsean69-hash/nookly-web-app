@@ -1,29 +1,36 @@
 "use client";
 
-import { useAuth } from "@/contexts/auth-context";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+import { useAuth } from "@/contexts/auth-context";
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
+  const { user, organization, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login");
+    if (!loading && (!user || !organization)) {
+      router.replace("/login");
     }
-  }, [user, loading, router]);
+  }, [loading, organization, router, user]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent-500)] dark:border-gray-700" />
+          <p className="mt-4 text-sm text-gray-600 dark:text-gray-300">
+            Loading your organization…
+          </p>
         </div>
       </div>
     );
   }
 
-  return user ? <>{children}</> : null;
+  if (!user || !organization) {
+    return null;
+  }
+
+  return <>{children}</>;
 }

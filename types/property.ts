@@ -1,16 +1,16 @@
-import { Models } from "appwrite";
+import type { Models } from "appwrite";
 
 export interface Property extends Models.Document {
-  $createdAt: string;
-  $updatedAt: string;
-
   propertyName: string;
   type: string;
   description: string;
   address: string;
   price: number;
+  priceThreshold?: number;
   propertyType?: string;
-  location?: string; 
+  location?: string;
+  latitude?: string | number;
+  longitude?: string | number;
   area: number;
   bedrooms: number;
   bathrooms: number;
@@ -18,10 +18,9 @@ export interface Property extends Models.Document {
   image1: string;
   image2: string;
   image3: string;
-
+  creatorId: string;
   rating?: number;
   review?: string;
-  creatorId?: string;
   likes?: number;
   agent?: string;
   reviews?: string;
@@ -30,4 +29,7 @@ export interface Property extends Models.Document {
   curfew?: string;
   views?: number;
   requests?: number;
+  totalSlots?: number;
+  occupiedSlots?: number;
+  availableSlots?: number;
 }
