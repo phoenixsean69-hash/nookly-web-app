@@ -1529,12 +1529,6 @@ export default function NewPropertyPage() {
                         },
                       )}
                     </div>
-
-                    <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50 p-3 text-xs text-blue-700 dark:border-blue-900 dark:bg-blue-950/30 dark:text-blue-300">
-                      Videos are never converted to Base64. The original files
-                      are sent to Appwrite Storage and only their Appwrite URLs
-                      are saved in the boarding-place document.
-                    </div>
                   </section>
                 )}
 
