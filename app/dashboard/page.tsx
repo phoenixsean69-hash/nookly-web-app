@@ -730,25 +730,6 @@ const statCards = [
       })),
   },
   {
-    id: "monthlyRevenue",
-    title: "Monthly Revenue",
-    value: `$${stats.monthlyRevenue.toLocaleString()}`,
-    icon: DollarSign,
-    color: "yellow",
-    trend: getTrend("monthlyRevenue"),
-    description: "From all properties",
-    properties: allProperties
-      .filter((p: Property) => p.price)
-      .map((p: Property) => ({
-        $id: p.$id,
-        propertyName: p.propertyName,
-        views: p.views || 0,
-        likes: p.likes || 0,
-        requests: p.requests || 0,
-        revenue: p.price || 0,
-      })),
-  },
-  {
     id: "totalViews",
     title: "Total Views",
     value: stats.totalViews.toLocaleString(),

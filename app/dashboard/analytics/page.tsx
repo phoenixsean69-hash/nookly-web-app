@@ -1962,16 +1962,6 @@ export default function AnalyticsPage() {
             {/* Stats Grid - Row 2 */}
             <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8">
               <StatCard
-                title="Monthly Revenue"
-                value={`$${analytics.revenue.monthly}`}
-                change={analytics.revenue.change}
-                icon={DollarSign}
-                color="green"
-                onSeeMore={handleRevenueSeeMore}
-                seeMoreData={analytics.revenue.perProperty}
-                seeMoreLabel="Revenue per property"
-              />
-              <StatCard
                 title="Avg Response Time"
                 value={`${analytics.responseTime.average}h`}
                 change={-15}

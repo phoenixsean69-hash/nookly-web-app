@@ -763,7 +763,7 @@ export default function NewPropertyPage() {
           progress: 1,
           originalSize: file.size,
           finalSize: file.size,
-          message: "Already small enough. No compression was needed.",
+          message: "",
           wasCompressed: false,
         },
       }));
@@ -1860,22 +1860,6 @@ export default function NewPropertyPage() {
                         ))}
                       </select>
                     </label>
-
-                    {isBoarding && (
-                      <div className="md:col-span-2 flex items-start gap-3 rounded-2xl border border-orange-200 bg-orange-50 p-4 text-orange-800 dark:border-orange-900 dark:bg-orange-950/30 dark:text-orange-300">
-                        <Sparkles className="mt-0.5 h-5 w-5 shrink-0" />
-                        <div>
-                          <p className="font-bold">
-                            Boarding house mode is active
-                          </p>
-                          <p className="mt-1 text-sm">
-                            Nookly will save this listing to both the
-                            Properties and Boarding Places collections
-                            using the same document ID.
-                          </p>
-                        </div>
-                      </div>
-                    )}
 
                     <label className="md:col-span-2">
                       <span className="mb-1.5 block text-sm font-semibold">
