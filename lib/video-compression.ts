@@ -179,11 +179,17 @@ export async function compressVideoFile(
     );
     const videoBitrate = calculateVideoBitrate(duration);
 
+    /*
+     * frameRate is a ConversionVideoOptions transform setting, not a
+     * canEncodeVideo() encoder capability option. The capability check
+     * therefore verifies only the actual encoder configuration.
+     */
     const videoEncodingSupported = await canEncodeVideo("avc", {
       width: outputSize.width,
       height: outputSize.height,
       bitrate: videoBitrate,
-      frameRate: TARGET_FRAME_RATE,
+      bitrateMode: "variable",
+      hardwareAcceleration: "prefer-hardware",
     });
 
     if (!videoEncodingSupported) {
@@ -203,6 +209,7 @@ export async function compressVideoFile(
         const { registerAacEncoder } = await import(
           "@mediabunny/aac-encoder"
         );
+
         registerAacEncoder();
         aacFallbackRegistered = true;
       }
@@ -225,7 +232,6 @@ export async function compressVideoFile(
         height: outputSize.height,
         frameRate: TARGET_FRAME_RATE,
         bitrate: videoBitrate,
-        bitrateMode: "variable",
         hardwareAcceleration: "prefer-hardware",
       },
       audio: audioTrack
