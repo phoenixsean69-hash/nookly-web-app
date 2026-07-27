@@ -59,13 +59,12 @@ class AccountAdapter {
     userId: string,
     secret: string,
     password: string,
-    passwordAgain?: string,
+    _passwordAgain?: string,
   ) {
     return rawAccount.updateRecovery({
       userId,
       secret,
       password,
-      passwordAgain,
     });
   }
 
@@ -242,7 +241,10 @@ const client = {
         subscription = nextSubscription;
       })
       .catch((error) => {
-        console.error("Unable to start Appwrite realtime subscription:", error);
+        console.error(
+          "Unable to start Appwrite realtime subscription:",
+          error,
+        );
       });
 
     return () => {
