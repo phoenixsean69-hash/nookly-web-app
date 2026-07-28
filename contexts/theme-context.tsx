@@ -197,7 +197,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (followDeviceTheme) {
       setResolvedTheme(mediaQuery.matches ? "dark" : "light");
     } else {
-      setResolvedTheme(resolvedTheme === "dark" ? "dark" : "light");
+      setResolvedTheme(theme === "dark" ? "dark" : "light");
     }
 
     mediaQuery.addEventListener("change", handleThemeChange);
@@ -211,7 +211,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const root = document.documentElement;
     const currentTheme = followDeviceTheme ? resolvedTheme : theme;
     
-    if (currentresolvedTheme === "dark") {
+   if (currentTheme === "dark") {
       root.classList.add("dark");
     } else {
       root.classList.remove("dark");
@@ -256,7 +256,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       // Cycle through: light -> dark -> system
       if (theme === "light") {
         setTheme("dark");
-      } else if (resolvedTheme === "dark") {
+      } else if (theme === "dark") {
         setTheme("system");
         setFollowDeviceTheme(true);
       }

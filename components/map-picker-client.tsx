@@ -128,7 +128,7 @@ function ClickHandler({
 
 export default function MapPickerClient({
   onLocationSelect,
-  theme,
+  theme: resolvedTheme,
   initialLat,
   initialLng,
 }: MapPickerProps) {
