@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 
 export function OfflineBanner() {
   const { isOffline, refreshCache } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const [isDismissed, setIsDismissed] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -42,7 +42,7 @@ export function OfflineBanner() {
   return (
     <div className="fixed top-0 left-1/2 -translate-x-1/2 z-50 mt-1">
       <div className={`rounded-full shadow-lg border border-yellow-500/30 px-3 py-1 transition-colors duration-300 ${
-        theme === "dark"
+        resolvedTheme === "dark"
           ? "bg-gray-800 text-white"
           : "bg-gradient-to-r from-gray-800 to-gray-900 text-white"
       }`}>

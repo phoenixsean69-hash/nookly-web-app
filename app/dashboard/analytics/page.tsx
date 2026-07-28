@@ -223,7 +223,7 @@ interface AnalyticsData {
 
 export default function AnalyticsPage() {
   const { organization } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState<"week" | "month" | "year">("month");
   const [allProperties, setAllProperties] = useState<Property[]>([]);
@@ -1223,7 +1223,7 @@ export default function AnalyticsPage() {
 
   // Chart.js color helper
   const getChartColors = () => {
-    const isDark = theme === "dark";
+    const isDark = resolvedTheme === "dark";
     return {
       grid: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
       text: isDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)',
@@ -1485,7 +1485,7 @@ export default function AnalyticsPage() {
   // Chart options - FIXED: Using proper font weight values
   const getChartOptions = (title: string, showLegend: boolean = true) => {
     const colors = getChartColors();
-    const isDark = theme === "dark";
+    const isDark = resolvedTheme === "dark";
     
     return {
       responsive: true,
@@ -1579,7 +1579,7 @@ export default function AnalyticsPage() {
 
   const getRadarOptions = (title: string) => {
     const colors = getChartColors();
-    const isDark = theme === "dark";
+    const isDark = resolvedTheme === "dark";
     
     return {
       responsive: true,
@@ -1661,7 +1661,7 @@ export default function AnalyticsPage() {
 
     return (
       <div className={`rounded-2xl p-4 sm:p-6 shadow-sm border transition-all duration-300 cursor-pointer hover:shadow-md ${
-        theme === "dark" 
+        resolvedTheme === "dark" 
           ? "bg-gray-800/80 border-gray-700 hover:border-gray-600" 
           : "bg-white/80 border-gray-100 hover:border-[var(--accent-200)] backdrop-blur-sm"
       }`}>
@@ -1676,17 +1676,17 @@ export default function AnalyticsPage() {
         </div>
         <div>
           <p className={`text-xs sm:text-sm mb-1 transition-colors duration-300 ${
-            theme === "dark" ? "text-gray-400" : "text-gray-600"
+            resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
           }`}>{title}</p>
           <p className={`text-2xl sm:text-3xl font-bold transition-colors duration-300 ${
-            theme === "dark" ? "text-gray-100" : "text-gray-900"
+            resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
           }`}>{typeof value === 'number' ? value.toLocaleString() : value}</p>
         </div>
         {onSeeMore && seeMoreData && seeMoreData.length > 0 && (
           <button
             onClick={() => onSeeMore(seeMoreData)}
             className={`mt-2 text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
-              theme === "dark" 
+              resolvedTheme === "dark" 
                 ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                 : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
             }`}
@@ -1812,7 +1812,7 @@ export default function AnalyticsPage() {
     return (
       <ProtectedRoute>
         <div className={`min-h-screen transition-colors duration-300 ${
-          theme === "dark" 
+          resolvedTheme === "dark" 
             ? "bg-gray-900" 
             : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
         }`}>
@@ -1822,10 +1822,10 @@ export default function AnalyticsPage() {
             <div className="flex items-center justify-center h-[80vh] px-4">
               <div className="text-center">
                 <div className={`w-12 h-12 sm:w-16 sm:h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-4 ${
-                  theme === "dark" ? "border-[var(--accent-500)]" : "border-[var(--accent-500)]"
+                  resolvedTheme === "dark" ? "border-[var(--accent-500)]" : "border-[var(--accent-500)]"
                 }`} />
                 <p className={`text-sm sm:text-base transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-600"
+                  resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                 }`}>Loading analytics...</p>
               </div>
             </div>
@@ -1844,7 +1844,7 @@ export default function AnalyticsPage() {
   return (
     <ProtectedRoute>
       <div className={`min-h-screen transition-colors duration-300 ${
-        theme === "dark" 
+        resolvedTheme === "dark" 
           ? "bg-gray-900" 
           : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
       }`}>
@@ -1858,7 +1858,7 @@ export default function AnalyticsPage() {
                 <div>
                   <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
                     <div className={`p-1.5 sm:p-2 rounded-xl shadow-lg transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-[var(--accent-500)] shadow-[var(--accent-500)]/25" 
                         : "bg-gradient-to-br from-[var(--accent-500)] to-[var(--accent-600)] shadow-[var(--accent-500)]/25"
                     }`}>
@@ -1866,10 +1866,10 @@ export default function AnalyticsPage() {
                     </div>
                     <div>
                       <h1 className={`text-2xl sm:text-3xl font-bold transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-100" : "text-gray-900"
+                        resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                       }`}>Analytics</h1>
                       <p className={`text-xs sm:text-sm mt-0.5 transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}>
                         Track your property performance and insights
                       </p>
@@ -1879,7 +1879,7 @@ export default function AnalyticsPage() {
                 
                 <div className="flex flex-wrap gap-2">
                   <div className={`flex gap-1 sm:gap-2 rounded-xl p-1 shadow-sm border transition-colors duration-300 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "bg-gray-800 border-gray-700" 
                       : "bg-white border-gray-200"
                   }`}>
@@ -1890,7 +1890,7 @@ export default function AnalyticsPage() {
                         className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                           timeRange === range
                             ? `bg-[var(--accent-500)] text-white shadow-md`
-                            : theme === "dark"
+                            : resolvedTheme === "dark"
                             ? "text-gray-400 hover:bg-gray-700"
                             : "text-gray-600 hover:bg-gray-100"
                         }`}
@@ -1903,7 +1903,7 @@ export default function AnalyticsPage() {
                   <button
                     onClick={() => fetchAnalytics()}
                     className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl shadow-sm border transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-800 border-gray-700 text-gray-400 hover:text-[var(--accent-400)]" 
                         : "bg-white border-gray-200 text-gray-600 hover:text-[var(--accent-500)]"
                     }`}
@@ -1983,7 +1983,7 @@ export default function AnalyticsPage() {
               />
               <Link href="/dashboard/properties">
                 <div className={`rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer ${
-                  theme === "dark" 
+                  resolvedTheme === "dark" 
                     ? "bg-gradient-to-br from-gray-700 to-gray-600" 
                     : "bg-gradient-to-br from-[var(--accent-500)] to-[var(--accent-600)]"
                 }`}>
@@ -2010,24 +2010,24 @@ export default function AnalyticsPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
               {/* Engagement Area Chart */}
               <div className={`rounded-2xl p-4 sm:p-6 shadow-sm border transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800/80 border-gray-700" 
                   : "bg-white/80 border-gray-100 backdrop-blur-sm"
               }`}>
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h3 className={`text-sm sm:text-base font-semibold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-900"
+                      resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                     }`}>Engagement Overview</h3>
                     <p className={`text-xs sm:text-sm transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                     }`}>Last {displayTimeRange.toLowerCase()}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleExportCSV(analytics.views.daily, `Engagement_${displayTimeRange}`)}
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                           : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
                       }`}
@@ -2044,24 +2044,24 @@ export default function AnalyticsPage() {
 
               {/* Revenue Area Chart */}
               <div className={`rounded-2xl p-4 sm:p-6 shadow-sm border transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800/80 border-gray-700" 
                   : "bg-white/80 border-gray-100 backdrop-blur-sm"
               }`}>
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h3 className={`text-sm sm:text-base font-semibold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-900"
+                      resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                     }`}>Revenue Trend</h3>
                     <p className={`text-xs sm:text-sm transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                     }`}>Last {displayTimeRange.toLowerCase()}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleExportCSV(analytics.revenue.daily, `Revenue_${displayTimeRange}`)}
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                           : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
                       }`}
@@ -2072,7 +2072,7 @@ export default function AnalyticsPage() {
                     <button
                       onClick={() => handleRevenueDailySeeMore(analytics.revenue.daily)}
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                           : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
                       }`}
@@ -2091,24 +2091,24 @@ export default function AnalyticsPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
               {/* Occupancy Area Chart */}
               <div className={`rounded-2xl p-4 sm:p-6 shadow-sm border transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800/80 border-gray-700" 
                   : "bg-white/80 border-gray-100 backdrop-blur-sm"
               }`}>
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h3 className={`text-sm sm:text-base font-semibold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-900"
+                      resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                     }`}>Occupancy Rate Trend</h3>
                     <p className={`text-xs sm:text-sm transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                     }`}>Last 30 days</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleExportCSV(analytics.occupancy.historical, 'Occupancy_Trend')}
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                           : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
                       }`}
@@ -2125,17 +2125,17 @@ export default function AnalyticsPage() {
 
               {/* Property Health Bar Chart */}
               <div className={`rounded-2xl p-4 sm:p-6 shadow-sm border transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800/80 border-gray-700" 
                   : "bg-white/80 border-gray-100 backdrop-blur-sm"
               }`}>
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h3 className={`text-sm sm:text-base font-semibold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-900"
+                      resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                     }`}>Property Health Scores</h3>
                     <p className={`text-xs sm:text-sm transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                     }`}>Overall health status</p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -2150,7 +2150,7 @@ export default function AnalyticsPage() {
                         handleExportCSV(data, 'Property_Health');
                       }}
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                           : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
                       }`}
@@ -2161,7 +2161,7 @@ export default function AnalyticsPage() {
                     <button
                       onClick={handlePropertyHealthSeeMore}
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                           : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
                       }`}
@@ -2180,17 +2180,17 @@ export default function AnalyticsPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
               {/* Radar Chart - Top Properties */}
               <div className={`rounded-2xl p-4 sm:p-6 shadow-sm border transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800/80 border-gray-700" 
                   : "bg-white/80 border-gray-100 backdrop-blur-sm"
               }`}>
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h3 className={`text-sm sm:text-base font-semibold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-900"
+                      resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                     }`}>Top Properties Radar</h3>
                     <p className={`text-xs sm:text-sm transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                     }`}>Performance comparison</p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -2205,7 +2205,7 @@ export default function AnalyticsPage() {
                         handleExportCSV(data, 'Top_Properties_Radar');
                       }}
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                           : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
                       }`}
@@ -2222,17 +2222,17 @@ export default function AnalyticsPage() {
 
               {/* Property Types Bar Chart */}
               <div className={`rounded-2xl p-4 sm:p-6 shadow-sm border transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800/80 border-gray-700" 
                   : "bg-white/80 border-gray-100 backdrop-blur-sm"
               }`}>
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h3 className={`text-sm sm:text-base font-semibold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-900"
+                      resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                     }`}>Properties by Type</h3>
                     <p className={`text-xs sm:text-sm transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                     }`}>Distribution of property types</p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -2249,7 +2249,7 @@ export default function AnalyticsPage() {
                         handleExportCSV(data, 'Property_Types');
                       }}
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                           : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
                       }`}
@@ -2260,7 +2260,7 @@ export default function AnalyticsPage() {
                     <button
                       onClick={handlePropertyTypesSeeMore}
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                           : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
                       }`}
@@ -2279,24 +2279,24 @@ export default function AnalyticsPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
               {/* Response Time Bar Chart */}
               <div className={`rounded-2xl p-4 sm:p-6 shadow-sm border transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800/80 border-gray-700" 
                   : "bg-white/80 border-gray-100 backdrop-blur-sm"
               }`}>
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h3 className={`text-sm sm:text-base font-semibold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-900"
+                      resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                     }`}>Response Times</h3>
                     <p className={`text-xs sm:text-sm transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                     }`}>Average response hours</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleExportCSV(analytics.responseTime.perProperty, 'Response_Times')}
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                           : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
                       }`}
@@ -2307,7 +2307,7 @@ export default function AnalyticsPage() {
                     <button
                       onClick={() => handleResponseTimeSeeMore(analytics.responseTime.perProperty)}
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                           : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
                       }`}
@@ -2323,17 +2323,17 @@ export default function AnalyticsPage() {
 
               {/* Conversion Funnel Bar Chart */}
               <div className={`rounded-2xl p-4 sm:p-6 shadow-sm border transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800/80 border-gray-700" 
                   : "bg-white/80 border-gray-100 backdrop-blur-sm"
               }`}>
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h3 className={`text-sm sm:text-base font-semibold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-900"
+                      resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                     }`}>Conversion Funnel</h3>
                     <p className={`text-xs sm:text-sm transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                     }`}>View → Request → Viewing → Rental</p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -2347,7 +2347,7 @@ export default function AnalyticsPage() {
                         handleExportCSV(data, 'Conversion_Funnel');
                       }}
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                           : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
                       }`}
@@ -2366,74 +2366,74 @@ export default function AnalyticsPage() {
             {/* Revenue Summary Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
               <div className={`rounded-xl p-3 sm:p-4 border transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800/80 border-gray-700" 
                   : "bg-white/80 border-gray-100 backdrop-blur-sm"
               }`}>
                 <p className={`text-[10px] sm:text-xs transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
+                  resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                 }`}>Total Revenue</p>
                 <p className={`text-lg sm:text-xl font-bold transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-100" : "text-gray-900"
+                  resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                 }`}>${analytics.revenue.total.toLocaleString()}</p>
               </div>
               
               <div className={`rounded-xl p-3 sm:p-4 border transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800/80 border-gray-700" 
                   : "bg-white/80 border-gray-100 backdrop-blur-sm"
               }`}>
                 <p className={`text-[10px] sm:text-xs transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
+                  resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                 }`}>Monthly Average</p>
                 <p className={`text-lg sm:text-xl font-bold transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-100" : "text-gray-900"
+                  resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                 }`}>${analytics.revenue.monthly.toLocaleString()}</p>
               </div>
               
               <div className={`rounded-xl p-3 sm:p-4 border transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800/80 border-gray-700" 
                   : "bg-white/80 border-gray-100 backdrop-blur-sm"
               }`}>
                 <p className={`text-[10px] sm:text-xs transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
+                  resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                 }`}>Projected Annual</p>
                 <p className={`text-lg sm:text-xl font-bold transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-100" : "text-gray-900"
+                  resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                 }`}>${analytics.revenue.projected.toLocaleString()}</p>
               </div>
               
               <div className={`rounded-xl p-3 sm:p-4 border transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800/80 border-gray-700" 
                   : "bg-white/80 border-gray-100 backdrop-blur-sm"
               }`}>
                 <p className={`text-[10px] sm:text-xs transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
+                  resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                 }`}>Rented Properties</p>
                 <p className={`text-lg sm:text-xl font-bold transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-100" : "text-gray-900"
+                  resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                 }`}>{allProperties.filter((p: Property) => p.isAvailable === false).length}</p>
               </div>
             </div>
 
             {/* Top Properties */}
             <div className={`rounded-2xl shadow-sm border transition-colors duration-300 mb-6 sm:mb-8 ${
-              theme === "dark" 
+              resolvedTheme === "dark" 
                 ? "bg-gray-800/80 border-gray-700" 
                 : "bg-white/80 border-gray-100 backdrop-blur-sm"
             }`}>
               <div className={`p-4 sm:p-6 border-b transition-colors duration-300 ${
-                theme === "dark" ? "border-gray-700" : "border-gray-100"
+                resolvedTheme === "dark" ? "border-gray-700" : "border-gray-100"
               }`}>
                 <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2">
                   <div>
                     <h3 className={`text-sm sm:text-base font-semibold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-900"
+                      resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                     }`}>Top Performing Properties</h3>
                     <p className={`text-xs sm:text-sm transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                     }`}>Based on views, likes, and requests</p>
                   </div>
                   <div className="flex items-center gap-3">
@@ -2448,7 +2448,7 @@ export default function AnalyticsPage() {
                         handleExportCSV(data, 'Top_Properties');
                       }}
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                           : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
                       }`}
@@ -2458,7 +2458,7 @@ export default function AnalyticsPage() {
                     </button>
                     <Link href="/dashboard/properties">
                       <button className={`text-xs sm:text-sm font-medium transition-colors duration-300 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                           : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
                       }`}>
@@ -2471,11 +2471,11 @@ export default function AnalyticsPage() {
               {analytics.topProperties.length === 0 ? (
                 <div className="text-center py-8 sm:py-12">
                   <p className={`text-sm sm:text-base transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}>No properties found</p>
                   <Link href="/dashboard/properties/new">
                     <button className={`mt-3 sm:mt-4 text-sm sm:text-base font-medium transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                         : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
                     }`}>
@@ -2487,41 +2487,41 @@ export default function AnalyticsPage() {
                 <div className="overflow-x-auto">
                   <table className="w-full min-w-[500px] sm:min-w-0">
                     <thead className={`border-b transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-700/50 border-gray-700" 
                         : "bg-gray-50 border-gray-100"
                     }`}>
                       <tr>
                         <th className={`text-left p-3 sm:p-4 text-xs sm:text-sm font-medium transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-600"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                         }`}>Property</th>
                         <th className={`text-left p-3 sm:p-4 text-xs sm:text-sm font-medium transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-600"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                         }`}>Views</th>
                         <th className={`text-left p-3 sm:p-4 text-xs sm:text-sm font-medium transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-600"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                         }`}>Likes</th>
                         <th className={`text-left p-3 sm:p-4 text-xs sm:text-sm font-medium transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-600"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                         }`}>Requests</th>
                         <th className={`text-left p-3 sm:p-4 text-xs sm:text-sm font-medium transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-600"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                         }`}>Engagement</th>
                       </tr>
                     </thead>
                     <tbody>
                       {analytics.topProperties.map((property, i) => (
                         <tr key={property.id} className={`border-b transition-colors duration-300 hover:bg-gray-50/50 dark:hover:bg-gray-700/50 ${
-                          theme === "dark" ? "border-gray-700" : "border-gray-50"
+                          resolvedTheme === "dark" ? "border-gray-700" : "border-gray-50"
                         }`}>
                           <td className="p-3 sm:p-4">
                             <div className="flex items-center gap-2 sm:gap-3">
                               <span className={`text-xs sm:text-sm font-medium transition-colors duration-300 ${
-                                theme === "dark" ? "text-gray-500" : "text-gray-400"
+                                resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                               }`}>#{i + 1}</span>
                               <Link href={`/dashboard/properties/${property.id}`}>
                                 <span className={`text-xs sm:text-sm font-medium transition-colors duration-300 hover:text-[var(--accent-500)] dark:hover:text-[var(--accent-400)] ${
-                                  theme === "dark" ? "text-gray-200" : "text-gray-900"
+                                  resolvedTheme === "dark" ? "text-gray-200" : "text-gray-900"
                                 }`}>
                                   {property.name.length > 15 ? property.name.slice(0, 15) + '...' : property.name}
                                 </span>
@@ -2529,22 +2529,22 @@ export default function AnalyticsPage() {
                             </div>
                           </td>
                           <td className={`p-3 sm:p-4 text-xs sm:text-sm transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-300" : "text-gray-700"
+                            resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                           }`}>{property.views.toLocaleString()}</td>
                           <td className={`p-3 sm:p-4 text-xs sm:text-sm transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-300" : "text-gray-700"
+                            resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                           }`}>{property.likes.toLocaleString()}</td>
                           <td className={`p-3 sm:p-4 text-xs sm:text-sm transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-300" : "text-gray-700"
+                            resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                           }`}>{property.requests.toLocaleString()}</td>
                           <td className="p-3 sm:p-4">
                             <div className="flex items-center gap-1 sm:gap-2">
                               <div className={`w-12 sm:w-24 rounded-full h-1.5 sm:h-2 overflow-hidden ${
-                                theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                                resolvedTheme === "dark" ? "bg-gray-700" : "bg-gray-100"
                               }`}>
                                 <div
                                   className={`h-1.5 sm:h-2 rounded-full ${
-                                    theme === "dark" 
+                                    resolvedTheme === "dark" 
                                       ? "bg-gradient-to-r from-[var(--accent-500)] to-[var(--accent-600)]" 
                                       : "bg-gradient-to-r from-[var(--accent-500)] to-[var(--accent-600)]"
                                   }`}
@@ -2552,7 +2552,7 @@ export default function AnalyticsPage() {
                                 />
                               </div>
                               <span className={`text-[10px] sm:text-sm transition-colors duration-300 ${
-                                theme === "dark" ? "text-gray-400" : "text-gray-500"
+                                resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                               }`}>
                                 {Math.round((property.views / analytics.topProperties[0].views) * 100)}%
                               </span>
@@ -2568,20 +2568,20 @@ export default function AnalyticsPage() {
 
             {/* Recent Activity */}
             <div className={`rounded-2xl shadow-sm border transition-colors duration-300 ${
-              theme === "dark" 
+              resolvedTheme === "dark" 
                 ? "bg-gray-800/80 border-gray-700" 
                 : "bg-white/80 border-gray-100 backdrop-blur-sm"
             }`}>
               <div className={`p-4 sm:p-6 border-b transition-colors duration-300 ${
-                theme === "dark" ? "border-gray-700" : "border-gray-100"
+                resolvedTheme === "dark" ? "border-gray-700" : "border-gray-100"
               }`}>
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className={`text-sm sm:text-base font-semibold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-900"
+                      resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                     }`}>Recent Activity</h3>
                     <p className={`text-xs sm:text-sm transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                     }`}>Real-time updates from your properties</p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -2596,7 +2596,7 @@ export default function AnalyticsPage() {
                         handleExportCSV(data, 'Recent_Activity');
                       }}
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                           : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
                       }`}
@@ -2605,7 +2605,7 @@ export default function AnalyticsPage() {
                       Export CSV
                     </button>
                     <Activity className={`w-4 h-4 sm:w-5 sm:h-5 transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-500" : "text-gray-400"
+                      resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                     }`} />
                   </div>
                 </div>
@@ -2614,17 +2614,17 @@ export default function AnalyticsPage() {
               {analytics.recentActivity.length === 0 ? (
                 <div className="text-center py-8 sm:py-12">
                   <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 ${
-                    theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                    resolvedTheme === "dark" ? "bg-gray-700" : "bg-gray-100"
                   }`}>
                     <Activity className={`w-6 h-6 sm:w-8 sm:h-8 ${
-                      theme === "dark" ? "text-gray-500" : "text-gray-400"
+                      resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                     }`} />
                   </div>
                   <h3 className={`text-base sm:text-lg font-semibold mb-1 sm:mb-2 transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-200" : "text-gray-800"
+                    resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
                   }`}>No activity yet</h3>
                   <p className={`text-sm sm:text-base transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}>Activity from your properties will appear here</p>
                 </div>
               ) : (
@@ -2659,12 +2659,12 @@ export default function AnalyticsPage() {
                           <div className="flex items-center gap-2 mb-2 sm:mb-3">
                             <IconComponent className={`w-4 h-4 sm:w-5 sm:h-5 ${colors.text}`} />
                             <h4 className={`text-xs sm:text-sm font-semibold transition-colors duration-300 ${
-                              theme === "dark" ? "text-gray-200" : "text-gray-700"
+                              resolvedTheme === "dark" ? "text-gray-200" : "text-gray-700"
                             }`}>
                               {section.label}
                             </h4>
                             <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
-                              theme === "dark" ? "bg-gray-700 text-gray-400" : "bg-gray-200 text-gray-600"
+                              resolvedTheme === "dark" ? "bg-gray-700 text-gray-400" : "bg-gray-200 text-gray-600"
                             }`}>
                               {activities.length}
                             </span>
@@ -2709,17 +2709,17 @@ export default function AnalyticsPage() {
                                 <div key={activity.id} className="flex items-center justify-between gap-2">
                                   <Link href={`/dashboard/properties/${activity.propertyId}`} className="flex-1 min-w-0">
                                     <span className={`text-xs sm:text-sm transition-colors duration-300 hover:text-[var(--accent-500)] dark:hover:text-[var(--accent-400)] ${
-                                      theme === "dark" ? "text-gray-300" : "text-gray-700"
+                                      resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                                     }`}>
                                       {activity.count || 1} {activity.type === "view" ? "view" : activity.type === "like" ? "like" : "request"}
                                       {(activity.count || 1) > 1 ? 's' : ''} on {activity.propertyName}
                                     </span>
                                   </Link>
                                   <span className={`text-[12px] sm:text-[15px] flex-shrink-0 transition-colors duration-300 flex items-center gap-1 ${
-                                    theme === "dark" ? "text-orange-400" : "text-orange-500"
+                                    resolvedTheme === "dark" ? "text-orange-400" : "text-orange-500"
                                   }`}>
                                     • <span className="font-medium">latest:</span>
-                                    <span className={`${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
+                                    <span className={`${resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
                                       {timeDisplay}
                                     </span>
                                   </span>
@@ -2738,7 +2738,7 @@ export default function AnalyticsPage() {
             {/* Footer */}
             <footer className="mt-6 sm:mt-8 text-center">
               <p className={`text-[10px] sm:text-xs transition-colors duration-300 ${
-                theme === "dark" ? "text-gray-500" : "text-gray-400"
+                resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
               }`}>
                 © 2026 Nookly - Property Management Platform | Last updated: {lastUpdated.toLocaleTimeString()}
               </p>
@@ -2756,13 +2756,13 @@ export default function AnalyticsPage() {
         >
           <div 
             className={`rounded-2xl p-4 sm:p-5 w-[340px] max-w-full max-h-[80vh] flex flex-col transition-colors duration-300 shadow-2xl ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
+              resolvedTheme === "dark" ? "bg-gray-800" : "bg-white"
             }`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3 flex-shrink-0">
               <h3 className={`text-sm font-semibold transition-colors duration-300 truncate pr-2 ${
-                theme === "dark" ? "text-gray-200" : "text-gray-800"
+                resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
               }`}>
                 {modalTitle}
               </h3>
@@ -2770,7 +2770,7 @@ export default function AnalyticsPage() {
                 <button
                   onClick={() => handleExportCSV(modalData, modalTitle.replace(/\s/g, '_'))}
                   className={`p-1 rounded-lg transition-colors duration-300 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
                       : "hover:bg-gray-100 text-[var(--accent-500)]"
                   }`}
@@ -2781,7 +2781,7 @@ export default function AnalyticsPage() {
                 <button
                   onClick={() => setShowModal(false)}
                   className={`p-1 rounded-lg transition-colors duration-300 flex-shrink-0 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-gray-400" 
                       : "hover:bg-gray-100 text-gray-600"
                   }`}
@@ -2800,14 +2800,14 @@ export default function AnalyticsPage() {
                   <div key={index}>
                     <div className="flex justify-between text-xs mb-0.5">
                       <span className={`transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}>{item.date}</span>
                       <span className={`font-medium transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
+                        resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                       }`}>{item.count.toLocaleString()} views</span>
                     </div>
                     <div className={`w-full rounded-full h-2.5 overflow-hidden ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                      resolvedTheme === "dark" ? "bg-gray-700" : "bg-gray-100"
                     }`}>
                       <div
                         className={`h-2.5 rounded-full transition-all duration-700 ${barColor}`}
@@ -2820,7 +2820,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className={`mt-3 pt-2 border-t flex-shrink-0 ${
-              theme === "dark" ? "border-gray-700" : "border-gray-200"
+              resolvedTheme === "dark" ? "border-gray-700" : "border-gray-200"
             }`}>
               <button
                 onClick={() => setShowModal(false)}
@@ -2841,19 +2841,19 @@ export default function AnalyticsPage() {
         >
           <div 
             className={`rounded-2xl p-4 sm:p-5 w-[340px] max-w-full max-h-[80vh] flex flex-col transition-colors duration-300 shadow-2xl ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
+              resolvedTheme === "dark" ? "bg-gray-800" : "bg-white"
             }`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3 flex-shrink-0">
               <h3 className={`text-sm font-semibold transition-colors duration-300 truncate pr-2 ${
-                theme === "dark" ? "text-gray-200" : "text-gray-800"
+                resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
               }`}>Views Per Property</h3>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => handleExportCSV(viewsModalData, 'Views_Per_Property')}
                   className={`p-1 rounded-lg transition-colors duration-300 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
                       : "hover:bg-gray-100 text-[var(--accent-500)]"
                   }`}
@@ -2864,7 +2864,7 @@ export default function AnalyticsPage() {
                 <button
                   onClick={() => setShowViewsModal(false)}
                   className={`p-1 rounded-lg transition-colors duration-300 flex-shrink-0 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-gray-400" 
                       : "hover:bg-gray-100 text-gray-600"
                   }`}
@@ -2878,7 +2878,7 @@ export default function AnalyticsPage() {
               {viewsModalData.length === 0 ? (
                 <div className="text-center py-8">
                   <p className={`text-sm transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}>No views data available</p>
                 </div>
               ) : (
@@ -2890,14 +2890,14 @@ export default function AnalyticsPage() {
                     <div key={index}>
                       <div className="flex justify-between text-xs mb-0.5">
                         <span className={`transition-colors duration-300 truncate pr-2 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-500"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                         }`}>{item.name}</span>
                         <span className={`font-medium transition-colors duration-300 flex-shrink-0 ${
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
+                          resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                         }`}>{item.views.toLocaleString()} views</span>
                       </div>
                       <div className={`w-full rounded-full h-2.5 overflow-hidden ${
-                        theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                        resolvedTheme === "dark" ? "bg-gray-700" : "bg-gray-100"
                       }`}>
                         <div
                           className={`h-2.5 rounded-full transition-all duration-700 ${barColor}`}
@@ -2911,7 +2911,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className={`mt-3 pt-2 border-t flex-shrink-0 ${
-              theme === "dark" ? "border-gray-700" : "border-gray-200"
+              resolvedTheme === "dark" ? "border-gray-700" : "border-gray-200"
             }`}>
               <button
                 onClick={() => setShowViewsModal(false)}
@@ -2932,19 +2932,19 @@ export default function AnalyticsPage() {
         >
           <div 
             className={`rounded-2xl p-4 sm:p-5 w-[340px] max-w-full max-h-[80vh] flex flex-col transition-colors duration-300 shadow-2xl ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
+              resolvedTheme === "dark" ? "bg-gray-800" : "bg-white"
             }`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3 flex-shrink-0">
               <h3 className={`text-sm font-semibold transition-colors duration-300 truncate pr-2 ${
-                theme === "dark" ? "text-gray-200" : "text-gray-800"
+                resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
               }`}>Likes Per Property</h3>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => handleExportCSV(likesModalData, 'Likes_Per_Property')}
                   className={`p-1 rounded-lg transition-colors duration-300 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
                       : "hover:bg-gray-100 text-[var(--accent-500)]"
                   }`}
@@ -2955,7 +2955,7 @@ export default function AnalyticsPage() {
                 <button
                   onClick={() => setShowLikesModal(false)}
                   className={`p-1 rounded-lg transition-colors duration-300 flex-shrink-0 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-gray-400" 
                       : "hover:bg-gray-100 text-gray-600"
                   }`}
@@ -2969,7 +2969,7 @@ export default function AnalyticsPage() {
               {likesModalData.length === 0 ? (
                 <div className="text-center py-8">
                   <p className={`text-sm transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}>No likes data available</p>
                 </div>
               ) : (
@@ -2981,14 +2981,14 @@ export default function AnalyticsPage() {
                     <div key={index}>
                       <div className="flex justify-between text-xs mb-0.5">
                         <span className={`transition-colors duration-300 truncate pr-2 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-500"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                         }`}>{item.name}</span>
                         <span className={`font-medium transition-colors duration-300 flex-shrink-0 ${
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
+                          resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                         }`}>{item.likes.toLocaleString()} likes</span>
                       </div>
                       <div className={`w-full rounded-full h-2.5 overflow-hidden ${
-                        theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                        resolvedTheme === "dark" ? "bg-gray-700" : "bg-gray-100"
                       }`}>
                         <div
                           className={`h-2.5 rounded-full transition-all duration-700 ${barColor}`}
@@ -3002,7 +3002,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className={`mt-3 pt-2 border-t flex-shrink-0 ${
-              theme === "dark" ? "border-gray-700" : "border-gray-200"
+              resolvedTheme === "dark" ? "border-gray-700" : "border-gray-200"
             }`}>
               <button
                 onClick={() => setShowLikesModal(false)}
@@ -3023,19 +3023,19 @@ export default function AnalyticsPage() {
         >
           <div 
             className={`rounded-2xl p-4 sm:p-5 w-[340px] max-w-full max-h-[80vh] flex flex-col transition-colors duration-300 shadow-2xl ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
+              resolvedTheme === "dark" ? "bg-gray-800" : "bg-white"
             }`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3 flex-shrink-0">
               <h3 className={`text-sm font-semibold transition-colors duration-300 truncate pr-2 ${
-                theme === "dark" ? "text-gray-200" : "text-gray-800"
+                resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
               }`}>Requests Per Property</h3>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => handleExportCSV(requestsModalData, 'Requests_Per_Property')}
                   className={`p-1 rounded-lg transition-colors duration-300 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
                       : "hover:bg-gray-100 text-[var(--accent-500)]"
                   }`}
@@ -3046,7 +3046,7 @@ export default function AnalyticsPage() {
                 <button
                   onClick={() => setShowRequestsModal(false)}
                   className={`p-1 rounded-lg transition-colors duration-300 flex-shrink-0 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-gray-400" 
                       : "hover:bg-gray-100 text-gray-600"
                   }`}
@@ -3060,7 +3060,7 @@ export default function AnalyticsPage() {
               {requestsModalData.length === 0 ? (
                 <div className="text-center py-8">
                   <p className={`text-sm transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}>No requests data available</p>
                 </div>
               ) : (
@@ -3072,14 +3072,14 @@ export default function AnalyticsPage() {
                     <div key={index}>
                       <div className="flex justify-between text-xs mb-0.5">
                         <span className={`transition-colors duration-300 truncate pr-2 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-500"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                         }`}>{item.name}</span>
                         <span className={`font-medium transition-colors duration-300 flex-shrink-0 ${
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
+                          resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                         }`}>{item.requests.toLocaleString()} requests</span>
                       </div>
                       <div className={`w-full rounded-full h-2.5 overflow-hidden ${
-                        theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                        resolvedTheme === "dark" ? "bg-gray-700" : "bg-gray-100"
                       }`}>
                         <div
                           className={`h-2.5 rounded-full transition-all duration-700 ${barColor}`}
@@ -3093,7 +3093,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className={`mt-3 pt-2 border-t flex-shrink-0 ${
-              theme === "dark" ? "border-gray-700" : "border-gray-200"
+              resolvedTheme === "dark" ? "border-gray-700" : "border-gray-200"
             }`}>
               <button
                 onClick={() => setShowRequestsModal(false)}
@@ -3114,19 +3114,19 @@ export default function AnalyticsPage() {
         >
           <div 
             className={`rounded-2xl p-4 sm:p-5 w-[340px] max-w-full max-h-[80vh] flex flex-col transition-colors duration-300 shadow-2xl ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
+              resolvedTheme === "dark" ? "bg-gray-800" : "bg-white"
             }`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3 flex-shrink-0">
               <h3 className={`text-sm font-semibold transition-colors duration-300 truncate pr-2 ${
-                theme === "dark" ? "text-gray-200" : "text-gray-800"
+                resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
               }`}>Revenue Per Property</h3>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => handleExportCSV(revenueModalData, 'Revenue_Per_Property')}
                   className={`p-1 rounded-lg transition-colors duration-300 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
                       : "hover:bg-gray-100 text-[var(--accent-500)]"
                   }`}
@@ -3137,7 +3137,7 @@ export default function AnalyticsPage() {
                 <button
                   onClick={() => setShowRevenueModal(false)}
                   className={`p-1 rounded-lg transition-colors duration-300 flex-shrink-0 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-gray-400" 
                       : "hover:bg-gray-100 text-gray-600"
                   }`}
@@ -3151,7 +3151,7 @@ export default function AnalyticsPage() {
               {revenueModalData.length === 0 ? (
                 <div className="text-center py-8">
                   <p className={`text-sm transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}>No revenue data available</p>
                 </div>
               ) : (
@@ -3164,7 +3164,7 @@ export default function AnalyticsPage() {
                       <div className="flex justify-between text-xs mb-0.5">
                         <div className="flex items-center gap-2 truncate pr-2">
                           <span className={`transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-500"
+                            resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                           }`}>{item.name}</span>
                           <span className={`text-[8px] px-1.5 py-0.5 rounded-full ${
                             item.status === 'Rented' 
@@ -3173,11 +3173,11 @@ export default function AnalyticsPage() {
                           }`}>{item.status}</span>
                         </div>
                         <span className={`font-medium transition-colors duration-300 flex-shrink-0 ${
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
+                          resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                         }`}>${item.revenue.toLocaleString()}</span>
                       </div>
                       <div className={`w-full rounded-full h-2.5 overflow-hidden ${
-                        theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                        resolvedTheme === "dark" ? "bg-gray-700" : "bg-gray-100"
                       }`}>
                         <div
                           className={`h-2.5 rounded-full transition-all duration-700 ${barColor}`}
@@ -3191,7 +3191,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className={`mt-3 pt-2 border-t flex-shrink-0 ${
-              theme === "dark" ? "border-gray-700" : "border-gray-200"
+              resolvedTheme === "dark" ? "border-gray-700" : "border-gray-200"
             }`}>
               <button
                 onClick={() => setShowRevenueModal(false)}
@@ -3212,19 +3212,19 @@ export default function AnalyticsPage() {
         >
           <div 
             className={`rounded-2xl p-4 sm:p-5 w-[340px] max-w-full max-h-[80vh] flex flex-col transition-colors duration-300 shadow-2xl ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
+              resolvedTheme === "dark" ? "bg-gray-800" : "bg-white"
             }`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3 flex-shrink-0">
               <h3 className={`text-sm font-semibold transition-colors duration-300 truncate pr-2 ${
-                theme === "dark" ? "text-gray-200" : "text-gray-800"
+                resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
               }`}>Daily Revenue</h3>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => handleExportCSV(revenueDailyModalData, 'Daily_Revenue')}
                   className={`p-1 rounded-lg transition-colors duration-300 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
                       : "hover:bg-gray-100 text-[var(--accent-500)]"
                   }`}
@@ -3235,7 +3235,7 @@ export default function AnalyticsPage() {
                 <button
                   onClick={() => setShowRevenueDailyModal(false)}
                   className={`p-1 rounded-lg transition-colors duration-300 flex-shrink-0 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-gray-400" 
                       : "hover:bg-gray-100 text-gray-600"
                   }`}
@@ -3249,7 +3249,7 @@ export default function AnalyticsPage() {
               {revenueDailyModalData.length === 0 ? (
                 <div className="text-center py-8">
                   <p className={`text-sm transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}>No daily revenue data available</p>
                 </div>
               ) : (
@@ -3261,14 +3261,14 @@ export default function AnalyticsPage() {
                     <div key={index}>
                       <div className="flex justify-between text-xs mb-0.5">
                         <span className={`transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-500"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                         }`}>{item.date}</span>
                         <span className={`font-medium transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
+                          resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                         }`}>${item.revenue.toLocaleString()}</span>
                       </div>
                       <div className={`w-full rounded-full h-2.5 overflow-hidden ${
-                        theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                        resolvedTheme === "dark" ? "bg-gray-700" : "bg-gray-100"
                       }`}>
                         <div
                           className={`h-2.5 rounded-full transition-all duration-700 ${barColor}`}
@@ -3282,7 +3282,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className={`mt-3 pt-2 border-t flex-shrink-0 ${
-              theme === "dark" ? "border-gray-700" : "border-gray-200"
+              resolvedTheme === "dark" ? "border-gray-700" : "border-gray-200"
             }`}>
               <button
                 onClick={() => setShowRevenueDailyModal(false)}
@@ -3303,19 +3303,19 @@ export default function AnalyticsPage() {
         >
           <div 
             className={`rounded-2xl p-4 sm:p-5 w-[340px] max-w-full max-h-[80vh] flex flex-col transition-colors duration-300 shadow-2xl ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
+              resolvedTheme === "dark" ? "bg-gray-800" : "bg-white"
             }`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3 flex-shrink-0">
               <h3 className={`text-sm font-semibold transition-colors duration-300 truncate pr-2 ${
-                theme === "dark" ? "text-gray-200" : "text-gray-800"
+                resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
               }`}>Occupancy Per Property</h3>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => handleExportCSV(occupancyModalData, 'Occupancy_Per_Property')}
                   className={`p-1 rounded-lg transition-colors duration-300 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
                       : "hover:bg-gray-100 text-[var(--accent-500)]"
                   }`}
@@ -3326,7 +3326,7 @@ export default function AnalyticsPage() {
                 <button
                   onClick={() => setShowOccupancyModal(false)}
                   className={`p-1 rounded-lg transition-colors duration-300 flex-shrink-0 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-gray-400" 
                       : "hover:bg-gray-100 text-gray-600"
                   }`}
@@ -3340,7 +3340,7 @@ export default function AnalyticsPage() {
               {occupancyModalData.length === 0 ? (
                 <div className="text-center py-8">
                   <p className={`text-sm transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}>No occupancy data available</p>
                 </div>
               ) : (
@@ -3348,12 +3348,12 @@ export default function AnalyticsPage() {
                   const isOccupied = item.status === 'Occupied';
                   return (
                     <div key={index} className={`flex items-center justify-between p-2 rounded-lg border ${
-                      theme === "dark" ? "border-gray-700" : "border-gray-100"
+                      resolvedTheme === "dark" ? "border-gray-700" : "border-gray-100"
                     }`}>
                       <div className="flex items-center gap-2">
                         <span className={`w-2 h-2 rounded-full ${isOccupied ? 'bg-green-500' : 'bg-gray-400'}`} />
                         <span className={`text-xs transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
+                          resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                         }`}>{item.name}</span>
                       </div>
                       <div className="flex items-center gap-2">
@@ -3361,7 +3361,7 @@ export default function AnalyticsPage() {
                           isOccupied ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'
                         }`}>{item.status}</span>
                         <span className={`text-xs transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-500"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                         }`}>${item.price}/mo</span>
                       </div>
                     </div>
@@ -3371,7 +3371,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className={`mt-3 pt-2 border-t flex-shrink-0 ${
-              theme === "dark" ? "border-gray-700" : "border-gray-200"
+              resolvedTheme === "dark" ? "border-gray-700" : "border-gray-200"
             }`}>
               <button
                 onClick={() => setShowOccupancyModal(false)}
@@ -3392,19 +3392,19 @@ export default function AnalyticsPage() {
         >
           <div 
             className={`rounded-2xl p-4 sm:p-5 w-[340px] max-w-full max-h-[80vh] flex flex-col transition-colors duration-300 shadow-2xl ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
+              resolvedTheme === "dark" ? "bg-gray-800" : "bg-white"
             }`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3 flex-shrink-0">
               <h3 className={`text-sm font-semibold transition-colors duration-300 truncate pr-2 ${
-                theme === "dark" ? "text-gray-200" : "text-gray-800"
+                resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
               }`}>Property Types</h3>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => handleExportCSV(propertyTypesModalData, 'Property_Types')}
                   className={`p-1 rounded-lg transition-colors duration-300 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
                       : "hover:bg-gray-100 text-[var(--accent-500)]"
                   }`}
@@ -3415,7 +3415,7 @@ export default function AnalyticsPage() {
                 <button
                   onClick={() => setShowPropertyTypesModal(false)}
                   className={`p-1 rounded-lg transition-colors duration-300 flex-shrink-0 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-gray-400" 
                       : "hover:bg-gray-100 text-gray-600"
                   }`}
@@ -3429,7 +3429,7 @@ export default function AnalyticsPage() {
               {propertyTypesModalData.length === 0 ? (
                 <div className="text-center py-8">
                   <p className={`text-sm transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}>No property types available</p>
                 </div>
               ) : (
@@ -3438,13 +3438,13 @@ export default function AnalyticsPage() {
                   const color = colors[index % colors.length];
                   return (
                     <div key={index} className={`rounded-lg p-3 border ${
-                      theme === "dark" ? "border-gray-700 bg-gray-700/30" : "border-gray-200 bg-gray-50"
+                      resolvedTheme === "dark" ? "border-gray-700 bg-gray-700/30" : "border-gray-200 bg-gray-50"
                     }`}>
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <div className={`w-3 h-3 rounded-full ${color}`} />
                           <span className={`text-sm font-semibold transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-200" : "text-gray-800"
+                            resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
                           }`}>{item.type}</span>
                         </div>
                         <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
@@ -3458,26 +3458,26 @@ export default function AnalyticsPage() {
                       <div className="grid grid-cols-3 gap-2 text-xs">
                         <div>
                           <span className={`transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-500"
+                            resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                           }`}>Properties</span>
                           <p className={`font-semibold transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-200" : "text-gray-700"
+                            resolvedTheme === "dark" ? "text-gray-200" : "text-gray-700"
                           }`}>{item.count}</p>
                         </div>
                         <div>
                           <span className={`transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-500"
+                            resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                           }`}>Avg Price</span>
                           <p className={`font-semibold transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-200" : "text-gray-700"
+                            resolvedTheme === "dark" ? "text-gray-200" : "text-gray-700"
                           }`}>${item.avgPrice.toLocaleString()}</p>
                         </div>
                         <div>
                           <span className={`transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-500"
+                            resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                           }`}>Views</span>
                           <p className={`font-semibold transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-200" : "text-gray-700"
+                            resolvedTheme === "dark" ? "text-gray-200" : "text-gray-700"
                           }`}>{item.views.toLocaleString()}</p>
                         </div>
                       </div>
@@ -3488,7 +3488,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className={`mt-3 pt-2 border-t flex-shrink-0 ${
-              theme === "dark" ? "border-gray-700" : "border-gray-200"
+              resolvedTheme === "dark" ? "border-gray-700" : "border-gray-200"
             }`}>
               <button
                 onClick={() => setShowPropertyTypesModal(false)}
@@ -3509,19 +3509,19 @@ export default function AnalyticsPage() {
         >
           <div 
             className={`rounded-2xl p-4 sm:p-5 w-[340px] max-w-full max-h-[80vh] flex flex-col transition-colors duration-300 shadow-2xl ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
+              resolvedTheme === "dark" ? "bg-gray-800" : "bg-white"
             }`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3 flex-shrink-0">
               <h3 className={`text-sm font-semibold transition-colors duration-300 truncate pr-2 ${
-                theme === "dark" ? "text-gray-200" : "text-gray-800"
+                resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
               }`}>Response Time Per Property</h3>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => handleExportCSV(responseTimeModalData, 'Response_Time')}
                   className={`p-1 rounded-lg transition-colors duration-300 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
                       : "hover:bg-gray-100 text-[var(--accent-500)]"
                   }`}
@@ -3532,7 +3532,7 @@ export default function AnalyticsPage() {
                 <button
                   onClick={() => setShowResponseTimeModal(false)}
                   className={`p-1 rounded-lg transition-colors duration-300 flex-shrink-0 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-gray-400" 
                       : "hover:bg-gray-100 text-gray-600"
                   }`}
@@ -3546,7 +3546,7 @@ export default function AnalyticsPage() {
               {responseTimeModalData.length === 0 ? (
                 <div className="text-center py-8">
                   <p className={`text-sm transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}>No response time data available</p>
                 </div>
               ) : (
@@ -3560,7 +3560,7 @@ export default function AnalyticsPage() {
                     <div key={index}>
                       <div className="flex justify-between text-xs mb-0.5">
                         <span className={`transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-500"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                         }`}>{item.name}</span>
                         <span className={`font-medium transition-colors duration-300 ${
                           isFast ? 'text-green-600 dark:text-green-400' : 
@@ -3569,7 +3569,7 @@ export default function AnalyticsPage() {
                         }`}>{item.avgHours}h</span>
                       </div>
                       <div className={`w-full rounded-full h-2.5 overflow-hidden ${
-                        theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                        resolvedTheme === "dark" ? "bg-gray-700" : "bg-gray-100"
                       }`}>
                         <div
                           className={`h-2.5 rounded-full transition-all duration-700 ${barColor}`}
@@ -3583,7 +3583,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className={`mt-3 pt-2 border-t flex-shrink-0 ${
-              theme === "dark" ? "border-gray-700" : "border-gray-200"
+              resolvedTheme === "dark" ? "border-gray-700" : "border-gray-200"
             }`}>
               <button
                 onClick={() => setShowResponseTimeModal(false)}
@@ -3604,19 +3604,19 @@ export default function AnalyticsPage() {
         >
           <div 
             className={`rounded-2xl p-4 sm:p-5 w-[340px] max-w-full max-h-[80vh] flex flex-col transition-colors duration-300 shadow-2xl ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
+              resolvedTheme === "dark" ? "bg-gray-800" : "bg-white"
             }`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3 flex-shrink-0">
               <h3 className={`text-sm font-semibold transition-colors duration-300 truncate pr-2 ${
-                theme === "dark" ? "text-gray-200" : "text-gray-800"
+                resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
               }`}>Property Locations</h3>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => handleExportCSV(locationsModalData, 'Property_Locations')}
                   className={`p-1 rounded-lg transition-colors duration-300 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
                       : "hover:bg-gray-100 text-[var(--accent-500)]"
                   }`}
@@ -3627,7 +3627,7 @@ export default function AnalyticsPage() {
                 <button
                   onClick={() => setShowLocationsModal(false)}
                   className={`p-1 rounded-lg transition-colors duration-300 flex-shrink-0 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-gray-400" 
                       : "hover:bg-gray-100 text-gray-600"
                   }`}
@@ -3641,7 +3641,7 @@ export default function AnalyticsPage() {
               {locationsModalData.length === 0 ? (
                 <div className="text-center py-8">
                   <p className={`text-sm transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}>No location data available</p>
                 </div>
               ) : (
@@ -3654,11 +3654,11 @@ export default function AnalyticsPage() {
                         <div className="flex items-center gap-2">
                           <MapPin className="w-3 h-3 text-gray-400" />
                           <span className={`transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-300" : "text-gray-700"
+                            resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                           }`}>{item.city}</span>
                         </div>
                         <span className={`font-medium transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
+                          resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                         }`}>{item.count} properties</span>
                       </div>
                       <div className="flex justify-between text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">
@@ -3667,7 +3667,7 @@ export default function AnalyticsPage() {
                         <span>{item.totalViews} views</span>
                       </div>
                       <div className={`w-full rounded-full h-1.5 overflow-hidden mt-1 ${
-                        theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                        resolvedTheme === "dark" ? "bg-gray-700" : "bg-gray-100"
                       }`}>
                         <div
                           className="h-1.5 rounded-full transition-all duration-700 bg-indigo-500"
@@ -3681,7 +3681,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className={`mt-3 pt-2 border-t flex-shrink-0 ${
-              theme === "dark" ? "border-gray-700" : "border-gray-200"
+              resolvedTheme === "dark" ? "border-gray-700" : "border-gray-200"
             }`}>
               <button
                 onClick={() => setShowLocationsModal(false)}
@@ -3702,19 +3702,19 @@ export default function AnalyticsPage() {
         >
           <div 
             className={`rounded-2xl p-4 sm:p-5 w-[340px] max-w-full max-h-[80vh] flex flex-col transition-colors duration-300 shadow-2xl ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
+              resolvedTheme === "dark" ? "bg-gray-800" : "bg-white"
             }`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3 flex-shrink-0">
               <h3 className={`text-sm font-semibold transition-colors duration-300 truncate pr-2 ${
-                theme === "dark" ? "text-gray-200" : "text-gray-800"
+                resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
               }`}>Seasonal Trends</h3>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => handleExportCSV(seasonalModalData, 'Seasonal_Trends')}
                   className={`p-1 rounded-lg transition-colors duration-300 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
                       : "hover:bg-gray-100 text-[var(--accent-500)]"
                   }`}
@@ -3725,7 +3725,7 @@ export default function AnalyticsPage() {
                 <button
                   onClick={() => setShowSeasonalModal(false)}
                   className={`p-1 rounded-lg transition-colors duration-300 flex-shrink-0 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-gray-400" 
                       : "hover:bg-gray-100 text-gray-600"
                   }`}
@@ -3739,7 +3739,7 @@ export default function AnalyticsPage() {
               {seasonalModalData.length === 0 ? (
                 <div className="text-center py-8">
                   <p className={`text-sm transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}>No seasonal data available</p>
                 </div>
               ) : (
@@ -3752,19 +3752,19 @@ export default function AnalyticsPage() {
                       <div className="flex justify-between text-xs mb-0.5">
                         <span className={`font-semibold transition-colors duration-300 ${
                           isPeak ? 'text-green-600 dark:text-green-400' : 
-                          theme === "dark" ? 'text-gray-300' : 'text-gray-700'
+                          resolvedTheme === "dark" ? 'text-gray-300' : 'text-gray-700'
                         }`}>{item.month}</span>
                         <div className="flex items-center gap-2">
                           <span className={`transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-500"
+                            resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                           }`}>{item.views} views</span>
                           <span className={`transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-500"
+                            resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                           }`}>• ${item.revenue}</span>
                         </div>
                       </div>
                       <div className={`w-full rounded-full h-2 overflow-hidden ${
-                        theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                        resolvedTheme === "dark" ? "bg-gray-700" : "bg-gray-100"
                       }`}>
                         <div
                           className={`h-2 rounded-full transition-all duration-700 ${
@@ -3785,7 +3785,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className={`mt-3 pt-2 border-t flex-shrink-0 ${
-              theme === "dark" ? "border-gray-700" : "border-gray-200"
+              resolvedTheme === "dark" ? "border-gray-700" : "border-gray-200"
             }`}>
               <button
                 onClick={() => setShowSeasonalModal(false)}
@@ -3806,19 +3806,19 @@ export default function AnalyticsPage() {
         >
           <div 
             className={`rounded-2xl p-4 sm:p-5 w-[340px] max-w-full max-h-[80vh] flex flex-col transition-colors duration-300 shadow-2xl ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
+              resolvedTheme === "dark" ? "bg-gray-800" : "bg-white"
             }`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3 flex-shrink-0">
               <h3 className={`text-sm font-semibold transition-colors duration-300 truncate pr-2 ${
-                theme === "dark" ? "text-gray-200" : "text-gray-800"
+                resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
               }`}>Maintenance Issues</h3>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => handleExportCSV(maintenanceModalData, 'Maintenance_Issues')}
                   className={`p-1 rounded-lg transition-colors duration-300 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
                       : "hover:bg-gray-100 text-[var(--accent-500)]"
                   }`}
@@ -3829,7 +3829,7 @@ export default function AnalyticsPage() {
                 <button
                   onClick={() => setShowMaintenanceModal(false)}
                   className={`p-1 rounded-lg transition-colors duration-300 flex-shrink-0 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-gray-400" 
                       : "hover:bg-gray-100 text-gray-600"
                   }`}
@@ -3843,7 +3843,7 @@ export default function AnalyticsPage() {
               {maintenanceModalData.length === 0 ? (
                 <div className="text-center py-8">
                   <p className={`text-sm transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}>No maintenance issues</p>
                 </div>
               ) : (
@@ -3856,14 +3856,14 @@ export default function AnalyticsPage() {
                     <div key={index}>
                       <div className="flex justify-between text-xs mb-0.5">
                         <span className={`transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
+                          resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                         }`}>{item.name}</span>
                         <span className={`font-medium transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
+                          resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                         }`}>{item.count} issues</span>
                       </div>
                       <div className={`w-full rounded-full h-2 overflow-hidden ${
-                        theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                        resolvedTheme === "dark" ? "bg-gray-700" : "bg-gray-100"
                       }`}>
                         <div
                           className={`h-2 rounded-full transition-all duration-700 ${color}`}
@@ -3877,7 +3877,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className={`mt-3 pt-2 border-t flex-shrink-0 ${
-              theme === "dark" ? "border-gray-700" : "border-gray-200"
+              resolvedTheme === "dark" ? "border-gray-700" : "border-gray-200"
             }`}>
               <button
                 onClick={() => setShowMaintenanceModal(false)}
@@ -3898,13 +3898,13 @@ export default function AnalyticsPage() {
         >
           <div 
             className={`rounded-2xl p-4 sm:p-5 w-[380px] max-w-full max-h-[80vh] flex flex-col transition-colors duration-300 shadow-2xl ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
+              resolvedTheme === "dark" ? "bg-gray-800" : "bg-white"
             }`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3 flex-shrink-0">
               <h3 className={`text-sm font-semibold transition-colors duration-300 truncate pr-2 ${
-                theme === "dark" ? "text-gray-200" : "text-gray-800"
+                resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
               }`}>Property Health Scores</h3>
               <div className="flex items-center gap-1">
                 <button
@@ -3918,7 +3918,7 @@ export default function AnalyticsPage() {
                     handleExportCSV(data, 'Property_Health');
                   }}
                   className={`p-1 rounded-lg transition-colors duration-300 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
                       : "hover:bg-gray-100 text-[var(--accent-500)]"
                   }`}
@@ -3929,7 +3929,7 @@ export default function AnalyticsPage() {
                 <button
                   onClick={() => setShowPropertyHealthModal(false)}
                   className={`p-1 rounded-lg transition-colors duration-300 flex-shrink-0 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-gray-400" 
                       : "hover:bg-gray-100 text-gray-600"
                   }`}
@@ -3943,7 +3943,7 @@ export default function AnalyticsPage() {
               {propertyHealthModalData.length === 0 ? (
                 <div className="text-center py-8">
                   <p className={`text-sm transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}>No health data available</p>
                 </div>
               ) : (
@@ -3967,14 +3967,14 @@ export default function AnalyticsPage() {
                   
                   return (
                     <div key={item.id} className={`rounded-lg p-3 border ${
-                      theme === "dark" ? "border-gray-700 bg-gray-700/30" : "border-gray-200 bg-gray-50"
+                      resolvedTheme === "dark" ? "border-gray-700 bg-gray-700/30" : "border-gray-200 bg-gray-50"
                     }`}>
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <StatusIcon className={`w-4 h-4 ${statusTextColors[item.status]}`} />
                           <Link href={`/dashboard/properties/${item.id}`}>
                             <span className={`text-sm font-semibold transition-colors duration-300 hover:text-[var(--accent-500)] ${
-                              theme === "dark" ? "text-gray-200" : "text-gray-800"
+                              resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
                             }`}>{item.name}</span>
                           </Link>
                         </div>
@@ -3983,7 +3983,7 @@ export default function AnalyticsPage() {
                         </span>
                       </div>
                       <div className={`w-full rounded-full h-2 overflow-hidden ${
-                        theme === "dark" ? "bg-gray-600" : "bg-gray-200"
+                        resolvedTheme === "dark" ? "bg-gray-600" : "bg-gray-200"
                       }`}>
                         <div
                           className={`h-2 rounded-full transition-all duration-700 ${
@@ -3996,7 +3996,7 @@ export default function AnalyticsPage() {
                         <div className="mt-2 flex flex-wrap gap-1">
                           {item.issues.map((issue, idx) => (
                             <span key={idx} className={`text-[8px] px-1.5 py-0.5 rounded-full ${
-                              theme === "dark" 
+                              resolvedTheme === "dark" 
                                 ? "bg-red-900/30 text-red-400" 
                                 : "bg-red-50 text-red-600"
                             }`}>
@@ -4012,7 +4012,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className={`mt-3 pt-2 border-t flex-shrink-0 ${
-              theme === "dark" ? "border-gray-700" : "border-gray-200"
+              resolvedTheme === "dark" ? "border-gray-700" : "border-gray-200"
             }`}>
               <button
                 onClick={() => setShowPropertyHealthModal(false)}

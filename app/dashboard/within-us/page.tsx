@@ -66,7 +66,7 @@ interface ExtendedProperty {
 
 export default function WithinUsPage() {
   const { organization } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const router = useRouter();
   const [properties, setProperties] = useState<ExtendedProperty[]>([]);
   const [filteredProperties, setFilteredProperties] = useState<ExtendedProperty[]>([]);
@@ -269,7 +269,7 @@ useEffect(() => {
     return (
       <ProtectedRoute>
         <div className={`min-h-screen transition-colors duration-300 ${
-          theme === "dark" 
+          resolvedTheme === "dark" 
             ? "bg-gray-900" 
             : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
         }`}>
@@ -281,7 +281,7 @@ useEffect(() => {
                 <div className="text-center">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--accent-500)] mx-auto" />
                   <p className={`mt-4 transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                   }`}>
                     Loading properties within your city...
                   </p>
@@ -297,7 +297,7 @@ useEffect(() => {
   return (
     <ProtectedRoute>
       <div className={`min-h-screen transition-colors duration-300 ${
-        theme === "dark" 
+        resolvedTheme === "dark" 
           ? "bg-gray-900" 
           : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
       }`}>
@@ -312,7 +312,7 @@ useEffect(() => {
                   <button
                     onClick={() => router.back()}
                     className={`p-2 rounded-lg transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "hover:bg-gray-700 text-gray-400" 
                         : "hover:bg-gray-100 text-gray-600"
                     }`}
@@ -321,12 +321,12 @@ useEffect(() => {
                   </button>
                   <div>
                     <h1 className={`text-2xl font-bold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-800"
+                      resolvedTheme === "dark" ? "text-gray-100" : "text-gray-800"
                     }`}>
                       Properties Within Us
                     </h1>
                     <p className={`text-sm mt-1 transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                     }`}>
                       Properties located in {organizationCity || "your city"} from all providers
                     </p>
@@ -334,7 +334,7 @@ useEffect(() => {
                 </div>
                 {organizationCity && (
                   <div className={`px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-2 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "bg-[var(--accent-950)]/30 text-[var(--accent-400)] border border-[var(--accent-800)]" 
                       : "bg-[var(--accent-50)] text-[var(--accent-700)] border border-[var(--accent-200)]"
                   }`}>
@@ -348,26 +348,26 @@ useEffect(() => {
             {/* Stats Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <div className={`rounded-xl p-4 border transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800 border-gray-700" 
                   : "bg-white border-gray-100"
               }`}>
                 <div className="flex items-center gap-3">
                   <div className={`p-2 rounded-lg ${
-                    theme === "dark" ? "bg-blue-900/30" : "bg-blue-50"
+                    resolvedTheme === "dark" ? "bg-blue-900/30" : "bg-blue-50"
                   }`}>
                     <Home className={`w-5 h-5 ${
-                      theme === "dark" ? "text-blue-400" : "text-blue-600"
+                      resolvedTheme === "dark" ? "text-blue-400" : "text-blue-600"
                     }`} />
                   </div>
                   <div>
                     <p className={`text-2xl font-bold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-800"
+                      resolvedTheme === "dark" ? "text-gray-100" : "text-gray-800"
                     }`}>
                       {totalProperties}
                     </p>
                     <p className={`text-xs transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                     }`}>
                       Total Properties
                     </p>
@@ -376,26 +376,26 @@ useEffect(() => {
               </div>
 
               <div className={`rounded-xl p-4 border transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800 border-gray-700" 
                   : "bg-white border-gray-100"
               }`}>
                 <div className="flex items-center gap-3">
                   <div className={`p-2 rounded-lg ${
-                    theme === "dark" ? "bg-green-900/30" : "bg-green-50"
+                    resolvedTheme === "dark" ? "bg-green-900/30" : "bg-green-50"
                   }`}>
                     <CheckCircle className={`w-5 h-5 ${
-                      theme === "dark" ? "text-green-400" : "text-green-600"
+                      resolvedTheme === "dark" ? "text-green-400" : "text-green-600"
                     }`} />
                   </div>
                   <div>
                     <p className={`text-2xl font-bold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-800"
+                      resolvedTheme === "dark" ? "text-gray-100" : "text-gray-800"
                     }`}>
                       {availableProperties}
                     </p>
                     <p className={`text-xs transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                     }`}>
                       Available
                     </p>
@@ -404,26 +404,26 @@ useEffect(() => {
               </div>
 
               <div className={`rounded-xl p-4 border transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800 border-gray-700" 
                   : "bg-white border-gray-100"
               }`}>
                 <div className="flex items-center gap-3">
                   <div className={`p-2 rounded-lg ${
-                    theme === "dark" ? "bg-orange-900/30" : "bg-orange-50"
+                    resolvedTheme === "dark" ? "bg-orange-900/30" : "bg-orange-50"
                   }`}>
                     <XCircle className={`w-5 h-5 ${
-                      theme === "dark" ? "text-orange-400" : "text-orange-600"
+                      resolvedTheme === "dark" ? "text-orange-400" : "text-orange-600"
                     }`} />
                   </div>
                   <div>
                     <p className={`text-2xl font-bold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-800"
+                      resolvedTheme === "dark" ? "text-gray-100" : "text-gray-800"
                     }`}>
                       {rentedProperties}
                     </p>
                     <p className={`text-xs transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                     }`}>
                       Rented
                     </p>
@@ -432,26 +432,26 @@ useEffect(() => {
               </div>
 
               <div className={`rounded-xl p-4 border transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800 border-gray-700" 
                   : "bg-white border-gray-100"
               }`}>
                 <div className="flex items-center gap-3">
                   <div className={`p-2 rounded-lg ${
-                    theme === "dark" ? "bg-purple-900/30" : "bg-purple-50"
+                    resolvedTheme === "dark" ? "bg-purple-900/30" : "bg-purple-50"
                   }`}>
                     <Eye className={`w-5 h-5 ${
-                      theme === "dark" ? "text-purple-400" : "text-purple-600"
+                      resolvedTheme === "dark" ? "text-purple-400" : "text-purple-600"
                     }`} />
                   </div>
                   <div>
                     <p className={`text-2xl font-bold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-800"
+                      resolvedTheme === "dark" ? "text-gray-100" : "text-gray-800"
                     }`}>
                       {totalViews}
                     </p>
                     <p className={`text-xs transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                     }`}>
                       Total Views
                     </p>
@@ -463,20 +463,20 @@ useEffect(() => {
             {/* No properties message */}
             {organizationCity === "" && (
               <div className={`mb-6 rounded-xl p-6 text-center border ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-yellow-900/20 border-yellow-800" 
                   : "bg-yellow-50 border-yellow-200"
               }`}>
                 <AlertCircle className={`w-8 h-8 mx-auto mb-2 ${
-                  theme === "dark" ? "text-yellow-400" : "text-yellow-600"
+                  resolvedTheme === "dark" ? "text-yellow-400" : "text-yellow-600"
                 }`} />
                 <h3 className={`text-sm font-semibold ${
-                  theme === "dark" ? "text-yellow-300" : "text-yellow-800"
+                  resolvedTheme === "dark" ? "text-yellow-300" : "text-yellow-800"
                 }`}>
                   No City Set for Your Organization
                 </h3>
                 <p className={`text-xs mt-1 ${
-                  theme === "dark" ? "text-yellow-200/70" : "text-yellow-600"
+                  resolvedTheme === "dark" ? "text-yellow-200/70" : "text-yellow-600"
                 }`}>
                   Please set your organization's city in the settings to see properties within your area.
                 </p>
@@ -485,20 +485,20 @@ useEffect(() => {
 
             {filteredProperties.length === 0 && organizationCity && (
               <div className={`rounded-xl p-12 text-center border-2 border-dashed ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "border-gray-700 bg-gray-800/50" 
                   : "border-gray-200 bg-gray-50"
               }`}>
                 <Building2 className={`w-12 h-12 mx-auto mb-3 ${
-                  theme === "dark" ? "text-gray-600" : "text-gray-300"
+                  resolvedTheme === "dark" ? "text-gray-600" : "text-gray-300"
                 }`} />
                 <h3 className={`text-lg font-semibold transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                 }`}>
                   No properties found in {organizationCity}
                 </h3>
                 <p className={`text-sm mt-1 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
+                  resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                 }`}>
                   Properties with addresses containing "{organizationCity}" will appear here.
                 </p>
@@ -508,7 +508,7 @@ useEffect(() => {
             {/* Filters and Search */}
             {filteredProperties.length > 0 && (
               <div className={`mb-6 rounded-xl p-4 border transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800 border-gray-700" 
                   : "bg-white border-gray-100"
               }`}>
@@ -516,7 +516,7 @@ useEffect(() => {
                   {/* Search */}
                   <div className="flex-1 relative">
                     <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${
-                      theme === "dark" ? "text-gray-500" : "text-gray-400"
+                      resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                     }`} />
                     <input
                       type="text"
@@ -524,7 +524,7 @@ useEffect(() => {
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className={`w-full pl-10 pr-4 py-2 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                           : "border border-gray-300 text-gray-900 bg-white"
                       }`}
@@ -535,7 +535,7 @@ useEffect(() => {
                   <button
                     onClick={() => setShowFilters(!showFilters)}
                     className={`px-4 py-2 rounded-lg transition flex items-center gap-2 ${
-                      theme === "dark"
+                      resolvedTheme === "dark"
                         ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
@@ -547,16 +547,16 @@ useEffect(() => {
 
                   {/* View Toggle */}
                   <div className={`flex rounded-lg overflow-hidden border ${
-                    theme === "dark" ? "border-gray-600" : "border-gray-300"
+                    resolvedTheme === "dark" ? "border-gray-600" : "border-gray-300"
                   }`}>
                     <button
                       onClick={() => setViewMode("grid")}
                       className={`px-3 py-2 transition ${
                         viewMode === "grid"
-                          ? theme === "dark"
+                          ? resolvedTheme === "dark"
                             ? "bg-[var(--accent-500)] text-white"
                             : "bg-[var(--accent-500)] text-white"
-                          : theme === "dark"
+                          : resolvedTheme === "dark"
                             ? "bg-gray-700 text-gray-400 hover:bg-gray-600"
                             : "bg-white text-gray-500 hover:bg-gray-50"
                       }`}
@@ -567,10 +567,10 @@ useEffect(() => {
                       onClick={() => setViewMode("list")}
                       className={`px-3 py-2 transition ${
                         viewMode === "list"
-                          ? theme === "dark"
+                          ? resolvedTheme === "dark"
                             ? "bg-[var(--accent-500)] text-white"
                             : "bg-[var(--accent-500)] text-white"
-                          : theme === "dark"
+                          : resolvedTheme === "dark"
                             ? "bg-gray-700 text-gray-400 hover:bg-gray-600"
                             : "bg-white text-gray-500 hover:bg-gray-50"
                       }`}
@@ -584,7 +584,7 @@ useEffect(() => {
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as any)}
                     className={`px-4 py-2 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
@@ -604,10 +604,10 @@ useEffect(() => {
                         onClick={() => setFilterStatus("all")}
                         className={`px-3 py-1.5 rounded-full text-sm transition ${
                           filterStatus === "all"
-                            ? theme === "dark"
+                            ? resolvedTheme === "dark"
                               ? "bg-[var(--accent-500)] text-white"
                               : "bg-[var(--accent-500)] text-white"
-                            : theme === "dark"
+                            : resolvedTheme === "dark"
                               ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                         }`}
@@ -619,7 +619,7 @@ useEffect(() => {
                         className={`px-3 py-1.5 rounded-full text-sm transition ${
                           filterStatus === "available"
                             ? "bg-green-500 text-white"
-                            : theme === "dark"
+                            : resolvedTheme === "dark"
                               ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                         }`}
@@ -631,7 +631,7 @@ useEffect(() => {
                         className={`px-3 py-1.5 rounded-full text-sm transition ${
                           filterStatus === "rented"
                             ? "bg-orange-500 text-white"
-                            : theme === "dark"
+                            : resolvedTheme === "dark"
                               ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                         }`}
@@ -662,7 +662,7 @@ useEffect(() => {
                         key={property.$id}
                         href={`/dashboard/properties/${property.$id}`}
                         className={`group rounded-xl overflow-hidden border transition-all duration-300 hover:shadow-xl ${
-                          theme === "dark" 
+                          resolvedTheme === "dark" 
                             ? "bg-gray-800 border-gray-700 hover:border-[var(--accent-700)]" 
                             : "bg-white border-gray-200 hover:border-[var(--accent-300)]"
                         }`}
@@ -693,7 +693,7 @@ useEffect(() => {
                           </div>
                           {property.type && (
                             <span className={`absolute bottom-3 left-3 px-2 py-0.5 rounded-full text-xs font-medium ${
-                              theme === "dark" 
+                              resolvedTheme === "dark" 
                                 ? "bg-gray-900/80 text-gray-300" 
                                 : "bg-black/60 text-white"
                             }`}>
@@ -705,13 +705,13 @@ useEffect(() => {
                         {/* Content */}
                         <div className="p-4">
                           <h3 className={`text-sm font-semibold truncate transition-colors duration-300 group-hover:text-[var(--accent-500)] ${
-                            theme === "dark" ? "text-gray-200" : "text-gray-800"
+                            resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
                           }`}>
                             {property.propertyName}
                           </h3>
                           
                           <p className={`text-xs truncate mt-1 flex items-center gap-1 ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-500"
+                            resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                           }`}>
                             <MapPin className="w-3 h-3" />
                             {property.address || "No address"}
@@ -719,19 +719,19 @@ useEffect(() => {
 
                           <div className="flex items-center gap-3 mt-2 text-xs">
                             <span className={`flex items-center gap-1 ${
-                              theme === "dark" ? "text-gray-400" : "text-gray-500"
+                              resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                             }`}>
                               <Bed className="w-3 h-3" />
                               {property.bedrooms || 0}
                             </span>
                             <span className={`flex items-center gap-1 ${
-                              theme === "dark" ? "text-gray-400" : "text-gray-500"
+                              resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                             }`}>
                               <Bath className="w-3 h-3" />
                               {property.bathrooms || 0}
                             </span>
                             <span className={`flex items-center gap-1 ${
-                              theme === "dark" ? "text-gray-400" : "text-gray-500"
+                              resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                             }`}>
                               <Users className="w-3 h-3" />
                               {property.roomFor || 0}
@@ -740,7 +740,7 @@ useEffect(() => {
 
                           <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
                             <span className={`text-lg font-bold ${
-                              theme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-600)]"
+                              resolvedTheme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-600)]"
                             }`}>
                               ${property.price?.toLocaleString() || 0}
                               <span className="text-xs font-normal text-gray-500 dark:text-gray-400">/mo</span>
@@ -770,7 +770,7 @@ useEffect(() => {
                         key={property.$id}
                         href={`/dashboard/properties/${property.$id}`}
                         className={`group rounded-xl overflow-hidden border transition-all duration-300 hover:shadow-lg flex ${
-                          theme === "dark" 
+                          resolvedTheme === "dark" 
                             ? "bg-gray-800 border-gray-700 hover:border-[var(--accent-700)]" 
                             : "bg-white border-gray-200 hover:border-[var(--accent-300)]"
                         }`}
@@ -805,19 +805,19 @@ useEffect(() => {
                             <div className="flex items-start justify-between">
                               <div>
                                 <h3 className={`text-sm font-semibold transition-colors duration-300 group-hover:text-[var(--accent-500)] ${
-                                  theme === "dark" ? "text-gray-200" : "text-gray-800"
+                                  resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
                                 }`}>
                                   {property.propertyName}
                                 </h3>
                                 <p className={`text-xs flex items-center gap-1 mt-0.5 ${
-                                  theme === "dark" ? "text-gray-400" : "text-gray-500"
+                                  resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                                 }`}>
                                   <MapPin className="w-3 h-3" />
                                   {property.address || "No address"}
                                 </p>
                               </div>
                               <span className={`text-sm font-bold ${
-                                theme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-600)]"
+                                resolvedTheme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-600)]"
                               }`}>
                                 ${property.price?.toLocaleString() || 0}
                                 <span className="text-xs font-normal text-gray-500 dark:text-gray-400">/mo</span>
@@ -826,33 +826,33 @@ useEffect(() => {
 
                             <div className="flex flex-wrap items-center gap-3 mt-2 text-xs">
                               <span className={`flex items-center gap-1 ${
-                                theme === "dark" ? "text-gray-400" : "text-gray-500"
+                                resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                               }`}>
                                 <Bed className="w-3 h-3" />
                                 {property.bedrooms || 0} beds
                               </span>
                               <span className={`flex items-center gap-1 ${
-                                theme === "dark" ? "text-gray-400" : "text-gray-500"
+                                resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                               }`}>
                                 <Bath className="w-3 h-3" />
                                 {property.bathrooms || 0} baths
                               </span>
                               <span className={`flex items-center gap-1 ${
-                                theme === "dark" ? "text-gray-400" : "text-gray-500"
+                                resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                               }`}>
                                 <Users className="w-3 h-3" />
                                 {property.roomFor || 0} people
                               </span>
                               {property.area && (
                                 <span className={`flex items-center gap-1 ${
-                                  theme === "dark" ? "text-gray-400" : "text-gray-500"
+                                  resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                                 }`}>
                                   <span className="text-xs">{property.area} m²</span>
                                 </span>
                               )}
                               {property.type && (
                                 <span className={`px-2 py-0.5 rounded-full text-xs ${
-                                  theme === "dark" 
+                                  resolvedTheme === "dark" 
                                     ? "bg-gray-700 text-gray-300" 
                                     : "bg-gray-100 text-gray-600"
                                 }`}>

@@ -129,7 +129,7 @@ function normalizeInquiry(
 
 export default function MessagesPage() {
   const { organization, isOffline } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const margin = useDashboardMargin();
 
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
@@ -349,7 +349,7 @@ export default function MessagesPage() {
     return MessageCircle;
   };
 
-  const dark = theme === "dark";
+  const dark = resolvedTheme === "dark";
   const imageUrls = selectedInquiry
     ? [
         selectedInquiry.snap,

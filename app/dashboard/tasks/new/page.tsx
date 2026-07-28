@@ -35,7 +35,7 @@ interface Property {
 export default function NewTaskPage() {
   const router = useRouter();
   const { organization, isOffline } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [properties, setProperties] = useState<Property[]>([]);
@@ -259,7 +259,7 @@ export default function NewTaskPage() {
     return (
       <ProtectedRoute>
         <div className={`min-h-screen transition-colors duration-300 ${
-          theme === "dark" 
+          resolvedTheme === "dark" 
             ? "bg-gray-900" 
             : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
         }`}>
@@ -271,7 +271,7 @@ export default function NewTaskPage() {
                 <div className="text-center">
                   <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-[var(--accent-500)] mx-auto" />
                   <p className={`mt-4 text-sm sm:text-base transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                   }`}>
                     Loading properties...
                   </p>
@@ -287,7 +287,7 @@ export default function NewTaskPage() {
   return (
     <ProtectedRoute>
       <div className={`min-h-screen transition-colors duration-300 ${
-        theme === "dark" 
+        resolvedTheme === "dark" 
           ? "bg-gray-900" 
           : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
       }`}>
@@ -302,7 +302,7 @@ export default function NewTaskPage() {
                   <button
                     onClick={handleCancel}
                     className={`p-1.5 sm:p-2 rounded-lg transition-colors duration-300 ${
-                      theme === "dark"
+                      resolvedTheme === "dark"
                         ? "hover:bg-gray-700 text-gray-400"
                         : "hover:bg-gray-100 text-gray-600"
                     }`}
@@ -311,12 +311,12 @@ export default function NewTaskPage() {
                   </button>
                   <div>
                     <h1 className={`text-lg sm:text-xl md:text-2xl font-bold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-900"
+                      resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                     }`}>
                       Create New Task
                     </h1>
                     <p className={`text-xs sm:text-sm mt-0.5 sm:mt-1 transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                     }`}>
                       Add a new task to your organization
                     </p>
@@ -327,16 +327,16 @@ export default function NewTaskPage() {
               {/* Error Message */}
               {error && (
                 <div className={`mb-4 sm:mb-6 p-3 sm:p-4 border-l-4 rounded-xl overflow-hidden transition-colors duration-300 ${
-                  theme === "dark" 
+                  resolvedTheme === "dark" 
                     ? "bg-red-900/30 border-red-500" 
                     : "bg-red-50 border-red-500"
                 }`}>
                   <div className="flex items-start xs:items-center gap-2">
                     <AlertCircle className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 mt-0.5 xs:mt-0 transition-colors duration-300 ${
-                      theme === "dark" ? "text-red-400" : "text-red-500"
+                      resolvedTheme === "dark" ? "text-red-400" : "text-red-500"
                     }`} />
                     <span className={`text-xs sm:text-sm transition-colors duration-300 ${
-                      theme === "dark" ? "text-red-300" : "text-red-700"
+                      resolvedTheme === "dark" ? "text-red-300" : "text-red-700"
                     }`}>
                       {error}
                     </span>
@@ -347,19 +347,19 @@ export default function NewTaskPage() {
               {/* Offline Warning */}
               {isOffline && (
                 <div className={`mb-4 sm:mb-6 border rounded-xl p-3 sm:p-4 flex items-center gap-2 ${
-                  theme === "dark" 
+                  resolvedTheme === "dark" 
                     ? "bg-yellow-900/20 border-yellow-800" 
                     : "bg-yellow-50 border-yellow-200"
                 }`}>
                   <div className={`p-1.5 rounded-full ${
-                    theme === "dark" ? "bg-yellow-900/30" : "bg-yellow-100"
+                    resolvedTheme === "dark" ? "bg-yellow-900/30" : "bg-yellow-100"
                   }`}>
                     <WifiOff className={`w-4 h-4 ${
-                      theme === "dark" ? "text-yellow-400" : "text-yellow-600"
+                      resolvedTheme === "dark" ? "text-yellow-400" : "text-yellow-600"
                     }`} />
                   </div>
                   <p className={`text-xs sm:text-sm ${
-                    theme === "dark" ? "text-yellow-300" : "text-yellow-700"
+                    resolvedTheme === "dark" ? "text-yellow-300" : "text-yellow-700"
                   }`}>
                     You're offline. Please connect to the internet to create tasks.
                   </p>
@@ -368,7 +368,7 @@ export default function NewTaskPage() {
 
               {/* Create Task Form */}
               <form onSubmit={handleSubmit} className={`rounded-2xl shadow-md p-4 sm:p-6 md:p-8 transition-colors duration-300 border w-full ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800/80 border-gray-700" 
                   : "bg-white/80 border-gray-100 backdrop-blur-sm"
               }`}>
@@ -376,13 +376,13 @@ export default function NewTaskPage() {
                   {/* Title */}
                   <div>
                     <label className={`block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-300" : "text-gray-700"
+                      resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                     }`}>
                       Task Title <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <User className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-400"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-400"
                       }`} />
                       <input
                         type="text"
@@ -394,7 +394,7 @@ export default function NewTaskPage() {
                             ? "border-red-500 dark:border-red-500" 
                             : "border-gray-200 dark:border-gray-600"
                         } ${
-                          theme === "dark" 
+                          resolvedTheme === "dark" 
                             ? "bg-gray-700 text-gray-100 placeholder-gray-400" 
                             : "bg-white text-gray-900"
                         }`}
@@ -411,20 +411,20 @@ export default function NewTaskPage() {
                   {/* Description */}
                   <div>
                     <label className={`block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-300" : "text-gray-700"
+                      resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                     }`}>
                       Description
                     </label>
                     <div className="relative">
                       <FileText className={`absolute left-3 top-3 w-4 h-4 transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-400"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-400"
                       }`} />
                       <textarea
                         rows={4}
                         value={formData.description}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                         className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 border ${
-                          theme === "dark" 
+                          resolvedTheme === "dark" 
                             ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                             : "bg-white border-gray-200 text-gray-900"
                         }`}
@@ -438,20 +438,20 @@ export default function NewTaskPage() {
                     {/* Priority */}
                     <div>
                       <label className={`block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
+                        resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                       }`}>
                         Priority <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
                         <Tag className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-400"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-400"
                         }`} />
                         <select
                           required
                           value={formData.priority}
                           onChange={(e) => setFormData({ ...formData, priority: e.target.value as "high" | "medium" | "low" })}
                           className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 border ${
-                            theme === "dark" 
+                            resolvedTheme === "dark" 
                               ? "bg-gray-700 border-gray-600 text-gray-100" 
                               : "bg-white border-gray-200 text-gray-900"
                           }`}
@@ -466,20 +466,20 @@ export default function NewTaskPage() {
                     {/* Status */}
                     <div>
                       <label className={`block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
+                        resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                       }`}>
                         Status <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
                         <Clock className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-400"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-400"
                         }`} />
                         <select
                           required
                           value={formData.status}
                           onChange={(e) => setFormData({ ...formData, status: e.target.value as "pending" | "in-progress" | "completed" })}
                           className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 border ${
-                            theme === "dark" 
+                            resolvedTheme === "dark" 
                               ? "bg-gray-700 border-gray-600 text-gray-100" 
                               : "bg-white border-gray-200 text-gray-900"
                           }`}
@@ -495,13 +495,13 @@ export default function NewTaskPage() {
                   {/* Due Date */}
                   <div>
                     <label className={`block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-300" : "text-gray-700"
+                      resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                     }`}>
                       Due Date <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <Calendar className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-400"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-400"
                       }`} />
                       <input
                         type="date"
@@ -513,7 +513,7 @@ export default function NewTaskPage() {
                             ? "border-red-500 dark:border-red-500" 
                             : "border-gray-200 dark:border-gray-600"
                         } ${
-                          theme === "dark" 
+                          resolvedTheme === "dark" 
                             ? "bg-gray-700 text-gray-100" 
                             : "bg-white text-gray-900"
                         }`}
@@ -529,17 +529,17 @@ export default function NewTaskPage() {
                   {/* Property Association */}
                   <div>
                     <label className={`block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-300" : "text-gray-700"
+                      resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                     }`}>
                       Associated Property
                     </label>
                     <div className="relative">
                       <Building2 className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-400"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-400"
                       }`} />
                       {isLoadingProperties ? (
                         <div className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg border ${
-                          theme === "dark" 
+                          resolvedTheme === "dark" 
                             ? "bg-gray-700 border-gray-600 text-gray-400" 
                             : "bg-gray-50 border-gray-200 text-gray-400"
                         }`}>
@@ -547,7 +547,7 @@ export default function NewTaskPage() {
                         </div>
                       ) : properties.length === 0 ? (
                         <div className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg border ${
-                          theme === "dark" 
+                          resolvedTheme === "dark" 
                             ? "bg-yellow-900/20 border-yellow-800 text-yellow-400" 
                             : "bg-yellow-50 border-yellow-200 text-yellow-600"
                         }`}>
@@ -558,7 +558,7 @@ export default function NewTaskPage() {
                           value={formData.propertyId || ""}
                           onChange={(e) => handlePropertyChange(e.target.value)}
                           className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 border ${
-                            theme === "dark" 
+                            resolvedTheme === "dark" 
                               ? "bg-gray-700 border-gray-600 text-gray-100" 
                               : "bg-white border-gray-200 text-gray-900"
                           }`}
@@ -584,13 +584,13 @@ export default function NewTaskPage() {
 
                 {/* Action Buttons */}
                 <div className={`flex flex-col xs:flex-row gap-2 sm:gap-3 pt-6 sm:pt-8 mt-4 border-t transition-colors duration-300 ${
-                  theme === "dark" ? "border-gray-700" : "border-gray-200"
+                  resolvedTheme === "dark" ? "border-gray-700" : "border-gray-200"
                 }`}>
                   <button
                     type="submit"
                     disabled={isSubmitting || isOffline}
                     className={`flex-1 xs:flex-none px-6 py-2.5 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm font-medium ${
-                      theme === "dark"
+                      resolvedTheme === "dark"
                         ? "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
                         : "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
                     }`}
@@ -611,7 +611,7 @@ export default function NewTaskPage() {
                     type="button"
                     onClick={handleCancel}
                     className={`flex-1 xs:flex-none px-6 py-2.5 rounded-lg transition flex items-center justify-center gap-2 text-sm font-medium ${
-                      theme === "dark"
+                      resolvedTheme === "dark"
                         ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                         : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                     }`}
@@ -623,12 +623,12 @@ export default function NewTaskPage() {
 
                 {isOffline && (
                   <div className={`mt-3 p-3 rounded-lg border ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "bg-yellow-900/20 border-yellow-800" 
                       : "bg-yellow-50 border-yellow-200"
                   }`}>
                     <p className={`text-xs sm:text-sm ${
-                      theme === "dark" ? "text-yellow-300" : "text-yellow-700"
+                      resolvedTheme === "dark" ? "text-yellow-300" : "text-yellow-700"
                     }`}>
                       You're offline. Please connect to the internet to create tasks.
                     </p>

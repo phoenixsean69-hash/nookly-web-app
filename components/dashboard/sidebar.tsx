@@ -100,7 +100,7 @@ function getInitialCollapsedState(): boolean {
 export function Sidebar() {
   const pathname = usePathname();
   const { logout, isOffline, organization } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
 
   const [isCollapsed, setIsCollapsed] = useState(getInitialCollapsedState);
   const [isMobile, setIsMobile] = useState(false);
@@ -110,7 +110,7 @@ export function Sidebar() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const dark = theme === "dark";
+  const dark = resolvedTheme === "dark";
 
   useEffect(() => {
     const updateDeviceMode = () => {

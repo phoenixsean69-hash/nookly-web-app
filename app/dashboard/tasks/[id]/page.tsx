@@ -67,7 +67,7 @@ function useDashboardMargin(): string {
 
 export default function TaskDetailsPage() {
   const { organization, isOffline } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const taskId = params.id;
@@ -149,7 +149,7 @@ export default function TaskDetailsPage() {
     }
   };
 
-  const dark = theme === "dark";
+  const dark = resolvedTheme === "dark";
 
   if (loading) {
     return (

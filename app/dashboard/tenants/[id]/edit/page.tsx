@@ -65,7 +65,7 @@ function useDashboardMargin(): string {
 
 export default function EditTenantPage() {
   const { organization } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const tenantId = params.id;
@@ -236,7 +236,7 @@ export default function EditTenantPage() {
     }
   };
 
-  const dark = theme === "dark";
+  const dark = resolvedTheme === "dark";
 
   if (loading) {
     return (

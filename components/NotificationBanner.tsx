@@ -16,7 +16,7 @@ export function NotificationBanner() {
     openSettings,
     sendNotification,
   } = useNotifications();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const [isDismissed, setIsDismissed] = useState(false);
 
   // Don't show if not supported or dismissed

@@ -89,7 +89,7 @@ function useDashboardMargin(): string {
 
 export default function RequestDetailsPage() {
   const { organization } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const requestId = params.id;
@@ -285,7 +285,7 @@ export default function RequestDetailsPage() {
     }
   };
 
-  const dark = theme === "dark";
+  const dark = resolvedTheme === "dark";
 
   if (loading) {
     return (

@@ -25,7 +25,7 @@ import {
 
 export default function SimpleRegisterPage() {
   const { register } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const router = useRouter();
 const [formData, setFormData] = useState({
   name: "",
@@ -209,7 +209,7 @@ if (
       <div className="fixed inset-0 z-0">
         <Image src="/nightHouse2.jpg" alt="Beautiful property" fill className="object-cover" priority />
         <div className={`absolute inset-0 transition-colors duration-300 ${
-          theme === "dark" 
+          resolvedTheme === "dark" 
             ? "bg-gradient-to-br from-gray-900/90 via-gray-900/80 to-gray-800/60" 
             : "bg-gradient-to-br from-[#1e3a5f]/80 via-[#1e3a5f]/70 to-[var(--accent-500)]/30"
         }`} />
@@ -218,38 +218,38 @@ if (
       {/* Animated accent circles */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className={`absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl animate-pulse transition-colors duration-300 ${
-          theme === "dark" ? "bg-gray-600/10" : "bg-[var(--accent-500)]/10"
+          resolvedTheme === "dark" ? "bg-gray-600/10" : "bg-[var(--accent-500)]/10"
         }`} />
         <div className={`absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl animate-pulse delay-1000 transition-colors duration-300 ${
-          theme === "dark" ? "bg-gray-500/10" : "bg-blue-600/10"
+          resolvedTheme === "dark" ? "bg-gray-500/10" : "bg-blue-600/10"
         }`} />
       </div>
 
       {/* Main Card - Small and Centered */}
       <div className="relative z-10 w-[450px] max-w-full">
         <div className={`backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden transition-colors duration-300 ${
-          theme === "dark" ? "bg-gray-800/95" : "bg-white/95"
+          resolvedTheme === "dark" ? "bg-gray-800/95" : "bg-white/95"
         }`}>
           {/* Header */}
           <div className={`bg-gradient-to-r px-8 py-6 relative overflow-hidden transition-colors duration-300 ${
-            theme === "dark" 
+            resolvedTheme === "dark" 
               ? "from-gray-700 via-gray-700 to-gray-600" 
               : "from-[#1e3a5f] via-[#1e3a5f] to-[var(--accent-500)]"
           }`}>
             <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl transition-colors duration-300 ${
-              theme === "dark" ? "bg-gray-500/20" : "bg-[var(--accent-500)]/20"
+              resolvedTheme === "dark" ? "bg-gray-500/20" : "bg-[var(--accent-500)]/20"
             }`} />
             <div className="relative text-center">
               <div className={`inline-block p-2.5 rounded-full mb-3 transition-colors duration-300 ${
-                theme === "dark" ? "bg-gray-600/50" : "bg-white/10"
+                resolvedTheme === "dark" ? "bg-gray-600/50" : "bg-white/10"
               }`}>
                 <Building2 className={`w-6 h-6 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-400" : "text-[var(--accent-400)]"
+                  resolvedTheme === "dark" ? "text-gray-400" : "text-[var(--accent-400)]"
                 }`} />
               </div>
               <h2 className="text-2xl font-bold text-white">Nookly</h2>
               <p className={`text-sm mt-1 transition-colors duration-300 ${
-                theme === "dark" ? "text-gray-300" : "text-blue-200"
+                resolvedTheme === "dark" ? "text-gray-300" : "text-blue-200"
               }`}>
                 Create your organization account
               </p>
@@ -276,13 +276,13 @@ if (
                     className="cursor-pointer"
                   >
                     <div className={`w-24 h-24 rounded-full flex items-center justify-center relative overflow-hidden border-2 shadow-md transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "border-gray-500 bg-gray-700" 
                         : "border-[var(--accent-500)] bg-gray-100"
                     }`}>
                       {uploadingAvatar ? (
                         <div className={`w-8 h-8 border-2 border-t-transparent rounded-full animate-spin transition-colors duration-300 ${
-                          theme === "dark" ? "border-gray-400" : "border-[var(--accent-500)]"
+                          resolvedTheme === "dark" ? "border-gray-400" : "border-[var(--accent-500)]"
                         }`} />
                       ) : formData.avatar ? (
                         <img src={formData.avatar} alt="Avatar" className="w-full h-full object-cover" />
@@ -294,7 +294,7 @@ if (
                         <Upload size={32} className="text-gray-400 dark:text-gray-500" />
                       )}
                       <div className={`absolute bottom-0 right-0 rounded-full p-1.5 shadow-md transition-colors duration-300 ${
-                        theme === "dark" ? "bg-gray-600" : "bg-[var(--accent-500)]"
+                        resolvedTheme === "dark" ? "bg-gray-600" : "bg-[var(--accent-500)]"
                       }`}>
                         <Upload size={12} className="text-white" />
                       </div>
@@ -312,12 +312,12 @@ if (
                 </div>
                 <div className="text-center mt-3">
                   <p className={`text-sm font-medium transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                    resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                   }`}>
                     {uploadingAvatar ? "Uploading..." : formData.avatar ? "Change Photo" : "Organization Logo"}
                   </p>
                   <p className={`text-xs mt-1 transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-400"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-400"
                   }`}>
                     {!formData.avatar && "Optional - Your initials will be used"}
                   </p>
@@ -327,20 +327,20 @@ if (
               {/* Organization Name */}
               <div className="mb-4">
                 <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                 }`}>
                   Organization Name <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Building2 size={18} className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-500" : "text-gray-400"
+                    resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                   }`} />
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
@@ -353,7 +353,7 @@ if (
               <div className="mb-4">
   <label
     className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${
-      theme === "dark"
+      resolvedTheme === "dark"
         ? "text-gray-300"
         : "text-gray-700"
     }`}
@@ -370,7 +370,7 @@ if (
       })
     }
     className={`w-full px-4 py-2.5 rounded-lg border transition-colors duration-300 ${
-      theme === "dark"
+      resolvedTheme === "dark"
         ? "bg-gray-700 border-gray-600 text-white"
         : "bg-white border-gray-300 text-gray-900"
     }`}
@@ -423,7 +423,7 @@ if (
         })
       }
       className={`w-full px-4 py-2.5 rounded-lg border transition-colors duration-300 ${
-        theme === "dark"
+        resolvedTheme === "dark"
           ? "bg-gray-700 border-gray-600 text-white"
           : "bg-white border-gray-300 text-gray-900"
       }`}
@@ -435,7 +435,7 @@ if (
 <div className="mb-4">
   <label
     className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${
-      theme === "dark" ? "text-gray-300" : "text-gray-700"
+      resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
     }`}
   >
     City <span className="text-red-500">*</span>
@@ -445,7 +445,7 @@ if (
     <MapPin
       size={18}
       className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-300 ${
-        theme === "dark" ? "text-gray-500" : "text-gray-400"
+        resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
       }`}
     />
 
@@ -459,7 +459,7 @@ if (
         })
       }
       className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
-        theme === "dark"
+        resolvedTheme === "dark"
           ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400"
           : "border border-gray-300 text-gray-900 bg-white"
       }`}
@@ -473,20 +473,20 @@ if (
               {/* Username */}
               <div className="mb-4">
                 <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                 }`}>
                   Username <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <User size={18} className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-500" : "text-gray-400"
+                    resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                   }`} />
                   <input
                     type="text"
                     value={formData.username}
                     onChange={(e) => setFormData({ ...formData, username: e.target.value.toLowerCase().replace(/\s/g, '') })}
                     className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
@@ -495,7 +495,7 @@ if (
                   />
                 </div>
                 <p className={`text-xs mt-1 flex items-center gap-1 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
+                  resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                 }`}>
                   <AlertCircle size={12} />
                   Make sure you remember it for future logins
@@ -505,20 +505,20 @@ if (
               {/* Email */}
               <div className="mb-4">
                 <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                 }`}>
                   Email Address <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Mail size={18} className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-500" : "text-gray-400"
+                    resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                   }`} />
                   <input
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
@@ -531,20 +531,20 @@ if (
               {/* Phone Number */}
               <div className="mb-4">
                 <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                 }`}>
                   Phone Number <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Phone size={18} className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-500" : "text-gray-400"
+                    resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                   }`} />
                   <input
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
@@ -557,20 +557,20 @@ if (
               {/* Password */}
               <div className="mb-4">
                 <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                 }`}>
                   Password <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Lock size={18} className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-500" : "text-gray-400"
+                    resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                   }`} />
                   <input
                     type={showPassword ? "text" : "password"}
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     className={`w-full pl-10 pr-12 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
@@ -590,20 +590,20 @@ if (
               {/* Confirm Password */}
               <div className="mb-4">
                 <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                 }`}>
                   Confirm Password <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Lock size={18} className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-500" : "text-gray-400"
+                    resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                   }`} />
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                     className={`w-full pl-10 pr-12 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
@@ -649,7 +649,7 @@ if (
 
               {/* Sign In Link */}
               <p className={`text-center text-sm mt-4 transition-colors duration-300 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-600"
+                resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
               }`}>
                 Already have an account?{" "}
                 <a href="/login" className="text-[var(--accent-500)] dark:text-[var(--accent-400)] font-semibold hover:underline">

@@ -37,7 +37,7 @@ export function StatsCard({
   trend,
   actions
 }: StatsCardProps) {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const isDark = theme === 'dark';
   
   const getPropertyValue = (prop: any, id?: string) => {

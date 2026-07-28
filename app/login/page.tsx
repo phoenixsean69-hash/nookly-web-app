@@ -9,7 +9,7 @@ import { User, Mail, Lock, AlertCircle } from "lucide-react";
 
 export default function LoginPage() {
   const { login } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,7 +42,7 @@ export default function LoginPage() {
           priority
         />
         <div className={`absolute inset-0 transition-colors duration-300 ${
-          theme === "dark" 
+          resolvedTheme === "dark" 
             ? "bg-gradient-to-br from-gray-900/90 via-gray-800/85 to-gray-700/60" 
             : "bg-gradient-to-br from-blue-900/80 via-blue-800/70 to-[var(--accent-500)]/30"
         }`} />
@@ -51,34 +51,34 @@ export default function LoginPage() {
       {/* Animated accent circles */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <div className={`absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl animate-pulse transition-colors duration-300 ${
-          theme === "dark" ? "bg-gray-600/20" : "bg-[var(--accent-500)]/20"
+          resolvedTheme === "dark" ? "bg-gray-600/20" : "bg-[var(--accent-500)]/20"
         }`} />
         <div className={`absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl animate-pulse delay-1000 transition-colors duration-300 ${
-          theme === "dark" ? "bg-gray-500/20" : "bg-blue-600/20"
+          resolvedTheme === "dark" ? "bg-gray-500/20" : "bg-blue-600/20"
         }`} />
       </div>
 
       {/* Main Card - Small and Centered */}
       <div className="relative z-10 w-[450px] max-w-full">
         <div className={`backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden transition-colors duration-300 ${
-          theme === "dark" ? "bg-gray-800/95" : "bg-white/95"
+          resolvedTheme === "dark" ? "bg-gray-800/95" : "bg-white/95"
         }`}>
           {/* Header */}
           <div className={`bg-gradient-to-r px-8 py-6 relative overflow-hidden transition-colors duration-300 ${
-            theme === "dark" 
+            resolvedTheme === "dark" 
               ? "from-gray-700 via-gray-700 to-gray-600" 
               : "from-[#1e3a5f] via-[#1e3a5f] to-[var(--accent-500)]"
           }`}>
             <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl transition-colors duration-300 ${
-              theme === "dark" ? "bg-gray-500/20" : "bg-[var(--accent-500)]/20"
+              resolvedTheme === "dark" ? "bg-gray-500/20" : "bg-[var(--accent-500)]/20"
             }`} />
             <div className="relative text-center">
               <div className={`inline-block p-2.5 rounded-full mb-3 transition-colors duration-300 ${
-                theme === "dark" ? "bg-gray-600/50" : "bg-white/10"
+                resolvedTheme === "dark" ? "bg-gray-600/50" : "bg-white/10"
               }`}>
                 <svg
                   className={`w-6 h-6 transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-[var(--accent-400)]"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-[var(--accent-400)]"
                   }`}
                   fill="none"
                   stroke="currentColor"
@@ -94,7 +94,7 @@ export default function LoginPage() {
               </div>
               <h2 className="text-2xl font-bold text-white">Welcome Back</h2>
               <p className={`text-sm mt-1 transition-colors duration-300 ${
-                theme === "dark" ? "text-gray-300" : "text-blue-200"
+                resolvedTheme === "dark" ? "text-gray-300" : "text-blue-200"
               }`}>
                 Sign in to your account
               </p>
@@ -114,13 +114,13 @@ export default function LoginPage() {
               {/* Username Field */}
               <div className="mb-4">
                 <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                 }`}>
                   Username
                 </label>
                 <div className="relative">
                   <User size={18} className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-500" : "text-gray-400"
+                    resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                   }`} />
                   <input
                     type="text"
@@ -128,7 +128,7 @@ export default function LoginPage() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
@@ -140,13 +140,13 @@ export default function LoginPage() {
               {/* Email Field */}
               <div className="mb-4">
                 <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                 }`}>
                   Email Address
                 </label>
                 <div className="relative">
                   <Mail size={18} className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-500" : "text-gray-400"
+                    resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                   }`} />
                   <input
                     type="email"
@@ -154,7 +154,7 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
@@ -166,13 +166,13 @@ export default function LoginPage() {
               {/* Password Field */}
               <div className="mb-4">
                 <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                 }`}>
                   Password
                 </label>
                 <div className="relative">
                   <Lock size={18} className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-500" : "text-gray-400"
+                    resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                   }`} />
                   <input
                     type="password"
@@ -180,7 +180,7 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
@@ -194,7 +194,7 @@ export default function LoginPage() {
                 <Link
                   href="/forgot-password"
                   className={`text-xs transition-colors duration-300 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
                       : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
                   } hover:underline`}
@@ -221,7 +221,7 @@ export default function LoginPage() {
 
               {/* Sign Up Link */}
               <p className={`text-center text-sm mt-4 transition-colors duration-300 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-600"
+                resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
               }`}>
                 Don&apos;t have an account?{" "}
                 <Link

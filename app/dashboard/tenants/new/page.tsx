@@ -64,7 +64,7 @@ function useDashboardMargin(): string {
 
 export default function NewTenantPage() {
   const { organization } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const router = useRouter();
   const margin = useDashboardMargin();
 
@@ -259,7 +259,7 @@ export default function NewTenantPage() {
     }
   };
 
-  const dark = theme === "dark";
+  const dark = resolvedTheme === "dark";
 
   return (
     <ProtectedRoute>

@@ -135,7 +135,7 @@ function normalizedPhone(tenant: Tenant): string {
 
 export default function TenantsPage() {
   const { organization, isOffline } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const margin = useDashboardMargin();
 
   const [tenants, setTenants] = useState<Tenant[]>([]);
@@ -458,7 +458,7 @@ export default function TenantsPage() {
     }
   };
 
-  const dark = theme === "dark";
+  const dark = resolvedTheme === "dark";
   const activeCount = tenants.filter(
     (tenant) => tenant.status === "active",
   ).length;

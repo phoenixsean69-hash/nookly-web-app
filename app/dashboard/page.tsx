@@ -104,7 +104,7 @@ const HISTORICAL_STATS_KEY = 'dashboard_historical_stats';
 
 export default function DashboardPage() {
   const { organization, isOffline } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const [stats, setStats] = useState<DashboardStats>({
   totalProperties: 0,
   activeListings: 0,

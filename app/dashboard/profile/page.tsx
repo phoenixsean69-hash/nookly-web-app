@@ -29,7 +29,7 @@ import {
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
@@ -236,7 +236,7 @@ export default function ProfilePage() {
   return (
     <ProtectedRoute>
       <div className={`min-h-screen transition-colors duration-300 ${
-        theme === "dark" 
+        resolvedTheme === "dark" 
           ? "bg-gray-900" 
           : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
       }`}>
@@ -249,7 +249,7 @@ export default function ProfilePage() {
                 <button
                   onClick={() => router.back()}
                   className={`p-2 rounded-lg transition-colors duration-300 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-gray-400" 
                       : "hover:bg-gray-100 text-gray-600"
                   }`}
@@ -258,12 +258,12 @@ export default function ProfilePage() {
                 </button>
                 <div>
                   <h1 className={`text-2xl font-bold transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-100" : "text-gray-900"
+                    resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                   }`}>
                     Profile Settings
                   </h1>
                   <p className={`text-sm mt-1 transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                   }`}>
                     Manage your personal account information
                   </p>
@@ -273,16 +273,16 @@ export default function ProfilePage() {
 
             {success && (
               <div className={`mb-6 border-l-4 rounded-xl overflow-hidden transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-green-900/30 border-green-500" 
                   : "bg-green-50 border-green-500"
               }`}>
                 <div className="p-4 flex items-center gap-2">
                   <CheckCircle className={`w-5 h-5 transition-colors duration-300 ${
-                    theme === "dark" ? "text-green-400" : "text-green-600"
+                    resolvedTheme === "dark" ? "text-green-400" : "text-green-600"
                   }`} />
                   <span className={`text-sm transition-colors duration-300 ${
-                    theme === "dark" ? "text-green-300" : "text-green-800"
+                    resolvedTheme === "dark" ? "text-green-300" : "text-green-800"
                   }`}>
                     {success}
                   </span>
@@ -292,16 +292,16 @@ export default function ProfilePage() {
 
             {error && (
               <div className={`mb-6 border-l-4 rounded-xl overflow-hidden transition-colors duration-300 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-red-900/30 border-red-500" 
                   : "bg-red-50 border-red-500"
               }`}>
                 <div className="p-4 flex items-center gap-2">
                   <AlertCircle className={`w-5 h-5 transition-colors duration-300 ${
-                    theme === "dark" ? "text-red-400" : "text-red-600"
+                    resolvedTheme === "dark" ? "text-red-400" : "text-red-600"
                   }`} />
                   <span className={`text-sm transition-colors duration-300 ${
-                    theme === "dark" ? "text-red-300" : "text-red-800"
+                    resolvedTheme === "dark" ? "text-red-300" : "text-red-800"
                   }`}>
                     {error}
                   </span>
@@ -312,15 +312,15 @@ export default function ProfilePage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Profile Info Card - Premium */}
               <div className={`rounded-2xl shadow-md p-6 transition-colors duration-300 border ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800/80 border-gray-700" 
                   : "bg-white/80 border-gray-100 backdrop-blur-sm"
               }`}>
                 <h2 className={`text-xl font-bold mb-6 flex items-center gap-2 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-100" : "text-gray-900"
+                  resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                 }`}>
                   <User className={`w-5 h-5 transition-colors duration-300 ${
-                    theme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-500)]"
+                    resolvedTheme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-500)]"
                   }`} />
                   Profile Information
                 </h2>
@@ -331,7 +331,7 @@ export default function ProfilePage() {
                     <div className="relative group">
                       <label className="cursor-pointer">
                         <div className={`w-28 h-28 rounded-full overflow-hidden border-4 transition-colors duration-300 bg-gray-100 dark:bg-gray-700 flex items-center justify-center ${
-                          theme === "dark" 
+                          resolvedTheme === "dark" 
                             ? "border-[var(--accent-500)]" 
                             : "border-[var(--accent-500)]"
                         }`}>
@@ -350,12 +350,12 @@ export default function ProfilePage() {
                             />
                           ) : (
                             <User className={`w-14 h-14 transition-colors duration-300 ${
-                              theme === "dark" ? "text-gray-500" : "text-gray-400"
+                              resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                             }`} />
                           )}
                         </div>
                         <div className={`absolute bottom-1 right-1 rounded-full p-2 shadow-lg transition-colors duration-300 ${
-                          theme === "dark" 
+                          resolvedTheme === "dark" 
                             ? "bg-[var(--accent-500)] hover:bg-[var(--accent-600)]" 
                             : "bg-[var(--accent-500)] hover:bg-[var(--accent-600)]"
                         }`}>
@@ -379,7 +379,7 @@ export default function ProfilePage() {
                       )}
                     </div>
                     <p className={`text-xs mt-2 transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                     }`}>
                       Profile photo (max 2MB)
                     </p>
@@ -387,16 +387,16 @@ export default function ProfilePage() {
 
                   <div>
                     <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-300" : "text-gray-800"
+                      resolvedTheme === "dark" ? "text-gray-300" : "text-gray-800"
                     }`}>
                       Full Name *
                     </label>
                     <div className={`rounded-lg overflow-hidden transition-colors duration-300 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-white"
+                      resolvedTheme === "dark" ? "bg-gray-700" : "bg-white"
                     }`}>
                       <div className="relative">
                         <User className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-500"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                         }`} />
                         <input
                           type="text"
@@ -404,7 +404,7 @@ export default function ProfilePage() {
                           value={formData.name}
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                           className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                            theme === "dark" 
+                            resolvedTheme === "dark" 
                               ? "bg-gray-700 text-gray-100 placeholder-gray-400" 
                               : "border border-gray-200 text-gray-900 bg-white"
                           }`}
@@ -416,23 +416,23 @@ export default function ProfilePage() {
 
                   <div>
                     <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-300" : "text-gray-800"
+                      resolvedTheme === "dark" ? "text-gray-300" : "text-gray-800"
                     }`}>
                       Email Address *
                     </label>
                     <div className={`rounded-lg overflow-hidden transition-colors duration-300 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-white"
+                      resolvedTheme === "dark" ? "bg-gray-700" : "bg-white"
                     }`}>
                       <div className="relative">
                         <Mail className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-500"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                         }`} />
                         <input
                           type="email"
                           required
                           value={formData.email}
                           className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 cursor-not-allowed ${
-                            theme === "dark" 
+                            resolvedTheme === "dark" 
                               ? "bg-gray-700 text-gray-400" 
                               : "border border-gray-200 text-gray-500 bg-gray-50"
                           }`}
@@ -442,7 +442,7 @@ export default function ProfilePage() {
                       </div>
                     </div>
                     <p className={`text-xs mt-1 transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-400"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-400"
                     }`}>
                       Email cannot be changed
                     </p>
@@ -450,23 +450,23 @@ export default function ProfilePage() {
 
                   <div>
                     <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-300" : "text-gray-800"
+                      resolvedTheme === "dark" ? "text-gray-300" : "text-gray-800"
                     }`}>
                       Phone Number
                     </label>
                     <div className={`rounded-lg overflow-hidden transition-colors duration-300 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-white"
+                      resolvedTheme === "dark" ? "bg-gray-700" : "bg-white"
                     }`}>
                       <div className="relative">
                         <Phone className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-500"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                         }`} />
                         <input
                           type="tel"
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                           className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                            theme === "dark" 
+                            resolvedTheme === "dark" 
                               ? "bg-gray-700 text-gray-100 placeholder-gray-400" 
                               : "border border-gray-200 text-gray-900 bg-white"
                           }`}
@@ -481,7 +481,7 @@ export default function ProfilePage() {
                       type="submit"
                       disabled={loading}
                       className={`px-6 py-2.5 rounded-lg transition disabled:opacity-50 flex items-center gap-2 font-medium shadow-sm hover:shadow-md ${
-                        theme === "dark"
+                        resolvedTheme === "dark"
                           ? "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
                           : "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
                       }`}
@@ -504,15 +504,15 @@ export default function ProfilePage() {
 
               {/* Password Card - Premium */}
               <div className={`rounded-2xl shadow-md p-6 transition-colors duration-300 border ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800/80 border-gray-700" 
                   : "bg-white/80 border-gray-100 backdrop-blur-sm"
               }`}>
                 <h2 className={`text-xl font-bold mb-6 flex items-center gap-2 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-100" : "text-gray-900"
+                  resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                 }`}>
                   <Lock className={`w-5 h-5 transition-colors duration-300 ${
-                    theme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-500)]"
+                    resolvedTheme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-500)]"
                   }`} />
                   Password
                 </h2>
@@ -520,14 +520,14 @@ export default function ProfilePage() {
                 {!showPasswordForm ? (
                   <div className="text-center py-8">
                     <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                      resolvedTheme === "dark" ? "bg-gray-700" : "bg-gray-100"
                     }`}>
                       <Key className={`w-10 h-10 transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-500" : "text-gray-400"
+                        resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                       }`} />
                     </div>
                     <p className={`mb-4 transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-600"
+                      resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                     }`}>
                       Change your password to keep your account secure
                     </p>
@@ -535,7 +535,7 @@ export default function ProfilePage() {
                       type="button"
                       onClick={() => setShowPasswordForm(true)}
                       className={`px-6 py-2.5 rounded-lg transition font-medium ${
-                        theme === "dark"
+                        resolvedTheme === "dark"
                           ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       }`}
@@ -547,16 +547,16 @@ export default function ProfilePage() {
                   <form onSubmit={handlePasswordSubmit} className="space-y-4">
                     <div>
                       <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-300" : "text-gray-800"
+                        resolvedTheme === "dark" ? "text-gray-300" : "text-gray-800"
                       }`}>
                         Current Password
                       </label>
                       <div className={`rounded-lg overflow-hidden transition-colors duration-300 ${
-                        theme === "dark" ? "bg-gray-700" : "bg-white"
+                        resolvedTheme === "dark" ? "bg-gray-700" : "bg-white"
                       }`}>
                         <div className="relative">
                           <Lock className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-500"
+                            resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                           }`} />
                           <input
                             type="password"
@@ -564,7 +564,7 @@ export default function ProfilePage() {
                             value={passwordData.currentPassword}
                             onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
                             className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                              theme === "dark" 
+                              resolvedTheme === "dark" 
                                 ? "bg-gray-700 text-gray-100 placeholder-gray-400" 
                                 : "border border-gray-200 text-gray-900 bg-white"
                             }`}
@@ -576,16 +576,16 @@ export default function ProfilePage() {
 
                     <div>
                       <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-300" : "text-gray-800"
+                        resolvedTheme === "dark" ? "text-gray-300" : "text-gray-800"
                       }`}>
                         New Password
                       </label>
                       <div className={`rounded-lg overflow-hidden transition-colors duration-300 ${
-                        theme === "dark" ? "bg-gray-700" : "bg-white"
+                        resolvedTheme === "dark" ? "bg-gray-700" : "bg-white"
                       }`}>
                         <div className="relative">
                           <Key className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-500"
+                            resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                           }`} />
                           <input
                             type="password"
@@ -593,7 +593,7 @@ export default function ProfilePage() {
                             value={passwordData.newPassword}
                             onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
                             className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                              theme === "dark" 
+                              resolvedTheme === "dark" 
                                 ? "bg-gray-700 text-gray-100 placeholder-gray-400" 
                                 : "border border-gray-200 text-gray-900 bg-white"
                             }`}
@@ -602,7 +602,7 @@ export default function ProfilePage() {
                         </div>
                       </div>
                       <p className={`text-xs mt-1 transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}>
                         Minimum 8 characters
                       </p>
@@ -610,16 +610,16 @@ export default function ProfilePage() {
 
                     <div>
                       <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-300" : "text-gray-800"
+                        resolvedTheme === "dark" ? "text-gray-300" : "text-gray-800"
                       }`}>
                         Confirm New Password
                       </label>
                       <div className={`rounded-lg overflow-hidden transition-colors duration-300 ${
-                        theme === "dark" ? "bg-gray-700" : "bg-white"
+                        resolvedTheme === "dark" ? "bg-gray-700" : "bg-white"
                       }`}>
                         <div className="relative">
                           <Key className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-500"
+                            resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                           }`} />
                           <input
                             type="password"
@@ -627,7 +627,7 @@ export default function ProfilePage() {
                             value={passwordData.confirmPassword}
                             onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
                             className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                              theme === "dark" 
+                              resolvedTheme === "dark" 
                                 ? "bg-gray-700 text-gray-100 placeholder-gray-400" 
                                 : "border border-gray-200 text-gray-900 bg-white"
                             }`}
@@ -642,7 +642,7 @@ export default function ProfilePage() {
                         type="submit"
                         disabled={loading}
                         className={`flex-1 px-4 py-2.5 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2 font-medium shadow-sm hover:shadow-md ${
-                          theme === "dark"
+                          resolvedTheme === "dark"
                             ? "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
                             : "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
                         }`}
@@ -670,7 +670,7 @@ export default function ProfilePage() {
                           });
                         }}
                         className={`flex-1 px-4 py-2.5 rounded-lg transition font-medium ${
-                          theme === "dark"
+                          resolvedTheme === "dark"
                             ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                             : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                         }`}

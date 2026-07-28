@@ -99,7 +99,7 @@ const handleStartTask = async (taskId: string) => {
     console.error("Error starting task:", error);
   }
 };
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [properties, setProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -405,7 +405,7 @@ useEffect(() => {
     return (
       <ProtectedRoute>
         <div className={`min-h-screen transition-colors duration-300 ${
-          theme === "dark" 
+          resolvedTheme === "dark" 
             ? "bg-gray-900" 
             : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
         }`}>
@@ -417,7 +417,7 @@ useEffect(() => {
                 <div className="text-center">
                   <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-[var(--accent-500)] mx-auto" />
                   <p className={`mt-4 text-sm sm:text-base transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                   }`}>
                     Loading tasks...
                   </p>
@@ -433,7 +433,7 @@ useEffect(() => {
   return (
     <ProtectedRoute>
       <div className={`min-h-screen transition-colors duration-300 ${
-        theme === "dark" 
+        resolvedTheme === "dark" 
           ? "bg-gray-900" 
           : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
       }`}>
@@ -445,13 +445,13 @@ useEffect(() => {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start md:items-center mb-4 sm:mb-6 gap-3 sm:gap-4">
               <div>
                 <h1 className={`text-xl sm:text-2xl font-bold transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-100" : "text-gray-800"
+                  resolvedTheme === "dark" ? "text-gray-100" : "text-gray-800"
                 }`}>
                   Tasks
                 </h1>
                 <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-0.5 sm:mt-1">
                   <p className={`text-xs sm:text-sm transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}>
                     Manage your tasks ({filteredTasks.length} tasks)
                   </p>
@@ -463,7 +463,7 @@ useEffect(() => {
                   )}
                   {!isOffline && lastUpdated && (
                     <span className={`text-[10px] sm:text-xs transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-500" : "text-gray-400"
+                      resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                     }`}>
                       Updated: {lastUpdated.toLocaleTimeString()}
                     </span>
@@ -496,15 +496,15 @@ useEffect(() => {
             {/* Offline Warning */}
             {isOffline && tasks.length > 0 && (
               <div className={`mb-3 sm:mb-4 border rounded-lg p-2.5 sm:p-3 flex items-center gap-2 ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-yellow-900/20 border-yellow-800" 
                   : "bg-yellow-50 border-yellow-200"
               }`}>
                 <WifiOff className={`w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0 ${
-                  theme === "dark" ? "text-yellow-400" : "text-yellow-600"
+                  resolvedTheme === "dark" ? "text-yellow-400" : "text-yellow-600"
                 }`} />
                 <p className={`text-xs sm:text-sm ${
-                  theme === "dark" ? "text-yellow-300" : "text-yellow-700"
+                  resolvedTheme === "dark" ? "text-yellow-300" : "text-yellow-700"
                 }`}>
                   You're offline. Showing cached tasks from your last visit.
                 </p>
@@ -513,14 +513,14 @@ useEffect(() => {
 
             {/* Search and Filter */}
             <div className={`rounded-xl shadow-sm p-3 sm:p-4 mb-4 sm:mb-6 transition-colors duration-300 border ${
-              theme === "dark" 
+              resolvedTheme === "dark" 
                 ? "bg-gray-800/80 border-gray-700" 
                 : "bg-white/80 border-gray-100 backdrop-blur-sm"
             }`}>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <div className="flex-1 relative">
                   <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-400"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-400"
                   }`} />
                   <input
                     type="text"
@@ -528,7 +528,7 @@ useEffect(() => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className={`w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 rounded-lg text-sm focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-200 text-gray-900 bg-white"
                     }`}
@@ -539,7 +539,7 @@ useEffect(() => {
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
                     className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100" 
                         : "border border-gray-200 text-gray-900 bg-white"
                     }`}
@@ -553,7 +553,7 @@ useEffect(() => {
                     value={filterPriority}
                     onChange={(e) => setFilterPriority(e.target.value)}
                     className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100" 
                         : "border border-gray-200 text-gray-900 bg-white"
                     }`}
@@ -570,24 +570,24 @@ useEffect(() => {
             {/* Tasks List */}
             {filteredTasks.length === 0 ? (
               <div className={`rounded-2xl shadow-sm p-8 sm:p-12 text-center transition-colors duration-300 border ${
-                theme === "dark" 
+                resolvedTheme === "dark" 
                   ? "bg-gray-800/80 border-gray-700" 
                   : "bg-white/80 border-gray-100 backdrop-blur-sm"
               }`}>
                 <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 ${
-                  theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                  resolvedTheme === "dark" ? "bg-gray-700" : "bg-gray-100"
                 }`}>
                   <Clock className={`w-8 h-8 sm:w-10 sm:h-10 ${
-                    theme === "dark" ? "text-gray-500" : "text-gray-400"
+                    resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                   }`} />
                 </div>
                 <h3 className={`text-base sm:text-lg font-semibold mb-1 sm:mb-2 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-200" : "text-gray-800"
+                  resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
                 }`}>
                   No tasks found
                 </h3>
                 <p className={`text-sm sm:text-base mb-3 sm:mb-4 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
+                  resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                 }`}>
                   {searchTerm || filterStatus !== "all" || filterPriority !== "all"
                     ? "Try adjusting your search or filter criteria"
@@ -604,7 +604,7 @@ useEffect(() => {
                 )}
                 {isOffline && (
                   <p className={`text-xs sm:text-sm mt-2 transition-colors duration-300 ${
-                    theme === "dark" ? "text-yellow-400" : "text-yellow-600"
+                    resolvedTheme === "dark" ? "text-yellow-400" : "text-yellow-600"
                   }`}>
                     Connect to the internet to create new tasks
                   </p>
@@ -622,7 +622,7 @@ useEffect(() => {
                     <div
                       key={task.$id}
                       className={`rounded-xl shadow-sm p-3 sm:p-4 hover:shadow-md transition border transition-colors duration-300 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "bg-gray-800/80 border-gray-700 hover:border-[var(--accent-700)]" 
                           : "bg-white/80 border-gray-100 hover:border-[var(--accent-200)] backdrop-blur-sm"
                       }`}
@@ -631,7 +631,7 @@ useEffect(() => {
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                             <h3 className={`text-sm sm:text-base font-semibold transition-colors duration-300 ${
-                              theme === "dark" ? "text-gray-100" : "text-gray-800"
+                              resolvedTheme === "dark" ? "text-gray-100" : "text-gray-800"
                             }`}>
                               {task.title}
                             </h3>
@@ -644,7 +644,7 @@ useEffect(() => {
                           </div>
                           {task.description && (
                             <p className={`text-xs sm:text-sm mt-0.5 sm:mt-1 line-clamp-2 transition-colors duration-300 ${
-                              theme === "dark" ? "text-gray-400" : "text-gray-600"
+                              resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                             }`}>
                               {task.description}
                             </p>
@@ -663,7 +663,7 @@ useEffect(() => {
                             </span>
                             {task.propertyId && (
                               <span className={`text-[10px] sm:text-xs transition-colors duration-300 ${
-                                theme === "dark" ? "text-gray-400" : "text-gray-500"
+                                resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                               }`}>
                                 • {getPropertyName(task.propertyId)}
                               </span>
@@ -675,7 +675,7 @@ useEffect(() => {
   <Link
     href={`/dashboard/tasks/${task.$id}`}
     className={`px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-sm rounded-lg transition ${
-      theme === "dark"
+      resolvedTheme === "dark"
         ? "bg-blue-900/30 text-blue-400 hover:bg-blue-900/50"
         : "bg-blue-50 text-blue-600 hover:bg-blue-100"
     }`}
@@ -688,7 +688,7 @@ useEffect(() => {
     <button
       onClick={() => handleCompleteTask(task.$id)}
       className={`px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-sm rounded-lg transition flex items-center gap-1 ${
-        theme === "dark"
+        resolvedTheme === "dark"
           ? "bg-green-900/30 text-green-400 hover:bg-green-900/50"
           : "bg-green-50 text-green-600 hover:bg-green-100"
       }`}
@@ -703,7 +703,7 @@ useEffect(() => {
     <button
       onClick={() => handleStartTask(task.$id)}
       className={`px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-sm rounded-lg transition flex items-center gap-1 ${
-        theme === "dark"
+        resolvedTheme === "dark"
           ? "bg-yellow-900/30 text-yellow-400 hover:bg-yellow-900/50"
           : "bg-yellow-50 text-yellow-600 hover:bg-yellow-100"
       }`}
@@ -716,7 +716,7 @@ useEffect(() => {
   <Link
     href={`/dashboard/tasks/${task.$id}/edit`}
     className={`p-1.5 sm:p-1.5 rounded-lg transition ${
-      theme === "dark"
+      resolvedTheme === "dark"
         ? "bg-purple-900/30 text-purple-400 hover:bg-purple-900/50"
         : "bg-purple-50 text-purple-600 hover:bg-purple-100"
     }`}

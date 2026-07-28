@@ -653,7 +653,7 @@ export function Header() {
                 className="p-2 text-gray-500 hover:text-[var(--accent-500)] hover:bg-[var(--accent-50)] dark:text-gray-400 dark:hover:text-[var(--accent-400)] dark:hover:bg-[var(--accent-950)]/30 rounded-lg transition-colors duration-300"
                 aria-label="Toggle theme"
               >
-                {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                {resolvedTheme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
 
               <div className="h-6 w-px bg-gray-200 dark:bg-gray-700" />
@@ -715,18 +715,18 @@ export function Header() {
         {showLogoutModal && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100]">
             <div className={`rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl transition-colors duration-300 ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
+              resolvedTheme === "dark" ? "bg-gray-800" : "bg-white"
             }`}>
               <div className="flex items-center justify-between mb-4">
                 <h3 className={`text-xl font-bold transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-100" : "text-gray-900"
+                  resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                 }`}>
                   Confirm Sign Out
                 </h3>
                 <button
                   onClick={() => setShowLogoutModal(false)}
                   className={`transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400 hover:text-gray-300" : "text-gray-400 hover:text-gray-600"
+                    resolvedTheme === "dark" ? "text-gray-400 hover:text-gray-300" : "text-gray-400 hover:text-gray-600"
                   }`}
                 >
                   <XCircle className="w-5 h-5" />
@@ -735,19 +735,19 @@ export function Header() {
               
               <div className="mb-6">
                 <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                  theme === "dark" ? "bg-red-900/30" : "bg-red-100"
+                  resolvedTheme === "dark" ? "bg-red-900/30" : "bg-red-100"
                 }`}>
                   <AlertTriangle className={`w-10 h-10 ${
-                    theme === "dark" ? "text-red-400" : "text-red-600"
+                    resolvedTheme === "dark" ? "text-red-400" : "text-red-600"
                   }`} />
                 </div>
                 <p className={`text-center transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                 }`}>
                   Are you sure you want to sign out?
                 </p>
                 <p className={`text-center text-sm mt-2 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
+                  resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                 }`}>
                   You will need to sign in again to access your dashboard.
                 </p>
@@ -757,7 +757,7 @@ export function Header() {
                 <button
                   onClick={() => setShowLogoutModal(false)}
                   className={`flex-1 px-4 py-2.5 rounded-lg transition font-medium ${
-                    theme === "dark"
+                    resolvedTheme === "dark"
                       ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                       : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                   }`}
@@ -768,7 +768,7 @@ export function Header() {
                   onClick={handleLogout}
                   disabled={isLoggingOut}
                   className={`flex-1 px-4 py-2.5 rounded-lg transition font-medium flex items-center justify-center gap-2 ${
-                    theme === "dark"
+                    resolvedTheme === "dark"
                       ? "bg-red-600 hover:bg-red-700 text-white"
                       : "bg-red-600 hover:bg-red-700 text-white"
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
@@ -810,7 +810,7 @@ export function Header() {
               className="p-2 text-gray-500 hover:text-[var(--accent-500)] hover:bg-[var(--accent-50)] dark:text-gray-400 dark:hover:text-[var(--accent-400)] dark:hover:bg-[var(--accent-950)]/30 rounded-lg transition-colors duration-300"
               aria-label="Toggle theme"
             >
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {resolvedTheme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
 
             {/* Notifications - Mobile */}
@@ -934,18 +934,18 @@ export function Header() {
       {showLogoutModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100]">
           <div className={`rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl transition-colors duration-300 ${
-            theme === "dark" ? "bg-gray-800" : "bg-white"
+            resolvedTheme === "dark" ? "bg-gray-800" : "bg-white"
           }`}>
             <div className="flex items-center justify-between mb-4">
               <h3 className={`text-xl font-bold transition-colors duration-300 ${
-                theme === "dark" ? "text-gray-100" : "text-gray-900"
+                resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
               }`}>
                 Confirm Sign Out
               </h3>
               <button
                 onClick={() => setShowLogoutModal(false)}
                 className={`transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-400 hover:text-gray-300" : "text-gray-400 hover:text-gray-600"
+                  resolvedTheme === "dark" ? "text-gray-400 hover:text-gray-300" : "text-gray-400 hover:text-gray-600"
                 }`}
               >
                 <XCircle className="w-5 h-5" />
@@ -954,19 +954,19 @@ export function Header() {
             
             <div className="mb-6">
               <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                theme === "dark" ? "bg-red-900/30" : "bg-red-100"
+                resolvedTheme === "dark" ? "bg-red-900/30" : "bg-red-100"
               }`}>
                 <AlertTriangle className={`w-10 h-10 ${
-                  theme === "dark" ? "text-red-400" : "text-red-600"
+                  resolvedTheme === "dark" ? "text-red-400" : "text-red-600"
                 }`} />
               </div>
               <p className={`text-center transition-colors duration-300 ${
-                theme === "dark" ? "text-gray-300" : "text-gray-700"
+                resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
               }`}>
                 Are you sure you want to sign out?
               </p>
               <p className={`text-center text-sm mt-2 transition-colors duration-300 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-500"
+                resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
               }`}>
                 You will need to sign in again to access your dashboard.
               </p>
@@ -976,7 +976,7 @@ export function Header() {
               <button
                 onClick={() => setShowLogoutModal(false)}
                 className={`flex-1 px-4 py-2.5 rounded-lg transition font-medium ${
-                  theme === "dark"
+                  resolvedTheme === "dark"
                     ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                 }`}
@@ -987,7 +987,7 @@ export function Header() {
                 onClick={handleLogout}
                 disabled={isLoggingOut}
                 className={`flex-1 px-4 py-2.5 rounded-lg transition font-medium flex items-center justify-center gap-2 ${
-                  theme === "dark"
+                  resolvedTheme === "dark"
                     ? "bg-red-600 hover:bg-red-700 text-white"
                     : "bg-red-600 hover:bg-red-700 text-white"
                 } disabled:opacity-50 disabled:cursor-not-allowed`}

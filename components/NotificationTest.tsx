@@ -6,7 +6,7 @@ import { useTheme } from '@/contexts/theme-context';
 
 export function NotificationTest() {
   const { isEnabled, sendNotification } = useNotifications();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
 
   if (!isEnabled) return null;
 

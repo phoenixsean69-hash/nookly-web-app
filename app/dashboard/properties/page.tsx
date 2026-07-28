@@ -97,7 +97,7 @@ function formatPrice(property: Property): string {
 
 export default function PropertiesPage() {
   const { organization, isOffline } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const margin = useDashboardMargin();
 
   const [properties, setProperties] = useState<Property[]>([]);
@@ -293,7 +293,7 @@ export default function PropertiesPage() {
     (property) => property.isAvailable !== false,
   ).length;
   const occupiedCount = properties.length - availableCount;
-  const dark = theme === "dark";
+  const dark = resolvedTheme === "dark";
 
   return (
     <ProtectedRoute>

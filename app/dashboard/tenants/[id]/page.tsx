@@ -73,7 +73,7 @@ interface RentalRequest {
 
 export default function TenantDetailsPage() {
   const { organization } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
@@ -302,7 +302,7 @@ export default function TenantDetailsPage() {
     return (
       <ProtectedRoute>
         <div className={`min-h-screen transition-colors duration-300 ${
-          theme === "dark" 
+          resolvedTheme === "dark" 
             ? "bg-gray-900" 
             : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
         }`}>
@@ -314,7 +314,7 @@ export default function TenantDetailsPage() {
                 <div className="text-center">
                   <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-[var(--accent-500)] mx-auto" />
                   <p className={`mt-4 text-sm sm:text-base transition-colors duration-300 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                   }`}>
                     Loading details...
                   </p>
@@ -331,7 +331,7 @@ export default function TenantDetailsPage() {
     return (
       <ProtectedRoute>
         <div className={`min-h-screen transition-colors duration-300 ${
-          theme === "dark" 
+          resolvedTheme === "dark" 
             ? "bg-gray-900" 
             : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
         }`}>
@@ -343,12 +343,12 @@ export default function TenantDetailsPage() {
                 <div className="text-center">
                   <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                   <h2 className={`text-xl font-bold mb-2 ${
-                    theme === "dark" ? "text-gray-200" : "text-gray-800"
+                    resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
                   }`}>
                     Not Found
                   </h2>
                   <p className={`text-sm ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}>
                     The tenant or request you're looking for doesn't exist.
                   </p>
@@ -383,7 +383,7 @@ export default function TenantDetailsPage() {
   return (
     <ProtectedRoute>
       <div className={`min-h-screen transition-colors duration-300 ${
-        theme === "dark" 
+        resolvedTheme === "dark" 
           ? "bg-gray-900" 
           : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
       }`}>
@@ -396,7 +396,7 @@ export default function TenantDetailsPage() {
               <Link
                 href="/dashboard/tenants"
                 className={`inline-flex items-center gap-2 text-sm transition-colors duration-300 ${
-                  theme === "dark" 
+                  resolvedTheme === "dark" 
                     ? "text-gray-400 hover:text-gray-200" 
                     : "text-gray-600 hover:text-gray-800"
                 }`}
@@ -408,7 +408,7 @@ export default function TenantDetailsPage() {
 
             {/* Header Card */}
             <div className={`rounded-2xl shadow-lg border p-4 sm:p-6 mb-4 sm:mb-6 transition-colors duration-300 ${
-              theme === "dark" 
+              resolvedTheme === "dark" 
                 ? "bg-gray-800/80 border-gray-700" 
                 : "bg-white/80 border-gray-100 backdrop-blur-sm"
             }`}>
@@ -431,7 +431,7 @@ export default function TenantDetailsPage() {
                   )}
                   <div>
                     <h1 className={`text-xl sm:text-2xl font-bold transition-colors duration-300 ${
-                      theme === "dark" ? "text-gray-100" : "text-gray-900"
+                      resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                     }`}>
                       {displayName}
                     </h1>
@@ -441,7 +441,7 @@ export default function TenantDetailsPage() {
                         {status.text}
                       </span>
                       <span className={`text-xs sm:text-sm ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}>
                         {isFromRequests ? 'Request ID' : 'Tenant ID'}: {id.slice(0, 12)}...
                       </span>
@@ -457,12 +457,12 @@ export default function TenantDetailsPage() {
               <div className="lg:col-span-2 space-y-4 sm:space-y-6">
                 {/* Tenant Information */}
                 <div className={`rounded-2xl shadow-lg border p-4 sm:p-6 transition-colors duration-300 ${
-                  theme === "dark" 
+                  resolvedTheme === "dark" 
                     ? "bg-gray-800/80 border-gray-700" 
                     : "bg-white/80 border-gray-100 backdrop-blur-sm"
                 }`}>
                   <h2 className={`text-sm font-semibold mb-4 flex items-center gap-2 ${
-                    theme === "dark" ? "text-gray-200" : "text-gray-700"
+                    resolvedTheme === "dark" ? "text-gray-200" : "text-gray-700"
                   }`}>
                     <User className="w-4 h-4 text-[var(--accent-500)]" />
                     {isFromRequests ? 'Requestor Information' : 'Tenant Information'}
@@ -470,34 +470,34 @@ export default function TenantDetailsPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
                       <p className={`text-xs ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}>Full Name</p>
                       <p className={`font-medium ${
-                        theme === "dark" ? "text-gray-200" : "text-gray-800"
+                        resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
                       }`}>{displayName}</p>
                     </div>
                     <div>
                       <p className={`text-xs ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}>Email</p>
                       <p className={`font-medium truncate ${
-                        theme === "dark" ? "text-gray-200" : "text-gray-800"
+                        resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
                       }`}>{displayEmail}</p>
                     </div>
                     <div>
                       <p className={`text-xs ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}>Phone</p>
                       <p className={`font-medium ${
-                        theme === "dark" ? "text-gray-200" : "text-gray-800"
+                        resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
                       }`}>{displayPhone || "Not provided"}</p>
                     </div>
                     <div>
                       <p className={`text-xs ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}>Submitted</p>
                       <p className={`font-medium ${
-                        theme === "dark" ? "text-gray-200" : "text-gray-800"
+                        resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
                       }`}>{isFromRequests && request ? formatDateTime(request.$createdAt) : formatDateTime(new Date().toISOString())}</p>
                     </div>
                   </div>
@@ -505,12 +505,12 @@ export default function TenantDetailsPage() {
 
                 {/* Property Details */}
                 <div className={`rounded-2xl shadow-lg border p-4 sm:p-6 transition-colors duration-300 ${
-                  theme === "dark" 
+                  resolvedTheme === "dark" 
                     ? "bg-gray-800/80 border-gray-700" 
                     : "bg-white/80 border-gray-100 backdrop-blur-sm"
                 }`}>
                   <h2 className={`text-sm font-semibold mb-4 flex items-center gap-2 ${
-                    theme === "dark" ? "text-gray-200" : "text-gray-700"
+                    resolvedTheme === "dark" ? "text-gray-200" : "text-gray-700"
                   }`}>
                     <Building2 className="w-4 h-4 text-[var(--accent-500)]" />
                     Property Details
@@ -518,15 +518,15 @@ export default function TenantDetailsPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
                       <p className={`text-xs ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}>Property Name</p>
                       <p className={`font-medium ${
-                        theme === "dark" ? "text-gray-200" : "text-gray-800"
+                        resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
                       }`}>{displayPropertyName}</p>
                     </div>
                     <div>
                       <p className={`text-xs ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}>Monthly Rent</p>
                       <p className={`font-medium ${isFromRequests ? 'text-orange-600 dark:text-orange-400' : 'text-green-600 dark:text-green-400'}`}>
                         ${displayMonthlyRent.toLocaleString()}/mo
@@ -536,10 +536,10 @@ export default function TenantDetailsPage() {
                       <>
                         <div>
                           <p className={`text-xs ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-500"
+                            resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                           }`}>Original Price</p>
                           <p className={`font-medium line-through ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-500"
+                            resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                           }`}>
                             ${request.originalPrice.toLocaleString()}/mo
                           </p>
@@ -547,10 +547,10 @@ export default function TenantDetailsPage() {
                         {request.leaseDuration && (
                           <div>
                             <p className={`text-xs ${
-                              theme === "dark" ? "text-gray-400" : "text-gray-500"
+                              resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                             }`}>Lease Duration</p>
                             <p className={`font-medium ${
-                              theme === "dark" ? "text-gray-200" : "text-gray-800"
+                              resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
                             }`}>{request.leaseDuration} months</p>
                           </div>
                         )}
@@ -558,13 +558,13 @@ export default function TenantDetailsPage() {
                     )}
                     <div>
                       <p className={`text-xs flex items-center gap-1 ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}>
                         <CalendarDays className="w-3 h-3" />
                         {isFromRequests ? 'Move-in Date' : 'Lease Start Date'}
                       </p>
                       <p className={`font-medium ${
-                        theme === "dark" ? "text-gray-200" : "text-gray-800"
+                        resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
                       }`}>
                         {displayMoveInDate ? formatDate(displayMoveInDate) : 'Not set'}
                       </p>
@@ -575,24 +575,24 @@ export default function TenantDetailsPage() {
                 {/* Message & Questions - Only for requests */}
                 {isFromRequests && request && (request.message || request.questions) && (
                   <div className={`rounded-2xl shadow-lg border p-4 sm:p-6 transition-colors duration-300 ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "bg-gray-800/80 border-gray-700" 
                       : "bg-white/80 border-gray-100 backdrop-blur-sm"
                   }`}>
                     {request.message && (
                       <div className={`p-3 rounded-lg mb-4 ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "bg-blue-900/20 border border-blue-800" 
                           : "bg-blue-50 border border-blue-100"
                       }`}>
                         <p className={`text-xs font-medium mb-1 ${
-                          theme === "dark" ? "text-blue-400" : "text-blue-600"
+                          resolvedTheme === "dark" ? "text-blue-400" : "text-blue-600"
                         }`}>
                           <MessageCircle className="w-3 h-3 inline mr-1" />
                           Message from tenant:
                         </p>
                         <p className={`text-sm ${
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
+                          resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                         }`}>
                           "{request.message}"
                         </p>
@@ -600,18 +600,18 @@ export default function TenantDetailsPage() {
                     )}
                     {request.questions && (
                       <div className={`p-3 rounded-lg ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "bg-yellow-900/20 border border-yellow-800" 
                           : "bg-yellow-50 border border-yellow-100"
                       }`}>
                         <p className={`text-xs font-medium mb-1 flex items-center gap-1 ${
-                          theme === "dark" ? "text-yellow-400" : "text-yellow-600"
+                          resolvedTheme === "dark" ? "text-yellow-400" : "text-yellow-600"
                         }`}>
                           <AlertCircle className="w-3 h-3" />
                           Questions:
                         </p>
                         <p className={`text-sm ${
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
+                          resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                         }`}>
                           "{request.questions}"
                         </p>
@@ -625,12 +625,12 @@ export default function TenantDetailsPage() {
               <div className="space-y-4 sm:space-y-6">
                 {/* Status Card */}
                 <div className={`rounded-2xl shadow-lg border p-4 sm:p-6 transition-colors duration-300 ${
-                  theme === "dark" 
+                  resolvedTheme === "dark" 
                     ? "bg-gray-800/80 border-gray-700" 
                     : "bg-white/80 border-gray-100 backdrop-blur-sm"
                 }`}>
                   <h2 className={`text-sm font-semibold mb-4 flex items-center gap-2 ${
-                    theme === "dark" ? "text-gray-200" : "text-gray-700"
+                    resolvedTheme === "dark" ? "text-gray-200" : "text-gray-700"
                   }`}>
                     <Clock className="w-4 h-4 text-[var(--accent-500)]" />
                     Status Information
@@ -638,7 +638,7 @@ export default function TenantDetailsPage() {
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className={`text-sm ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}>Status</span>
                       <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${status.className}`}>
                         <StatusIcon className="w-3.5 h-3.5" />
@@ -647,25 +647,25 @@ export default function TenantDetailsPage() {
                     </div>
                     <div className="flex justify-between items-center">
                       <span className={`text-sm ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}>Created</span>
                       <span className={`text-sm ${
-                        theme === "dark" ? "text-gray-200" : "text-gray-800"
+                        resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
                       }`}>
                         {isFromRequests && request ? formatDate(request.$createdAt) : 'N/A'}
                       </span>
                     </div>
                     {isFromRequests && request && request.rejectionReason && (
                       <div className={`p-3 rounded-lg border ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "bg-red-900/20 border-red-800" 
                           : "bg-red-50 border-red-100"
                       }`}>
                         <p className={`text-xs font-medium mb-1 ${
-                          theme === "dark" ? "text-red-400" : "text-red-600"
+                          resolvedTheme === "dark" ? "text-red-400" : "text-red-600"
                         }`}>Rejection Reason:</p>
                         <p className={`text-sm ${
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
+                          resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                         }`}>{request.rejectionReason}</p>
                       </div>
                     )}
@@ -674,12 +674,12 @@ export default function TenantDetailsPage() {
 
                 {/* Source Info */}
                 <div className={`rounded-2xl shadow-lg border p-4 sm:p-6 transition-colors duration-300 ${
-                  theme === "dark" 
+                  resolvedTheme === "dark" 
                     ? "bg-gray-800/80 border-gray-700" 
                     : "bg-white/80 border-gray-100 backdrop-blur-sm"
                 }`}>
                   <h2 className={`text-sm font-semibold mb-4 flex items-center gap-2 ${
-                    theme === "dark" ? "text-gray-200" : "text-gray-700"
+                    resolvedTheme === "dark" ? "text-gray-200" : "text-gray-700"
                   }`}>
                     <FileText className="w-4 h-4 text-[var(--accent-500)]" />
                     Source Information
@@ -687,7 +687,7 @@ export default function TenantDetailsPage() {
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
                       <span className={`text-sm ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}>Source</span>
                       <span className={`text-sm font-medium px-2 py-0.5 rounded ${
                         isFromRequests 
@@ -700,20 +700,20 @@ export default function TenantDetailsPage() {
                     {isFromRequests && (
                       <div className="flex justify-between items-center">
                         <span className={`text-sm ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-500"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                         }`}>Request ID</span>
                         <span className={`text-xs font-mono ${
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
+                          resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                         }`}>{id.slice(0, 12)}...</span>
                       </div>
                     )}
                     {tenant && !isFromRequests && (
                       <div className="flex justify-between items-center">
                         <span className={`text-sm ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-500"
+                          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                         }`}>Tenant ID</span>
                         <span className={`text-xs font-mono ${
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
+                          resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                         }`}>{id.slice(0, 12)}...</span>
                       </div>
                     )}

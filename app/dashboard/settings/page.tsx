@@ -417,7 +417,7 @@ export default function SettingsPage() {
   return (
     <ProtectedRoute>
       <div className={`min-h-screen transition-colors duration-300 ${
-        theme === "dark" 
+        resolvedTheme === "dark" 
           ? "bg-gray-900" 
           : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
       }`}>
@@ -428,10 +428,10 @@ export default function SettingsPage() {
             <div className="max-w-7xl mx-auto">
               <div className="mb-4 sm:mb-6">
                 <h1 className={`text-xl sm:text-2xl font-bold transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-100" : "text-gray-900"
+                  resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                 }`}>Settings</h1>
                 <p className={`text-xs sm:text-sm mt-0.5 sm:mt-1 transition-colors duration-300 ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-600"
+                  resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                 }`}>
                   Manage your organization settings and preferences
                 </p>
@@ -439,16 +439,16 @@ export default function SettingsPage() {
 
               {success && (
                 <div className={`mb-4 sm:mb-6 p-3 sm:p-4 border-l-4 rounded-xl overflow-hidden transition-colors duration-300 ${
-                  theme === "dark" 
+                  resolvedTheme === "dark" 
                     ? "bg-green-900/30 border-green-500" 
                     : "bg-green-50 border-green-500"
                 }`}>
                   <div className="flex items-center gap-2">
                     <CheckCircle className={`w-4 h-4 sm:w-5 sm:h-5 transition-colors duration-300 ${
-                      theme === "dark" ? "text-green-400" : "text-green-600"
+                      resolvedTheme === "dark" ? "text-green-400" : "text-green-600"
                     }`} />
                     <span className={`text-xs sm:text-sm transition-colors duration-300 ${
-                      theme === "dark" ? "text-green-300" : "text-green-800"
+                      resolvedTheme === "dark" ? "text-green-300" : "text-green-800"
                     }`}>
                       {success}
                     </span>
@@ -458,16 +458,16 @@ export default function SettingsPage() {
 
               {error && (
                 <div className={`mb-4 sm:mb-6 p-3 sm:p-4 border-l-4 rounded-xl overflow-hidden transition-colors duration-300 ${
-                  theme === "dark" 
+                  resolvedTheme === "dark" 
                     ? "bg-red-900/30 border-red-500" 
                     : "bg-red-50 border-red-500"
                 }`}>
                   <div className="flex items-start xs:items-center gap-2">
                     <AlertCircle className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 mt-0.5 xs:mt-0 transition-colors duration-300 ${
-                      theme === "dark" ? "text-red-400" : "text-red-500"
+                      resolvedTheme === "dark" ? "text-red-400" : "text-red-500"
                     }`} />
                     <span className={`text-xs sm:text-sm transition-colors duration-300 ${
-                      theme === "dark" ? "text-red-300" : "text-red-700"
+                      resolvedTheme === "dark" ? "text-red-300" : "text-red-700"
                     }`}>
                       {error}
                     </span>
@@ -479,7 +479,7 @@ export default function SettingsPage() {
                 {/* Sidebar Tabs - Desktop */}
                 <div className="hidden md:block w-64 flex-shrink-0">
                   <div className={`rounded-2xl shadow-md overflow-hidden transition-colors duration-300 border ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "bg-gray-800/80 border-gray-700" 
                       : "bg-white/80 border-gray-100 backdrop-blur-sm"
                   }`}>
@@ -509,7 +509,7 @@ export default function SettingsPage() {
                     <button
                       onClick={() => setShowLogoutModal(true)}
                       className={`w-full flex items-center gap-3 px-4 py-3 text-left transition border-t ${
-                        theme === "dark" 
+                        resolvedTheme === "dark" 
                           ? "text-red-400 hover:bg-red-900/30 border-gray-700" 
                           : "text-red-600 hover:bg-red-50 border-gray-100"
                       }`}
@@ -523,14 +523,14 @@ export default function SettingsPage() {
                 {/* Mobile Tab Selector */}
                 <div className="md:hidden">
                   <div className={`rounded-2xl shadow-md overflow-hidden transition-colors duration-300 border ${
-                    theme === "dark" 
+                    resolvedTheme === "dark" 
                       ? "bg-gray-800/80 border-gray-700" 
                       : "bg-white/80 border-gray-100 backdrop-blur-sm"
                   }`}>
                     <button
                       onClick={() => setShowMobileTabMenu(!showMobileTabMenu)}
                       className={`w-full flex items-center justify-between px-4 py-3 transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-100 hover:bg-gray-700/50" : "text-gray-800 hover:bg-gray-50"
+                        resolvedTheme === "dark" ? "text-gray-100 hover:bg-gray-700/50" : "text-gray-800 hover:bg-gray-50"
                       }`}
                     >
                       <div className="flex items-center gap-3">
@@ -548,7 +548,7 @@ export default function SettingsPage() {
                     
                     {showMobileTabMenu && (
                       <div className={`border-t transition-colors duration-300 ${
-                        theme === "dark" ? "border-gray-700" : "border-gray-100"
+                        resolvedTheme === "dark" ? "border-gray-700" : "border-gray-100"
                       }`}>
                         {tabs.map((tab) => {
                           const Icon = tab.icon;
@@ -580,7 +580,7 @@ export default function SettingsPage() {
                             setShowLogoutModal(true);
                           }}
                           className={`w-full flex items-center gap-3 px-4 py-3 text-left transition border-t ${
-                            theme === "dark" 
+                            resolvedTheme === "dark" 
                               ? "text-red-400 hover:bg-red-900/30 border-gray-700" 
                               : "text-red-600 hover:bg-red-50 border-gray-100"
                           }`}
@@ -598,12 +598,12 @@ export default function SettingsPage() {
                   {/* Profile Tab */}
                   {activeTab === "profile" && (
                     <div className={`rounded-2xl shadow-md p-4 sm:p-6 transition-colors duration-300 border ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-800/80 border-gray-700" 
                         : "bg-white/80 border-gray-100 backdrop-blur-sm"
                     }`}>
                       <h2 className={`text-lg sm:text-xl font-bold mb-4 sm:mb-6 flex items-center gap-2 transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-100" : "text-gray-900"
+                        resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                       }`}>
                         <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--accent-500)] dark:text-[var(--accent-400)]" />
                         Organization Profile
@@ -613,7 +613,7 @@ export default function SettingsPage() {
                         <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
                           <div className="flex flex-col items-center sm:items-start">
                             <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-4 transition-colors duration-300 flex items-center justify-center ${
-                              theme === "dark" 
+                              resolvedTheme === "dark" 
                                 ? "border-[var(--accent-400)] bg-gray-700" 
                                 : "border-[var(--accent-500)] bg-gray-200"
                             }`}>
@@ -627,13 +627,13 @@ export default function SettingsPage() {
                                 />
                               ) : (
                                 <Building2 className={`w-10 h-10 sm:w-12 sm:h-12 transition-colors duration-300 ${
-                                  theme === "dark" ? "text-gray-500" : "text-gray-500"
+                                  resolvedTheme === "dark" ? "text-gray-500" : "text-gray-500"
                                 }`} />
                               )}
                             </div>
                             <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2 sm:mt-3">
                               <label className={`px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm rounded-lg cursor-pointer transition ${
-                                theme === "dark"
+                                resolvedTheme === "dark"
                                   ? "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
                                   : "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
                               }`}>
@@ -661,7 +661,7 @@ export default function SettingsPage() {
                           <div className="flex-1 w-full space-y-3 sm:space-y-4">
                             <div>
                               <label className={`block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 transition-colors duration-300 ${
-                                theme === "dark" ? "text-gray-300" : "text-gray-800"
+                                resolvedTheme === "dark" ? "text-gray-300" : "text-gray-800"
                               }`}>
                                 Organization Name
                               </label>
@@ -671,7 +671,7 @@ export default function SettingsPage() {
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 className={`w-full px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                                  theme === "dark" 
+                                  resolvedTheme === "dark" 
                                     ? "bg-gray-700 border-gray-600 text-gray-100" 
                                     : "border border-gray-200 text-gray-900 bg-white"
                                 }`}
@@ -683,13 +683,13 @@ export default function SettingsPage() {
                         <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4">
                           <div>
                             <label className={`block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 transition-colors duration-300 ${
-                              theme === "dark" ? "text-gray-300" : "text-gray-800"
+                              resolvedTheme === "dark" ? "text-gray-300" : "text-gray-800"
                             }`}>
                               Email
                             </label>
                             <div className="relative">
                               <Mail className={`absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors duration-300 ${
-                                theme === "dark" ? "text-gray-400" : "text-gray-400"
+                                resolvedTheme === "dark" ? "text-gray-400" : "text-gray-400"
                               }`} />
                               <input
                                 type="email"
@@ -697,7 +697,7 @@ export default function SettingsPage() {
                                 value={formData.email}
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                                  theme === "dark" 
+                                  resolvedTheme === "dark" 
                                     ? "bg-gray-700 border-gray-600 text-gray-100" 
                                     : "border border-gray-200 text-gray-900 bg-white"
                                 }`}
@@ -706,20 +706,20 @@ export default function SettingsPage() {
                           </div>
                           <div>
                             <label className={`block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 transition-colors duration-300 ${
-                              theme === "dark" ? "text-gray-300" : "text-gray-800"
+                              resolvedTheme === "dark" ? "text-gray-300" : "text-gray-800"
                             }`}>
                               Phone
                             </label>
                             <div className="relative">
                               <Phone className={`absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors duration-300 ${
-                                theme === "dark" ? "text-gray-400" : "text-gray-400"
+                                resolvedTheme === "dark" ? "text-gray-400" : "text-gray-400"
                               }`} />
                               <input
                                 type="text"
                                 value={formData.phone}
                                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                 className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                                  theme === "dark" 
+                                  resolvedTheme === "dark" 
                                     ? "bg-gray-700 border-gray-600 text-gray-100" 
                                     : "border border-gray-200 text-gray-900 bg-white"
                                 }`}
@@ -733,7 +733,7 @@ export default function SettingsPage() {
                             type="submit"
                             disabled={loading}
                             className={`px-4 sm:px-6 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg transition disabled:opacity-50 flex items-center gap-1.5 sm:gap-2 ${
-                              theme === "dark"
+                              resolvedTheme === "dark"
                                 ? "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
                                 : "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
                             }`}
@@ -758,12 +758,12 @@ export default function SettingsPage() {
                   {/* Security Tab */}
                   {activeTab === "security" && (
                     <div className={`rounded-2xl shadow-md p-4 sm:p-6 transition-colors duration-300 border ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-800/80 border-gray-700" 
                         : "bg-white/80 border-gray-100 backdrop-blur-sm"
                     }`}>
                       <h2 className={`text-lg sm:text-xl font-bold mb-4 sm:mb-6 flex items-center gap-2 transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-100" : "text-gray-900"
+                        resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                       }`}>
                         <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--accent-500)] dark:text-[var(--accent-400)]" />
                         Security Settings
@@ -772,13 +772,13 @@ export default function SettingsPage() {
                       <form onSubmit={handlePasswordSubmit} className="space-y-4 sm:space-y-6 max-w-full sm:max-w-md">
                         <div>
                           <label className={`block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-300" : "text-gray-800"
+                            resolvedTheme === "dark" ? "text-gray-300" : "text-gray-800"
                           }`}>
                             Current Password
                           </label>
                           <div className="relative">
                             <Lock className={`absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors duration-300 ${
-                              theme === "dark" ? "text-gray-400" : "text-gray-400"
+                              resolvedTheme === "dark" ? "text-gray-400" : "text-gray-400"
                             }`} />
                             <input
                               type="password"
@@ -786,7 +786,7 @@ export default function SettingsPage() {
                               value={passwordData.currentPassword}
                               onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
                               className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                                theme === "dark" 
+                                resolvedTheme === "dark" 
                                   ? "bg-gray-700 border-gray-600 text-gray-100" 
                                   : "border border-gray-200 text-gray-900 bg-white"
                               }`}
@@ -797,13 +797,13 @@ export default function SettingsPage() {
 
                         <div>
                           <label className={`block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-300" : "text-gray-800"
+                            resolvedTheme === "dark" ? "text-gray-300" : "text-gray-800"
                           }`}>
                             New Password
                           </label>
                           <div className="relative">
                             <Key className={`absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors duration-300 ${
-                              theme === "dark" ? "text-gray-400" : "text-gray-400"
+                              resolvedTheme === "dark" ? "text-gray-400" : "text-gray-400"
                             }`} />
                             <input
                               type="password"
@@ -811,7 +811,7 @@ export default function SettingsPage() {
                               value={passwordData.newPassword}
                               onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
                               className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                                theme === "dark" 
+                                resolvedTheme === "dark" 
                                   ? "bg-gray-700 border-gray-600 text-gray-100" 
                                   : "border border-gray-200 text-gray-900 bg-white"
                               }`}
@@ -822,13 +822,13 @@ export default function SettingsPage() {
 
                         <div>
                           <label className={`block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-300" : "text-gray-800"
+                            resolvedTheme === "dark" ? "text-gray-300" : "text-gray-800"
                           }`}>
                             Confirm New Password
                           </label>
                           <div className="relative">
                             <Key className={`absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors duration-300 ${
-                              theme === "dark" ? "text-gray-400" : "text-gray-400"
+                              resolvedTheme === "dark" ? "text-gray-400" : "text-gray-400"
                             }`} />
                             <input
                               type="password"
@@ -836,7 +836,7 @@ export default function SettingsPage() {
                               value={passwordData.confirmPassword}
                               onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
                               className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
-                                theme === "dark" 
+                                resolvedTheme === "dark" 
                                   ? "bg-gray-700 border-gray-600 text-gray-100" 
                                   : "border border-gray-200 text-gray-900 bg-white"
                               }`}
@@ -853,7 +853,7 @@ export default function SettingsPage() {
                             type="submit"
                             disabled={loading}
                             className={`px-4 sm:px-6 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg transition disabled:opacity-50 flex items-center gap-1.5 sm:gap-2 ${
-                              theme === "dark"
+                              resolvedTheme === "dark"
                                 ? "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
                                 : "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
                             }`}
@@ -878,12 +878,12 @@ export default function SettingsPage() {
                   {/* Billing Tab */}
                   {activeTab === "billing" && (
                     <div className={`rounded-2xl shadow-md p-4 sm:p-6 transition-colors duration-300 border ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-800/80 border-gray-700" 
                         : "bg-white/80 border-gray-100 backdrop-blur-sm"
                     }`}>
                       <h2 className={`text-lg sm:text-xl font-bold mb-4 sm:mb-6 flex items-center gap-2 transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-100" : "text-gray-900"
+                        resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                       }`}>
                         <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--accent-500)] dark:text-[var(--accent-400)]" />
                         Subscription & Billing
@@ -891,26 +891,26 @@ export default function SettingsPage() {
 
                       <div className="mb-4 sm:mb-6">
                         <div className={`rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 transition-colors duration-300 ${
-                          theme === "dark" 
+                          resolvedTheme === "dark" 
                             ? "bg-gray-700" 
                             : "bg-gradient-to-r from-blue-50 to-[var(--accent-50)]"
                         }`}>
                           <div className="flex flex-col xs:flex-row xs:justify-between xs:items-center gap-2">
                             <div>
                               <p className={`text-xs sm:text-sm transition-colors duration-300 ${
-                                theme === "dark" ? "text-gray-400" : "text-gray-600"
+                                resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                               }`}>
                                 Current Plan
                               </p>
                               <p className={`text-xl sm:text-2xl font-bold capitalize transition-colors duration-300 ${
-                                theme === "dark" ? "text-gray-100" : "text-gray-900"
+                                resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                               }`}>
                                 {formData.subscriptionTier}
                               </p>
                             </div>
                             <div className="text-right">
                               <p className={`text-xs sm:text-sm transition-colors duration-300 ${
-                                theme === "dark" ? "text-gray-400" : "text-gray-600"
+                                resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                               }`}>
                                 {formData.maxProperties} Properties • {formData.maxTeamMembers} Team Members
                               </p>
@@ -926,23 +926,23 @@ export default function SettingsPage() {
                                 formData.subscriptionTier === plan.tier
                                   ? `border-[var(--accent-500)] dark:border-[var(--accent-400)] bg-[var(--accent-50)] dark:bg-[var(--accent-950)]/20`
                                   : `border-gray-200 dark:border-gray-700 hover:border-[var(--accent-300)] dark:hover:border-[var(--accent-500)] ${
-                                      theme === "dark" ? "bg-gray-800" : "bg-white"
+                                      resolvedTheme === "dark" ? "bg-gray-800" : "bg-white"
                                     }`
                               }`}
                             >
                               <h3 className={`text-base sm:text-lg font-bold transition-colors duration-300 ${
-                                theme === "dark" ? "text-gray-100" : "text-gray-900"
+                                resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                               }`}>
                                 {plan.name}
                               </h3>
                               <div className="mt-1 sm:mt-2">
                                 <span className={`text-xl sm:text-2xl font-bold transition-colors duration-300 ${
-                                  theme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-500)]"
+                                  resolvedTheme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-500)]"
                                 }`}>
                                   {plan.price}
                                 </span>
                                 <span className={`text-xs sm:text-sm transition-colors duration-300 ${
-                                  theme === "dark" ? "text-gray-400" : "text-gray-500"
+                                  resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                                 }`}>
                                   {plan.period}
                                 </span>
@@ -950,10 +950,10 @@ export default function SettingsPage() {
                               <ul className="mt-2 sm:mt-4 space-y-1 sm:space-y-2">
                                 {plan.features.map((feature, index) => (
                                   <li key={index} className={`text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 transition-colors duration-300 ${
-                                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                                    resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                                   }`}>
                                     <CheckCircle className={`w-3 h-3 flex-shrink-0 ${
-                                      theme === "dark" ? "text-green-400" : "text-green-500"
+                                      resolvedTheme === "dark" ? "text-green-400" : "text-green-500"
                                     }`} />
                                     {feature}
                                   </li>
@@ -963,7 +963,7 @@ export default function SettingsPage() {
                                 <button
                                   disabled
                                   className={`mt-3 sm:mt-4 w-full py-1.5 sm:py-2 text-xs sm:text-sm rounded-lg cursor-not-allowed transition-colors duration-300 ${
-                                    theme === "dark" 
+                                    resolvedTheme === "dark" 
                                       ? "bg-gray-700 text-gray-400" 
                                       : "bg-gray-100 text-gray-600"
                                   }`}
@@ -973,7 +973,7 @@ export default function SettingsPage() {
                               )}
                               {formData.subscriptionTier === plan.tier && (
                                 <div className={`mt-3 sm:mt-4 w-full py-1.5 sm:py-2 text-xs sm:text-sm rounded-lg text-center transition-colors duration-300 ${
-                                  theme === "dark" 
+                                  resolvedTheme === "dark" 
                                     ? "bg-green-900/30 text-green-400" 
                                     : "bg-green-100 text-green-700"
                                 }`}>
@@ -990,12 +990,12 @@ export default function SettingsPage() {
                   {/* Preferences Tab */}
                   {activeTab === "preferences" && (
                     <div className={`rounded-2xl shadow-md p-4 sm:p-6 transition-colors duration-300 border ${
-                      theme === "dark" 
+                      resolvedTheme === "dark" 
                         ? "bg-gray-800/80 border-gray-700" 
                         : "bg-white/80 border-gray-100 backdrop-blur-sm"
                     }`}>
                       <h2 className={`text-lg sm:text-xl font-bold mb-4 sm:mb-6 flex items-center gap-2 transition-colors duration-300 ${
-                        theme === "dark" ? "text-gray-100" : "text-gray-900"
+                        resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                       }`}>
                         <Palette className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--accent-500)] dark:text-[var(--accent-400)]" />
                         Preferences
@@ -1005,7 +1005,7 @@ export default function SettingsPage() {
                         {/* Theme Selection */}
                         <div>
                           <label className={`block text-xs sm:text-sm font-semibold mb-2 sm:mb-3 transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-300" : "text-gray-800"
+                            resolvedTheme === "dark" ? "text-gray-300" : "text-gray-800"
                           }`}>
                             Theme
                           </label>
@@ -1019,22 +1019,22 @@ export default function SettingsPage() {
                               }`}
                             >
                               <Sun className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${
-                                theme === "dark" ? "text-gray-300" : "text-gray-700"
+                                resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                               }`} />
-                              <span className={theme === "dark" ? "text-gray-300" : "text-gray-700"}>Light</span>
+                              <span className={resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"}>Light</span>
                             </button>
                             <button
                               onClick={toggleTheme}
                               className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-lg border-2 transition ${
-                                theme === "dark"
+                                resolvedTheme === "dark"
                                   ? `border-[var(--accent-400)] bg-[var(--accent-950)]/20`
                                   : `border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500`
                               }`}
                             >
                               <Moon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${
-                                theme === "dark" ? "text-gray-300" : "text-gray-700"
+                                resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                               }`} />
-                              <span className={theme === "dark" ? "text-gray-300" : "text-gray-700"}>Dark</span>
+                              <span className={resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"}>Dark</span>
                             </button>
                           </div>
                         </div>
@@ -1042,7 +1042,7 @@ export default function SettingsPage() {
                         {/* Accent Color Selection */}
                         <div>
                           <label className={`block text-xs sm:text-sm font-semibold mb-2 sm:mb-3 transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-300" : "text-gray-800"
+                            resolvedTheme === "dark" ? "text-gray-300" : "text-gray-800"
                           }`}>
                             Accent Color
                           </label>
@@ -1068,7 +1068,7 @@ export default function SettingsPage() {
                             ))}
                           </div>
                           <p className={`text-[10px] sm:text-xs mt-2 transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-500"
+                            resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                           }`}>
                             Current: <span className="font-medium capitalize">{accentColor}</span>
                           </p>
@@ -1076,10 +1076,10 @@ export default function SettingsPage() {
 
                         {/* Preview Section */}
                         <div className={`p-3 sm:p-4 rounded-xl transition-colors duration-300 ${
-                          theme === "dark" ? "bg-gray-700/50" : "bg-gray-50"
+                          resolvedTheme === "dark" ? "bg-gray-700/50" : "bg-gray-50"
                         }`}>
                           <p className={`text-xs sm:text-sm mb-2 sm:mb-3 transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-600"
+                            resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                           }`}>
                             Preview
                           </p>
@@ -1088,14 +1088,14 @@ export default function SettingsPage() {
                               Primary Button
                             </button>
                             <button className={`px-3 sm:px-4 py-1.5 sm:py-2 border-2 text-xs sm:text-sm rounded-lg bg-transparent transition-colors ${
-                              theme === "dark"
+                              resolvedTheme === "dark"
                                 ? "border-[var(--accent-400)] text-[var(--accent-400)] hover:bg-[var(--accent-950)]/20"
                                 : "border-[var(--accent-500)] text-[var(--accent-600)] hover:bg-[var(--accent-50)]"
                             }`}>
                               Outline Button
                             </button>
                             <span className={`inline-flex items-center gap-0.5 sm:gap-1 px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-sm rounded-full transition-colors duration-300 ${
-                              theme === "dark"
+                              resolvedTheme === "dark"
                                 ? "bg-[var(--accent-950)]/30 text-[var(--accent-300)]"
                                 : "bg-[var(--accent-100)] text-[var(--accent-700)]"
                             }`}>
@@ -1108,7 +1108,7 @@ export default function SettingsPage() {
                         {/* Notification Preferences */}
                         <div>
                           <label className={`block text-xs sm:text-sm font-semibold mb-2 sm:mb-3 transition-colors duration-300 ${
-                            theme === "dark" ? "text-gray-300" : "text-gray-800"
+                            resolvedTheme === "dark" ? "text-gray-300" : "text-gray-800"
                           }`}>
                             Notification Preferences
                           </label>
@@ -1121,15 +1121,15 @@ export default function SettingsPage() {
                               <label
                                 key={index}
                                 className={`flex items-center justify-between p-2.5 sm:p-3 rounded-lg cursor-pointer transition-colors duration-300 ${
-                                  theme === "dark" ? "bg-gray-700/50" : "bg-gray-50"
+                                  resolvedTheme === "dark" ? "bg-gray-700/50" : "bg-gray-50"
                                 }`}
                               >
                                 <div className="flex items-center gap-2 sm:gap-3">
                                   <Bell className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors duration-300 ${
-                                    theme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-500)]"
+                                    resolvedTheme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-500)]"
                                   }`} />
                                   <span className={`text-xs sm:text-sm transition-colors duration-300 ${
-                                    theme === "dark" ? "text-gray-200" : "text-gray-800"
+                                    resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
                                   }`}>
                                     {item.label}
                                   </span>
@@ -1137,7 +1137,7 @@ export default function SettingsPage() {
                                 <div className="relative">
                                   <input type="checkbox" className="sr-only peer" defaultChecked={item.defaultChecked} />
                                   <div className={`w-8 h-4 sm:w-9 sm:h-5 rounded-full transition-colors duration-300 ${
-                                    theme === "dark" ? "bg-gray-600" : "bg-gray-300"
+                                    resolvedTheme === "dark" ? "bg-gray-600" : "bg-gray-300"
                                   } peer peer-checked:bg-[var(--accent-500)] dark:peer-checked:bg-[var(--accent-400)] peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 sm:after:h-4 sm:after:w-4 after:transition-all`} />
                                 </div>
                               </label>
@@ -1159,36 +1159,36 @@ export default function SettingsPage() {
       {showLogoutModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
           <div className={`w-[340px] max-w-full transition-colors duration-300 ${
-            theme === "dark" 
+            resolvedTheme === "dark" 
               ? "bg-gray-800/95 backdrop-blur-md" 
               : "bg-white/95 backdrop-blur-md"
           } rounded-2xl shadow-2xl overflow-hidden`}>
             <div className={`px-6 py-4 relative overflow-hidden ${
-              theme === "dark" 
+              resolvedTheme === "dark" 
                 ? "bg-gray-700" 
                 : "bg-gradient-to-r from-blue-800 to-[var(--accent-500)]"
             }`}>
               <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl ${
-                theme === "dark" ? "bg-gray-500/20" : "bg-[var(--accent-500)]/20"
+                resolvedTheme === "dark" ? "bg-gray-500/20" : "bg-[var(--accent-500)]/20"
               }`} />
               <div className="relative text-center">
                 <div className={`inline-block p-2.5 rounded-full mb-2 ${
-                  theme === "dark" ? "bg-gray-600/50" : "bg-white/10"
+                  resolvedTheme === "dark" ? "bg-gray-600/50" : "bg-white/10"
                 }`}>
                   <LogOut className={`w-6 h-6 ${
-                    theme === "dark" ? "text-gray-400" : "text-[var(--accent-400)]"
+                    resolvedTheme === "dark" ? "text-gray-400" : "text-[var(--accent-400)]"
                   }`} />
                 </div>
                 <h2 className="text-xl font-bold text-white mb-1">Sign Out?</h2>
                 <p className={`text-xs ${
-                  theme === "dark" ? "text-gray-300" : "text-blue-200"
+                  resolvedTheme === "dark" ? "text-gray-300" : "text-blue-200"
                 }`}>You'll need to sign in again</p>
               </div>
             </div>
 
             <div className="p-5">
               <p className={`text-center text-sm mb-5 transition-colors duration-300 ${
-                theme === "dark" ? "text-gray-300" : "text-gray-600"
+                resolvedTheme === "dark" ? "text-gray-300" : "text-gray-600"
               }`}>
                 Are you sure you want to sign out of your account?
               </p>
@@ -1196,12 +1196,12 @@ export default function SettingsPage() {
               <div className="relative my-4">
                 <div className="absolute inset-0 flex items-center">
                   <div className={`w-full h-px transition-colors duration-300 ${
-                    theme === "dark" ? "bg-gray-600" : "bg-gray-200"
+                    resolvedTheme === "dark" ? "bg-gray-600" : "bg-gray-200"
                   }`} />
                 </div>
                 <div className="relative flex justify-center">
                   <span className={`px-2 text-[10px] transition-colors duration-300 ${
-                    theme === "dark" ? "bg-gray-800/95 text-gray-400" : "bg-white/95 text-gray-400"
+                    resolvedTheme === "dark" ? "bg-gray-800/95 text-gray-400" : "bg-white/95 text-gray-400"
                   }`}>Are you sure?</span>
                 </div>
               </div>
@@ -1211,7 +1211,7 @@ export default function SettingsPage() {
                   onClick={handleLogout}
                   disabled={isLoggingOut}
                   className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-md ${
-                    theme === "dark"
+                    resolvedTheme === "dark"
                       ? "bg-red-600 hover:bg-red-700 text-white"
                       : "bg-red-600 hover:bg-red-700 text-white"
                   }`}
@@ -1232,7 +1232,7 @@ export default function SettingsPage() {
                 <button
                   onClick={() => setShowLogoutModal(false)}
                   className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-all hover:scale-[1.02] ${
-                    theme === "dark"
+                    resolvedTheme === "dark"
                       ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}

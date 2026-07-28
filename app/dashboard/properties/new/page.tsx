@@ -457,7 +457,7 @@ function uploadErrorMessage(error: unknown, label: string): string {
 
 export default function NewPropertyPage() {
   const { organization } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const router = useRouter();
   const margin = useDashboardMargin();
 
@@ -1536,7 +1536,7 @@ export default function NewPropertyPage() {
     }
   };
 
-  const dark = theme === "dark";
+  const dark = resolvedTheme === "dark";
 
   const cardClass = dark
     ? "border-gray-800 bg-gray-900"

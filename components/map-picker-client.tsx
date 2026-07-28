@@ -321,14 +321,14 @@ export default function MapPickerClient({
     return (
       <div
         className={`flex h-96 items-center justify-center rounded-lg ${
-          theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+          resolvedTheme === "dark" ? "bg-gray-700" : "bg-gray-100"
         }`}
       >
         <div className="text-center">
           <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-[var(--accent-500)]" />
           <p
             className={`mt-2 text-sm ${
-              theme === "dark"
+              resolvedTheme === "dark"
                 ? "text-gray-400"
                 : "text-gray-500"
             }`}
@@ -357,7 +357,7 @@ export default function MapPickerClient({
       <div className="relative mb-2">
         <div
           className={`flex items-center gap-2 rounded-lg border-2 px-3 py-2 transition-colors ${
-            theme === "dark"
+            resolvedTheme === "dark"
               ? "border-gray-600 bg-gray-700"
               : "border-gray-300 bg-white"
           }`}
@@ -395,7 +395,7 @@ export default function MapPickerClient({
             }}
             placeholder="Search for a place or address..."
             className={`min-w-0 flex-1 bg-transparent text-sm outline-none ${
-              theme === "dark"
+              resolvedTheme === "dark"
                 ? "text-gray-100 placeholder-gray-400"
                 : "text-gray-900 placeholder-gray-400"
             }`}
@@ -409,7 +409,7 @@ export default function MapPickerClient({
         {showResults && searchResults.length > 0 && (
           <div
             className={`absolute z-[1000] mt-1 max-h-56 w-full overflow-y-auto rounded-lg border shadow-lg ${
-              theme === "dark"
+              resolvedTheme === "dark"
                 ? "border-gray-600 bg-gray-800"
                 : "border-gray-200 bg-white"
             }`}
@@ -421,7 +421,7 @@ export default function MapPickerClient({
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => handleSelectResult(result)}
                 className={`w-full border-b px-3 py-2 text-left text-sm transition last:border-b-0 ${
-                  theme === "dark"
+                  resolvedTheme === "dark"
                     ? "border-gray-700 text-gray-200 hover:bg-gray-700"
                     : "border-gray-100 text-gray-700 hover:bg-gray-50"
                 }`}
@@ -436,7 +436,7 @@ export default function MapPickerClient({
       <div className="mb-2 flex justify-end">
         <div
           className={`inline-flex overflow-hidden rounded-lg border ${
-            theme === "dark"
+            resolvedTheme === "dark"
               ? "border-gray-600"
               : "border-gray-300"
           }`}
@@ -447,7 +447,7 @@ export default function MapPickerClient({
             className={`px-3 py-1.5 text-xs font-medium transition ${
               mapType === "street"
                 ? "bg-blue-500 text-white"
-                : theme === "dark"
+                : resolvedTheme === "dark"
                   ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                   : "bg-white text-gray-600 hover:bg-gray-50"
             }`}
@@ -461,7 +461,7 @@ export default function MapPickerClient({
             className={`px-3 py-1.5 text-xs font-medium transition ${
               mapType === "hybrid"
                 ? "bg-blue-500 text-white"
-                : theme === "dark"
+                : resolvedTheme === "dark"
                   ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                   : "bg-white text-gray-600 hover:bg-gray-50"
             }`}
@@ -568,7 +568,7 @@ export default function MapPickerClient({
 
       <div
         className={`mt-2 text-center text-xs ${
-          theme === "dark"
+          resolvedTheme === "dark"
             ? "text-gray-400"
             : "text-gray-500"
         }`}

@@ -152,7 +152,7 @@ function parseFacilities(value: unknown): string[] {
 
 export default function EditPropertyPage() {
   const { organization } = useAuth();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const propertyId = params.id;
@@ -474,7 +474,7 @@ export default function EditPropertyPage() {
     }
   };
 
-  const dark = theme === "dark";
+  const dark = resolvedTheme === "dark";
 
   if (loading) {
     return (
