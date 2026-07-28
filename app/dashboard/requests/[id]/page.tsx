@@ -2,22 +2,33 @@
 
 import {
   ArrowLeft,
+  BadgeCheck,
+  Bath,
+  Bed,
   Building2,
   Calendar,
   CheckCircle,
-  Clock,
-  DollarSign,
-  FileText,
-  Mail,
-  MessageCircle,
-  Phone,
-  User,
-  XCircle,
+  Clock3,
+  Edit,
+  Eye,
+  Heart,
+  Home,
+  Info,
+  MapPin,
+  MapPinned,
+  LoaderCircle,
+  Ruler,
+  ShieldCheck,
+  Star,
+  Trash2,
+  Users,
+  X,
 } from "lucide-react";
-import { ID, Query } from "appwrite";
 import Image from "next/image";
+import Link from "next/link";
+import { Query } from "appwrite";
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
 import { Header } from "@/components/dashboard/header";
@@ -25,33 +36,22 @@ import { Sidebar } from "@/components/dashboard/sidebar";
 import { ProtectedRoute } from "@/components/protected-route";
 import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
-import { databases } from "@/lib/appwrite/config";
+import { databases, storage } from "@/lib/appwrite/config";
 import {
-  getOwnedRequest,
-  listOrganizationProperties,
+  getOwnedProperty,
+  listOrganizationTenants,
+  syncOrganizationPropertyCount,
 } from "@/lib/appwrite/helpers";
+import { cacheService } from "@/lib/cache.service";
+import { CACHE_KEYS } from "@/lib/cache-keys";
 import type { Property } from "@/types/property";
+import type { Tenant } from "@/types/tenant";
 
-interface RentalRequest {
-  $id: string;
-  tenantName: string;
-  propertyId: string;
-  propertyName: string;
-  tenantId?: string;
-  tenantPhone?: string;
-  tenantEmail: string;
-  tenantAvatar?: string;
-  status: "pending" | "approved" | "rejected";
-  proposedPrice: number;
-  originalPrice?: number;
-  message?: string;
-  moveInDate: string;
-  leaseDuration?: string;
-  questions?: string;
-  rejectionReason?: string;
-  $createdAt: string;
-  $updatedAt: string;
-}
+const databaseId = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!;
+const propertiesCollectionId =
+  process.env.NEXT_PUBLIC_APPWRITE_PROPERTIES_COLLECTION_ID!;
+const propertiesBucketId =
+  process.env.NEXT_PUBLIC_APPWRITE_PROPERTIES_BUCKET_ID!;
 
 function useDashboardMargin(): string {
   const [collapsed, setCollapsed] = useState(false);
@@ -65,6 +65,7 @@ function useDashboardMargin(): string {
 
     const handleToggle = (event: Event) => {
       const detail = (event as CustomEvent<{ isCollapsed?: boolean }>).detail;
+
       setCollapsed(
         detail?.isCollapsed ??
           localStorage.getItem("sidebarCollapsed") === "true",
@@ -87,201 +88,271 @@ function useDashboardMargin(): string {
   return collapsed ? "ml-16" : "ml-64";
 }
 
-export default function RequestDetailsPage() {
+function fileIdFromUrl(url: string): string | null {
+  const match = url.match(/\/files\/([^/?]+)/);
+  return match?.[1] ?? null;
+}
+
+function parseFacilities(value: string): string[] {
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function formatDate(value?: string): string {
+  if (!value) return "Not provided";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Not provided";
+  }
+
+  return date.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function addressMatchesCity(address: string, city: string): boolean {
+  if (!address.trim() || !city.trim()) return false;
+
+  const addressParts = address
+    .toLowerCase()
+    .split(/[,.\s]+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  const cityWords = city
+    .toLowerCase()
+    .split(/[\s,]+/)
+    .map((word) => word.trim())
+    .filter(Boolean);
+
+  return cityWords.some((cityWord) =>
+    addressParts.some(
+      (addressPart) =>
+        addressPart === cityWord || addressPart.includes(cityWord),
+    ),
+  );
+}
+
+function isWithinUsProperty(property: Property, organizationCity: string) {
+  const supportedType =
+    property.type === "House" || property.type === "Boarding";
+
+  return (
+    supportedType &&
+    addressMatchesCity(property.address || "", organizationCity)
+  );
+}
+
+export default function PropertyDetailsPage() {
   const { organization } = useAuth();
   const { resolvedTheme } = useTheme();
   const router = useRouter();
   const params = useParams<{ id: string }>();
-  const requestId = params.id;
+  const propertyId = params.id;
   const margin = useDashboardMargin();
 
-  const [request, setRequest] = useState<RentalRequest | null>(null);
   const [property, setProperty] = useState<Property | null>(null);
+  const [tenants, setTenants] = useState<Tenant[]>([]);
+  const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(true);
-  const [processing, setProcessing] = useState(false);
-  const [showReject, setShowReject] = useState(false);
-  const [rejectionReason, setRejectionReason] = useState("");
+  const [isOwner, setIsOwner] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [approving, setApproving] = useState(false);
 
-  const loadRequest = useCallback(async () => {
-    if (!organization?.userId || !requestId) return;
+  const loadData = useCallback(async () => {
+    if (!organization || !propertyId) return;
 
     setLoading(true);
 
     try {
-      const requestDocument = (await getOwnedRequest(
-        requestId,
-        organization.userId,
-      )) as unknown as RentalRequest;
+      const propertyDocument = (await databases.getDocument(
+        databaseId,
+        propertiesCollectionId,
+        propertyId,
+      )) as unknown as Property;
 
-      const propertyDocuments = await listOrganizationProperties(
-        organization.userId,
-      );
+      const organizationOwnsProperty =
+        propertyDocument.creatorId === organization.userId;
 
-      const ownedProperties = propertyDocuments as unknown as Property[];
-      setRequest(requestDocument);
-      setProperty(
-        ownedProperties.find(
-          (item) => item.$id === requestDocument.propertyId,
-        ) ?? null,
+      const canViewThroughWithinUs =
+        !organizationOwnsProperty &&
+        isWithinUsProperty(propertyDocument, organization.city || "");
+
+      if (!organizationOwnsProperty && !canViewThroughWithinUs) {
+        throw new Error("You do not have access to this property.");
+      }
+
+      let tenantDocuments: Tenant[] = [];
+
+      if (organizationOwnsProperty) {
+        const response = await listOrganizationTenants(organization.$id, [
+          Query.orderDesc("$createdAt"),
+        ]);
+
+        tenantDocuments = response as unknown as Tenant[];
+      }
+
+      setProperty(propertyDocument);
+      setIsOwner(organizationOwnsProperty);
+      setTenants(tenantDocuments);
+      setSelectedImage(
+        propertyDocument.image1 ||
+          propertyDocument.image2 ||
+          propertyDocument.image3 ||
+          "",
       );
     } catch (error) {
-      console.error("Unable to load request:", error);
+      console.error("Unable to load property details:", error);
+
       toast.error(
         error instanceof Error
           ? error.message
-          : "Unable to load this request.",
+          : "Unable to load this property.",
       );
-      router.replace("/dashboard/tenants");
+
+      router.replace("/dashboard/within-us");
     } finally {
       setLoading(false);
     }
-  }, [organization, requestId, router]);
+  }, [organization, propertyId, router]);
 
   useEffect(() => {
-    void loadRequest();
-  }, [loadRequest]);
+    void loadData();
+  }, [loadData]);
 
-  const updatePropertyAvailability = async (
-    targetProperty: Property,
-    propertyName: string,
-  ) => {
-    if (!organization) return;
+  const propertyTenants = useMemo(() => {
+    if (!property || !isOwner) return [];
 
-    const activeTenants = await databases.listDocuments(
-      process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-      process.env.NEXT_PUBLIC_APPWRITE_ORGANIZATION_TENANTS_COLLECTION_ID!,
-      [
-        Query.equal("organizationId", organization.$id),
-        Query.equal("propertyName", propertyName),
-        Query.equal("status", "active"),
-        Query.limit(1),
-      ],
+    return tenants.filter(
+      (tenant) =>
+        tenant.status === "active" &&
+        tenant.propertyName === property.propertyName,
     );
+  }, [isOwner, property, tenants]);
 
-    const capacity = Math.max(1, targetProperty.roomFor || 1);
+  const deleteProperty = async () => {
+    if (!organization || !property || !isOwner) return;
 
-    await databases.updateDocument(
-      process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-      process.env.NEXT_PUBLIC_APPWRITE_PROPERTIES_COLLECTION_ID!,
-      targetProperty.$id,
-      { isAvailable: activeTenants.total < capacity },
-    );
-  };
+    if (propertyTenants.length > 0) {
+      toast.error(
+        "Move or remove active tenants before deleting this property.",
+      );
+      setShowDelete(false);
+      return;
+    }
 
-  const approve = async () => {
-    if (!organization || !request || !property) return;
-
-    setProcessing(true);
+    setDeleting(true);
 
     try {
-      await getOwnedRequest(request.$id, organization.userId);
+      await getOwnedProperty(property.$id, organization.userId);
 
-      const existing = await databases.listDocuments(
-        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-        process.env.NEXT_PUBLIC_APPWRITE_ORGANIZATION_TENANTS_COLLECTION_ID!,
-        [
-          Query.equal("organizationId", organization.$id),
-          Query.equal("email", request.tenantEmail),
-          Query.limit(1),
-        ],
+      await databases.deleteDocument(
+        databaseId,
+        propertiesCollectionId,
+        property.$id,
       );
 
-      const tenantData = {
-        organizationId: organization.$id,
-        name: request.tenantName,
-        identifier: `TENANT-${Date.now()}-${Math.random()
-          .toString(36)
-          .slice(2, 8)
-          .toUpperCase()}`,
-        email: request.tenantEmail,
-        phone: request.tenantPhone ?? "",
-        propertyName: request.propertyName,
-        status: "active",
-        monthlyRent: request.proposedPrice,
-        leaseStartDate:
-          request.moveInDate || new Date().toISOString().slice(0, 10),
-        avatar: request.tenantAvatar ?? "",
-      };
+      await Promise.allSettled(
+        [property.image1, property.image2, property.image3]
+          .filter((url): url is string => Boolean(url))
+          .map(async (url) => {
+            const fileId = fileIdFromUrl(url);
+            if (!fileId) return;
 
-      if (existing.documents.length > 0) {
-        const current = existing.documents[0];
+            await storage.deleteFile(propertiesBucketId, fileId);
+          }),
+      );
 
-        await databases.updateDocument(
-          process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-          process.env.NEXT_PUBLIC_APPWRITE_ORGANIZATION_TENANTS_COLLECTION_ID!,
-          current.$id,
-          {
-            ...tenantData,
-            identifier:
-              String(current.identifier ?? current.Identifier ?? "") ||
-              tenantData.identifier,
-          },
-        );
-      } else {
-        await databases.createDocument(
-          process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-          process.env.NEXT_PUBLIC_APPWRITE_ORGANIZATION_TENANTS_COLLECTION_ID!,
-          ID.unique(),
-          tenantData,
-        );
-      }
+      cacheService.remove(
+        CACHE_KEYS.organizationProperties(organization.$id),
+      );
+      cacheService.remove(CACHE_KEYS.PROPERTIES);
+      cacheService.remove(CACHE_KEYS.PROPERTY(property.$id));
 
-      await Promise.all([
-        databases.updateDocument(
-          process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-          process.env.NEXT_PUBLIC_APPWRITE_REQUESTS_COLLECTION_ID!,
-          request.$id,
-          {
-            status: "approved",
-            rejectionReason: "",
-          },
-        ),
-        updatePropertyAvailability(property, request.propertyName),
-      ]);
+      await syncOrganizationPropertyCount(organization.userId);
 
-      toast.success("Rental request approved.");
-      await loadRequest();
-      window.dispatchEvent(new CustomEvent("cacheRefreshed"));
+      toast.success("Property deleted.");
+      router.replace("/dashboard/properties");
     } catch (error) {
-      console.error("Unable to approve request:", error);
+      console.error("Unable to delete property:", error);
+
       toast.error(
-        error instanceof Error ? error.message : "Failed to approve request.",
+        error instanceof Error ? error.message : "Failed to delete property.",
       );
     } finally {
-      setProcessing(false);
+      setDeleting(false);
     }
   };
 
-  const reject = async () => {
-    if (!organization || !request || !rejectionReason.trim()) return;
+  const approveProperty = async () => {
+    if (
+      !organization ||
+      !property ||
+      isOwner ||
+      property.organizationApproved
+    ) {
+      return;
+    }
 
-    setProcessing(true);
+    if (!isWithinUsProperty(property, organization.city || "")) {
+      toast.error(
+        "This property is not eligible for approval by your organization.",
+      );
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Approve "${property.propertyName}"? This will mark the property as organization-approved for students.`,
+    );
+
+    if (!confirmed) return;
+
+    setApproving(true);
 
     try {
-      await getOwnedRequest(request.$id, organization.userId);
-
-      await databases.updateDocument(
-        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-        process.env.NEXT_PUBLIC_APPWRITE_REQUESTS_COLLECTION_ID!,
-        request.$id,
+      const updatedDocument = await databases.updateDocument(
+        databaseId,
+        propertiesCollectionId,
+        property.$id,
         {
-          status: "rejected",
-          rejectionReason: rejectionReason.trim(),
+          organizationApproved: true,
         },
       );
 
-      toast.success("Rental request rejected.");
-      setShowReject(false);
-      setRejectionReason("");
-      await loadRequest();
-      window.dispatchEvent(new CustomEvent("cacheRefreshed"));
+      const approvedProperty = updatedDocument as unknown as Property;
+
+      setProperty(approvedProperty);
+      cacheService.remove(CACHE_KEYS.PROPERTIES);
+      cacheService.remove(CACHE_KEYS.PROPERTY(property.$id));
+
+      toast.success("Property approved successfully.");
     } catch (error) {
-      console.error("Unable to reject request:", error);
+      console.error("Unable to approve property:", error);
+
+      const errorCode =
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        typeof (error as { code?: unknown }).code === "number"
+          ? (error as { code: number }).code
+          : null;
+
       toast.error(
-        error instanceof Error ? error.message : "Failed to reject request.",
+        errorCode === 401 || errorCode === 403
+          ? "Your Appwrite permissions do not allow this organization to approve the property."
+          : error instanceof Error
+            ? error.message
+            : "Failed to approve the property.",
       );
     } finally {
-      setProcessing(false);
+      setApproving(false);
     }
   };
 
@@ -296,13 +367,15 @@ export default function RequestDetailsPage() {
           }`}
         >
           <Sidebar />
+
           <div className={`${margin} transition-all duration-300`}>
             <Header />
+
             <div className="flex h-[70vh] items-center justify-center">
               <div className="text-center">
                 <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent-500)] dark:border-gray-700" />
                 <p className="mt-4 text-sm text-gray-500">
-                  Loading request…
+                  Loading property…
                 </p>
               </div>
             </div>
@@ -312,14 +385,54 @@ export default function RequestDetailsPage() {
     );
   }
 
-  if (!request) return null;
+  if (!property) return null;
 
-  const statusStyle =
-    request.status === "approved"
-      ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
-      : request.status === "rejected"
-        ? "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300"
-        : "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300";
+  const images = [
+    property.image1,
+    property.image2,
+    property.image3,
+  ].filter((image): image is string => Boolean(image));
+
+  const facilities = parseFacilities(property.facilities || "");
+
+  const declaredCapacity = Math.max(
+    0,
+    Number(property.totalSlots ?? property.roomFor ?? 0),
+  );
+
+  const occupiedSlots = isOwner
+    ? propertyTenants.length
+    : Math.max(
+        0,
+        Number(
+          property.occupiedSlots ??
+            (property.isAvailable === false ? declaredCapacity : 0),
+        ),
+      );
+
+  const availableSlots = Math.max(
+    0,
+    Number(
+      property.availableSlots ??
+        Math.max(declaredCapacity - occupiedSlots, 0),
+    ),
+  );
+
+  const occupancy =
+    declaredCapacity > 0
+      ? Math.min(
+          100,
+          Math.round((occupiedSlots / declaredCapacity) * 100),
+        )
+      : 0;
+
+  const coordinatesAvailable =
+    property.latitude !== undefined &&
+    property.latitude !== null &&
+    property.latitude !== "" &&
+    property.longitude !== undefined &&
+    property.longitude !== null &&
+    property.longitude !== "";
 
   return (
     <ProtectedRoute>
@@ -336,203 +449,508 @@ export default function RequestDetailsPage() {
           <Header />
 
           <main className="p-3 sm:p-5 lg:p-6">
-            <div className="mx-auto max-w-5xl">
-              <div className="mb-5 flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => router.back()}
-                  className="rounded-xl border border-gray-200 bg-white p-2.5 text-gray-600 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
-                >
-                  <ArrowLeft className="h-5 w-5" />
-                </button>
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h1 className="truncate text-2xl font-bold">
-                      Rental request
-                    </h1>
-                    <span
-                      className={`rounded-full px-2.5 py-1 text-xs font-bold capitalize ${statusStyle}`}
-                    >
-                      {request.status}
-                    </span>
+            <div className="mx-auto max-w-6xl">
+              <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex min-w-0 items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => router.back()}
+                    className="rounded-xl border border-gray-200 bg-white p-2.5 text-gray-600 shadow-sm transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+                    aria-label="Go back"
+                  >
+                    <ArrowLeft className="h-5 w-5" />
+                  </button>
+
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h1 className="truncate text-2xl font-bold">
+                        {property.propertyName}
+                      </h1>
+
+                      {!isOwner && (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                          <ShieldCheck className="h-3.5 w-3.5" />
+                          Within Us
+                        </span>
+                      )}
+
+                      {property.organizationApproved ? (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-300">
+                          <BadgeCheck className="h-3.5 w-3.5" />
+                          Organization approved
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                          <Clock3 className="h-3.5 w-3.5" />
+                          Not approved
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="mt-1 flex items-center gap-1 truncate text-sm text-gray-500 dark:text-gray-400">
+                      <MapPin className="h-4 w-4 shrink-0" />
+                      {property.address || "No address provided"}
+                    </p>
                   </div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Submitted {new Date(request.$createdAt).toLocaleString()}
-                  </p>
                 </div>
+
+                {isOwner ? (
+                  <div className="flex gap-2">
+                    <Link
+                      href={`/dashboard/properties/${property.$id}/edit`}
+                      className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+                    >
+                      <Edit className="h-4 w-4" />
+                      Edit
+                    </Link>
+
+                    <button
+                      type="button"
+                      onClick={() => setShowDelete(true)}
+                      className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      Delete
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => void approveProperty()}
+                      disabled={approving || property.organizationApproved}
+                      className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold shadow-sm transition disabled:cursor-not-allowed ${
+                        property.organizationApproved
+                          ? "border border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-300"
+                          : "bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
+                      }`}
+                    >
+                      {approving ? (
+                        <LoaderCircle className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <BadgeCheck className="h-4 w-4" />
+                      )}
+                      {approving
+                        ? "Approving…"
+                        : property.organizationApproved
+                          ? "Organization approved"
+                          : "Approve property"}
+                    </button>
+
+                    <div className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-600 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
+                      <Eye className="h-4 w-4" />
+                      Full details · Read only
+                    </div>
+                  </div>
+                )}
               </div>
 
-              <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
-                <section className="space-y-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-                      {request.tenantAvatar ? (
+              {!isOwner && (
+                <div className="mb-5 flex items-start gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:border-blue-900 dark:bg-blue-950/30 dark:text-blue-200">
+                  <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0" />
+                  <div>
+                    <p className="font-semibold">
+                      Organization viewing privilege
+                    </p>
+                    <p className="mt-1 text-sm leading-6 text-blue-700 dark:text-blue-300">
+                      This property is visible through Within Us because it is
+                      located in your organization&apos;s city. You can review
+                      the complete listing information and approve the property
+                      for students. Edit and delete controls remain with the
+                      organization that owns it.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              <div className="grid gap-5 lg:grid-cols-[1.3fr_0.7fr]">
+                <section className="space-y-5">
+                  <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+                    <div className="relative aspect-[16/9] bg-gray-100 dark:bg-gray-800">
+                      {selectedImage ? (
                         <Image
-                          src={request.tenantAvatar}
-                          alt=""
-                          width={64}
-                          height={64}
-                          className="h-full w-full object-cover"
+                          src={selectedImage}
+                          alt={property.propertyName}
+                          fill
+                          sizes="(max-width: 1024px) 100vw, 70vw"
+                          className="object-cover"
                           unoptimized
                         />
                       ) : (
-                        <User className="h-8 w-8 text-gray-400" />
+                        <div className="flex h-full items-center justify-center">
+                          <Home className="h-16 w-16 text-gray-300" />
+                        </div>
+                      )}
+
+                      <span
+                        className={`absolute left-4 top-4 rounded-full px-3 py-1.5 text-xs font-bold ${
+                          property.isAvailable !== false
+                            ? "bg-green-500 text-white"
+                            : "bg-gray-900/80 text-white"
+                        }`}
+                      >
+                        {property.isAvailable !== false
+                          ? "Available"
+                          : "Occupied"}
+                      </span>
+                    </div>
+
+                    {images.length > 1 && (
+                      <div className="grid grid-cols-3 gap-2 p-3">
+                        {images.map((image) => (
+                          <button
+                            key={image}
+                            type="button"
+                            onClick={() => setSelectedImage(image)}
+                            className={`relative aspect-[4/3] overflow-hidden rounded-xl border-2 ${
+                              selectedImage === image
+                                ? "border-[var(--accent-500)]"
+                                : "border-transparent"
+                            }`}
+                          >
+                            <Image
+                              src={image}
+                              alt={`${property.propertyName} preview`}
+                              fill
+                              className="object-cover"
+                              unoptimized
+                            />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <p className="text-sm font-semibold text-[var(--accent-500)]">
+                          {property.type || "Property"}
+                        </p>
+
+                        <h2 className="mt-1 text-2xl font-bold">
+                          ${Number(property.price || 0).toLocaleString()}
+                          {property.type !== "Land" &&
+                            property.type !== "Workplace" && (
+                              <span className="text-sm font-normal text-gray-500">
+                                /month
+                              </span>
+                            )}
+                        </h2>
+                      </div>
+
+                      <div className="rounded-xl bg-gray-50 px-4 py-3 text-sm dark:bg-gray-800">
+                        <p className="text-xs uppercase text-gray-400">
+                          Lowest acceptable
+                        </p>
+                        <p className="mt-1 font-bold">
+                          $
+                          {Number(
+                            property.priceThreshold ?? property.price ?? 0,
+                          ).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                      {[
+                        {
+                          icon: Bed,
+                          label: "Bedrooms",
+                          value: property.bedrooms || 0,
+                        },
+                        {
+                          icon: Bath,
+                          label: "Bathrooms",
+                          value: property.bathrooms || 0,
+                        },
+                        {
+                          icon: Ruler,
+                          label: "Area",
+                          value: `${property.area || 0} m²`,
+                        },
+                        {
+                          icon: Users,
+                          label: "Capacity",
+                          value:
+                            declaredCapacity > 0
+                              ? `${occupiedSlots}/${declaredCapacity}`
+                              : property.roomFor || 0,
+                        },
+                      ].map((item) => {
+                        const Icon = item.icon;
+
+                        return (
+                          <div
+                            key={item.label}
+                            className="rounded-xl bg-gray-50 p-3 text-center dark:bg-gray-800"
+                          >
+                            <Icon className="mx-auto h-5 w-5 text-[var(--accent-500)]" />
+                            <p className="mt-2 font-bold">{item.value}</p>
+                            <p className="text-[10px] uppercase text-gray-400">
+                              {item.label}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {property.description && (
+                      <div className="mt-5">
+                        <h3 className="font-bold">Description</h3>
+                        <p className="mt-2 whitespace-pre-line text-sm leading-6 text-gray-600 dark:text-gray-300">
+                          {property.description}
+                        </p>
+                      </div>
+                    )}
+
+                    {facilities.length > 0 && (
+                      <div className="mt-5">
+                        <h3 className="font-bold">Facilities</h3>
+
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {facilities.map((facility) => (
+                            <span
+                              key={facility}
+                              className="rounded-full bg-gray-100 px-3 py-1.5 text-xs font-semibold dark:bg-gray-800"
+                            >
+                              {facility}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+                    <h2 className="flex items-center gap-2 font-bold">
+                      <Info className="h-5 w-5 text-[var(--accent-500)]" />
+                      Complete listing details
+                    </h2>
+
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                      <DetailRow
+                        icon={MapPin}
+                        label="Address"
+                        value={property.address || "Not provided"}
+                      />
+
+                      <DetailRow
+                        icon={Building2}
+                        label="Property category"
+                        value={
+                          property.propertyType ||
+                          property.type ||
+                          "Not provided"
+                        }
+                      />
+
+                      <DetailRow
+                        icon={Clock3}
+                        label="Curfew"
+                        value={property.curfew || "No curfew specified"}
+                      />
+
+                      <DetailRow
+                        icon={Users}
+                        label="Available slots"
+                        value={
+                          declaredCapacity > 0
+                            ? availableSlots.toString()
+                            : property.isAvailable !== false
+                              ? "Available"
+                              : "Occupied"
+                        }
+                      />
+
+                      <DetailRow
+                        icon={Calendar}
+                        label="Listed"
+                        value={formatDate(property.$createdAt)}
+                      />
+
+                      <DetailRow
+                        icon={Calendar}
+                        label="Last updated"
+                        value={formatDate(property.$updatedAt)}
+                      />
+
+                      {coordinatesAvailable && (
+                        <DetailRow
+                          icon={MapPinned}
+                          label="Coordinates"
+                          value={`${property.latitude}, ${property.longitude}`}
+                        />
+                      )}
+
+                      {property.agent && (
+                        <DetailRow
+                          icon={ShieldCheck}
+                          label="Agent"
+                          value={property.agent}
+                        />
                       )}
                     </div>
-                    <div>
-                      <h2 className="text-xl font-bold">
-                        {request.tenantName}
-                      </h2>
-                      <p className="text-sm text-gray-500">
-                        Nookly rental applicant
-                      </p>
-                    </div>
+
+                    {(property.rating !== undefined ||
+                      property.review ||
+                      property.reviews) && (
+                      <div className="mt-5 rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
+                        <div className="flex items-center gap-2">
+                          <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                          <p className="font-bold">
+                            {property.rating ?? "Not rated"}
+                          </p>
+                        </div>
+
+                        {(property.review || property.reviews) && (
+                          <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-300">
+                            {property.review || property.reviews}
+                          </p>
+                        )}
+                      </div>
+                    )}
                   </div>
-
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
-                      <p className="text-xs uppercase text-gray-400">Email</p>
-                      <p className="mt-1 flex items-center gap-2 text-sm font-semibold">
-                        <Mail className="h-4 w-4 text-gray-400" />
-                        {request.tenantEmail || "Not provided"}
-                      </p>
-                    </div>
-                    <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
-                      <p className="text-xs uppercase text-gray-400">Phone</p>
-                      <p className="mt-1 flex items-center gap-2 text-sm font-semibold">
-                        <Phone className="h-4 w-4 text-gray-400" />
-                        {request.tenantPhone || "Not provided"}
-                      </p>
-                    </div>
-                  </div>
-
-                  {request.message && (
-                    <div>
-                      <h3 className="mb-2 flex items-center gap-2 font-bold">
-                        <MessageCircle className="h-4 w-4 text-[var(--accent-500)]" />
-                        Message
-                      </h3>
-                      <p className="rounded-xl bg-gray-50 p-4 text-sm leading-6 dark:bg-gray-800">
-                        {request.message}
-                      </p>
-                    </div>
-                  )}
-
-                  {request.questions && (
-                    <div>
-                      <h3 className="mb-2 flex items-center gap-2 font-bold">
-                        <FileText className="h-4 w-4 text-[var(--accent-500)]" />
-                        Questions
-                      </h3>
-                      <p className="rounded-xl bg-gray-50 p-4 text-sm leading-6 dark:bg-gray-800">
-                        {request.questions}
-                      </p>
-                    </div>
-                  )}
-
-                  {request.rejectionReason && (
-                    <div className="rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/30">
-                      <p className="text-xs font-bold uppercase text-red-600">
-                        Rejection reason
-                      </p>
-                      <p className="mt-1 text-sm text-red-700 dark:text-red-300">
-                        {request.rejectionReason}
-                      </p>
-                    </div>
-                  )}
                 </section>
 
                 <aside className="space-y-5">
                   <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                    <h2 className="mb-4 flex items-center gap-2 font-bold">
+                    <h2 className="flex items-center gap-2 font-bold">
                       <Building2 className="h-5 w-5 text-[var(--accent-500)]" />
-                      Rental details
+                      Performance
                     </h2>
 
-                    <dl className="space-y-4">
-                      <div>
-                        <dt className="text-xs uppercase text-gray-400">
-                          Property
-                        </dt>
-                        <dd className="mt-1 font-semibold">
-                          {request.propertyName}
-                        </dd>
-                      </div>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <dt className="text-xs uppercase text-gray-400">
-                            Proposed rent
-                          </dt>
-                          <dd className="mt-1 flex items-center gap-1 font-semibold">
-                            <DollarSign className="h-4 w-4" />
-                            {request.proposedPrice?.toLocaleString() || 0}
-                          </dd>
-                        </div>
-                        <div>
-                          <dt className="text-xs uppercase text-gray-400">
-                            Listed rent
-                          </dt>
-                          <dd className="mt-1 flex items-center gap-1 font-semibold">
-                            <DollarSign className="h-4 w-4" />
-                            {(request.originalPrice ??
-                              property?.price ??
-                              0
-                            ).toLocaleString()}
-                          </dd>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <dt className="text-xs uppercase text-gray-400">
-                            Move-in
-                          </dt>
-                          <dd className="mt-1 flex items-center gap-1 text-sm font-semibold">
-                            <Calendar className="h-4 w-4" />
-                            {request.moveInDate
-                              ? new Date(
-                                  request.moveInDate,
-                                ).toLocaleDateString()
-                              : "Not set"}
-                          </dd>
-                        </div>
-                        <div>
-                          <dt className="text-xs uppercase text-gray-400">
-                            Duration
-                          </dt>
-                          <dd className="mt-1 flex items-center gap-1 text-sm font-semibold">
-                            <Clock className="h-4 w-4" />
-                            {request.leaseDuration || "Not set"}
-                          </dd>
-                        </div>
-                      </div>
-                    </dl>
+                    <div className="mt-4 grid grid-cols-3 gap-2">
+                      <MetricBox
+                        icon={Eye}
+                        value={property.views || 0}
+                        label="Views"
+                      />
+                      <MetricBox
+                        icon={Heart}
+                        value={property.likes || 0}
+                        label="Likes"
+                      />
+                      <MetricBox
+                        icon={Calendar}
+                        value={property.requests || 0}
+                        label="Requests"
+                      />
+                    </div>
                   </section>
 
-                  {request.status === "pending" && (
+                  {declaredCapacity > 0 && (
                     <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                      <h2 className="font-bold">Decision</h2>
-                      <p className="mt-1 text-sm text-gray-500">
-                        Approving creates or updates the tenant record.
-                      </p>
+                      <div className="flex items-center justify-between gap-3">
+                        <h2 className="flex items-center gap-2 font-bold">
+                          <Users className="h-5 w-5 text-[var(--accent-500)]" />
+                          Occupancy
+                        </h2>
+
+                        <span className="text-sm font-bold">
+                          {occupiedSlots}/{declaredCapacity}
+                        </span>
+                      </div>
+
+                      <div className="mt-3 h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                        <div
+                          className="h-full rounded-full bg-[var(--accent-500)]"
+                          style={{ width: `${occupancy}%` }}
+                        />
+                      </div>
+
                       <div className="mt-4 grid grid-cols-2 gap-3">
-                        <button
-                          type="button"
-                          onClick={() => setShowReject(true)}
-                          disabled={processing}
-                          className="inline-flex items-center justify-center gap-2 rounded-xl border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-600 disabled:opacity-50 dark:border-red-900"
-                        >
-                          <XCircle className="h-4 w-4" />
-                          Reject
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => void approve()}
-                          disabled={processing || !property}
-                          className="inline-flex items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
-                        >
-                          <CheckCircle className="h-4 w-4" />
-                          {processing ? "Processing…" : "Approve"}
-                        </button>
+                        <div className="rounded-xl bg-gray-50 p-3 text-center dark:bg-gray-800">
+                          <p className="text-xl font-bold">{occupiedSlots}</p>
+                          <p className="mt-1 text-[10px] uppercase text-gray-400">
+                            Occupied
+                          </p>
+                        </div>
+
+                        <div className="rounded-xl bg-gray-50 p-3 text-center dark:bg-gray-800">
+                          <p className="text-xl font-bold">{availableSlots}</p>
+                          <p className="mt-1 text-[10px] uppercase text-gray-400">
+                            Available
+                          </p>
+                        </div>
+                      </div>
+                    </section>
+                  )}
+
+                  {isOwner ? (
+                    <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+                      <div className="flex items-center justify-between">
+                        <h2 className="flex items-center gap-2 font-bold">
+                          <Users className="h-5 w-5 text-[var(--accent-500)]" />
+                          Active tenants
+                        </h2>
+
+                        <span className="text-sm font-bold">
+                          {propertyTenants.length}/
+                          {Math.max(declaredCapacity, property.roomFor || 1)}
+                        </span>
+                      </div>
+
+                      <div className="mt-4 space-y-3">
+                        {propertyTenants.length === 0 ? (
+                          <p className="rounded-xl bg-gray-50 p-4 text-center text-sm text-gray-500 dark:bg-gray-800">
+                            No active tenants.
+                          </p>
+                        ) : (
+                          propertyTenants.map((tenant) => (
+                            <Link
+                              key={tenant.$id}
+                              href={`/dashboard/tenants/${tenant.$id}/edit`}
+                              className="flex items-center gap-3 rounded-xl border border-gray-100 p-3 transition hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800"
+                            >
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                                {tenant.avatar ? (
+                                  <Image
+                                    src={tenant.avatar}
+                                    alt={tenant.name}
+                                    width={40}
+                                    height={40}
+                                    className="h-full w-full object-cover"
+                                    unoptimized
+                                  />
+                                ) : (
+                                  <Users className="h-5 w-5 text-gray-400" />
+                                )}
+                              </div>
+
+                              <div className="min-w-0">
+                                <p className="truncate text-sm font-bold">
+                                  {tenant.name}
+                                </p>
+                                <p className="truncate text-xs text-gray-500">
+                                  {tenant.phone ||
+                                    tenant.tenantPhone ||
+                                    tenant.email ||
+                                    "No contact details"}
+                                </p>
+                              </div>
+
+                              <CheckCircle className="ml-auto h-4 w-4 text-green-500" />
+                            </Link>
+                          ))
+                        )}
+                      </div>
+                    </section>
+                  ) : (
+                    <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+                      <h2 className="flex items-center gap-2 font-bold">
+                        <ShieldCheck className="h-5 w-5 text-[var(--accent-500)]" />
+                        Access level
+                      </h2>
+
+                      <div className="mt-4 rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
+                        <p className="font-semibold">Full property visibility</p>
+                        <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400">
+                          Your organization can inspect the full listing,
+                          availability and performance information. Tenant
+                          identities and management controls remain private to
+                          the owning organization.
+                        </p>
                       </div>
                     </section>
                   )}
@@ -543,46 +961,87 @@ export default function RequestDetailsPage() {
         </div>
       </div>
 
-      {showReject && (
+      {isOwner && showDelete && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-900">
-            <h2 className="text-lg font-bold">Reject rental request</h2>
-            <p className="mt-1 text-sm text-gray-500">
-              This reason will be stored with the request.
-            </p>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-bold">Delete property?</h2>
+                <p className="mt-2 text-sm text-gray-500">
+                  This permanently deletes {property.propertyName} and its
+                  uploaded images.
+                </p>
+              </div>
 
-            <textarea
-              value={rejectionReason}
-              onChange={(event) => setRejectionReason(event.target.value)}
-              rows={4}
-              placeholder="Reason for rejection"
-              className="mt-4 w-full resize-none rounded-xl border border-gray-200 bg-gray-50 p-3 text-sm dark:border-gray-700 dark:bg-gray-950"
-            />
-
-            <div className="mt-5 flex gap-3">
               <button
                 type="button"
-                onClick={() => {
-                  setShowReject(false);
-                  setRejectionReason("");
-                }}
-                disabled={processing}
+                onClick={() => setShowDelete(false)}
+                className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                aria-label="Close delete dialog"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="mt-6 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowDelete(false)}
+                disabled={deleting}
                 className="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold dark:border-gray-700"
               >
                 Cancel
               </button>
+
               <button
                 type="button"
-                onClick={() => void reject()}
-                disabled={processing || !rejectionReason.trim()}
+                onClick={() => void deleteProperty()}
+                disabled={deleting}
                 className="flex-1 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
               >
-                {processing ? "Rejecting…" : "Reject"}
+                {deleting ? "Deleting…" : "Delete"}
               </button>
             </div>
           </div>
         </div>
       )}
     </ProtectedRoute>
+  );
+}
+
+interface DetailRowProps {
+  icon: typeof MapPin;
+  label: string;
+  value: string;
+}
+
+function DetailRow({ icon: Icon, label, value }: DetailRowProps) {
+  return (
+    <div className="flex items-start gap-3 rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
+      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent-500)]" />
+
+      <div className="min-w-0">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">
+          {label}
+        </p>
+        <p className="mt-1 break-words text-sm font-medium">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+interface MetricBoxProps {
+  icon: typeof Eye;
+  value: number | string;
+  label: string;
+}
+
+function MetricBox({ icon: Icon, value, label }: MetricBoxProps) {
+  return (
+    <div className="rounded-xl bg-gray-50 p-3 text-center dark:bg-gray-800">
+      <Icon className="mx-auto h-4 w-4 text-gray-400" />
+      <p className="mt-1 font-bold">{value}</p>
+      <p className="text-[10px] uppercase text-gray-400">{label}</p>
+    </div>
   );
 }
