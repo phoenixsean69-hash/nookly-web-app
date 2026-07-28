@@ -2,6 +2,7 @@
 
 import {
   ArrowLeft,
+  BadgeCheck,
   Bath,
   Bed,
   Building2,
@@ -15,6 +16,7 @@ import {
   Info,
   MapPin,
   MapPinned,
+  LoaderCircle,
   Ruler,
   ShieldCheck,
   Star,
@@ -162,6 +164,7 @@ export default function PropertyDetailsPage() {
   const [isOwner, setIsOwner] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [approving, setApproving] = useState(false);
 
   const loadData = useCallback(async () => {
     if (!organization || !propertyId) return;
@@ -288,6 +291,71 @@ export default function PropertyDetailsPage() {
     }
   };
 
+  const approveProperty = async () => {
+    if (
+      !organization ||
+      !property ||
+      isOwner ||
+      property.organizationApproved
+    ) {
+      return;
+    }
+
+    if (!isWithinUsProperty(property, organization.city || "")) {
+      toast.error(
+        "This property is not eligible for approval by your organization.",
+      );
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Approve "${property.propertyName}"? This will mark the property as organization-approved for students.`,
+    );
+
+    if (!confirmed) return;
+
+    setApproving(true);
+
+    try {
+      const updatedDocument = await databases.updateDocument(
+        databaseId,
+        propertiesCollectionId,
+        property.$id,
+        {
+          organizationApproved: true,
+        },
+      );
+
+      const approvedProperty = updatedDocument as unknown as Property;
+
+      setProperty(approvedProperty);
+      cacheService.remove(CACHE_KEYS.PROPERTIES);
+      cacheService.remove(CACHE_KEYS.PROPERTY(property.$id));
+
+      toast.success("Property approved successfully.");
+    } catch (error) {
+      console.error("Unable to approve property:", error);
+
+      const errorCode =
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        typeof (error as { code?: unknown }).code === "number"
+          ? (error as { code: number }).code
+          : null;
+
+      toast.error(
+        errorCode === 401 || errorCode === 403
+          ? "Your Appwrite permissions do not allow this organization to approve the property."
+          : error instanceof Error
+            ? error.message
+            : "Failed to approve the property.",
+      );
+    } finally {
+      setApproving(false);
+    }
+  };
+
   const dark = resolvedTheme === "dark";
 
   if (loading) {
@@ -405,6 +473,18 @@ export default function PropertyDetailsPage() {
                           Within Us
                         </span>
                       )}
+
+                      {property.organizationApproved ? (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-300">
+                          <BadgeCheck className="h-3.5 w-3.5" />
+                          Organization approved
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                          <Clock3 className="h-3.5 w-3.5" />
+                          Not approved
+                        </span>
+                      )}
                     </div>
 
                     <p className="mt-1 flex items-center gap-1 truncate text-sm text-gray-500 dark:text-gray-400">
@@ -434,9 +514,33 @@ export default function PropertyDetailsPage() {
                     </button>
                   </div>
                 ) : (
-                  <div className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-600 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
-                    <Eye className="h-4 w-4" />
-                    Full details · Read only
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => void approveProperty()}
+                      disabled={approving || property.organizationApproved}
+                      className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold shadow-sm transition disabled:cursor-not-allowed ${
+                        property.organizationApproved
+                          ? "border border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-300"
+                          : "bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
+                      }`}
+                    >
+                      {approving ? (
+                        <LoaderCircle className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <BadgeCheck className="h-4 w-4" />
+                      )}
+                      {approving
+                        ? "Approving…"
+                        : property.organizationApproved
+                          ? "Organization approved"
+                          : "Approve property"}
+                    </button>
+
+                    <div className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-600 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
+                      <Eye className="h-4 w-4" />
+                      Full details · Read only
+                    </div>
                   </div>
                 )}
               </div>
@@ -451,8 +555,9 @@ export default function PropertyDetailsPage() {
                     <p className="mt-1 text-sm leading-6 text-blue-700 dark:text-blue-300">
                       This property is visible through Within Us because it is
                       located in your organization&apos;s city. You can review
-                      the complete listing information, while management
-                      controls remain with the organization that owns it.
+                      the complete listing information and approve the property
+                      for students. Edit and delete controls remain with the
+                      organization that owns it.
                     </p>
                   </div>
                 </div>
