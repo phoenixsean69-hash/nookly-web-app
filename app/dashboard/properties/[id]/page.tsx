@@ -149,6 +149,178 @@ function isWithinUsProperty(property: Property, organizationCity: string) {
   );
 }
 
+
+interface DisplayReview {
+  userName: string;
+  userAvatar?: string;
+  review: string;
+  rating: number;
+  date?: string;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function clampRating(value: unknown): number {
+  const parsed =
+    typeof value === "number"
+      ? value
+      : typeof value === "string"
+        ? Number(value)
+        : 0;
+
+  if (!Number.isFinite(parsed)) return 0;
+  return Math.min(5, Math.max(0, parsed));
+}
+
+function parseReviewValue(value: unknown): unknown {
+  let current = value;
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    if (typeof current !== "string") break;
+
+    const trimmed = current.trim();
+
+    if (
+      !trimmed ||
+      trimmed === "null" ||
+      trimmed === "undefined" ||
+      trimmed === "[]"
+    ) {
+      return [];
+    }
+
+    try {
+      current = JSON.parse(trimmed);
+    } catch {
+      return trimmed;
+    }
+  }
+
+  return current;
+}
+
+function parseReviews(value: unknown): DisplayReview[] {
+  const parsed = parseReviewValue(value);
+  const items = Array.isArray(parsed) ? parsed : [parsed];
+
+  return items.flatMap((item): DisplayReview[] => {
+    if (typeof item === "string") {
+      const review = item.trim();
+
+      return review
+        ? [
+            {
+              userName: "Anonymous reviewer",
+              review,
+              rating: 0,
+            },
+          ]
+        : [];
+    }
+
+    if (!isRecord(item)) return [];
+
+    const reviewText =
+      typeof item.review === "string"
+        ? item.review.trim()
+        : typeof item.comment === "string"
+          ? item.comment.trim()
+          : typeof item.message === "string"
+            ? item.message.trim()
+            : "";
+
+    if (!reviewText) return [];
+
+    const userNameCandidates = [
+      item.userName,
+      item.username,
+      item.name,
+      item.reviewerName,
+    ];
+
+    const userName =
+      userNameCandidates.find(
+        (candidate): candidate is string =>
+          typeof candidate === "string" && candidate.trim().length > 0,
+      )?.trim() || "Anonymous reviewer";
+
+    const avatarCandidates = [
+      item.userAvatar,
+      item.avatar,
+      item.reviewerAvatar,
+    ];
+
+    const userAvatar = avatarCandidates.find(
+      (candidate): candidate is string =>
+        typeof candidate === "string" &&
+        candidate.trim().length > 0 &&
+        candidate !== "null",
+    );
+
+    const dateCandidates = [
+      item.date,
+      item.createdAt,
+      item.$createdAt,
+      item.reviewDate,
+    ];
+
+    const date = dateCandidates.find(
+      (candidate): candidate is string =>
+        typeof candidate === "string" && candidate.trim().length > 0,
+    );
+
+    return [
+      {
+        userName,
+        userAvatar,
+        review: reviewText,
+        rating: clampRating(item.rating),
+        date,
+      },
+    ];
+  });
+}
+
+function getReadableReviews(property: Property): DisplayReview[] {
+  const candidates: unknown[] = [
+    (property as unknown as { reviews?: unknown }).reviews,
+    (property as unknown as { review?: unknown }).review,
+  ];
+
+  const seen = new Set<string>();
+
+  return candidates
+    .flatMap((candidate) => parseReviews(candidate))
+    .filter((review) => {
+      const signature = [
+        review.userName.toLowerCase(),
+        review.review.toLowerCase(),
+        review.rating,
+        review.date || "",
+      ].join("|");
+
+      if (seen.has(signature)) return false;
+      seen.add(signature);
+      return true;
+    });
+}
+
+function formatReviewDate(value?: string): string {
+  if (!value) return "";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 export default function PropertyDetailsPage() {
   const { organization } = useAuth();
   const { resolvedTheme } = useTheme();
@@ -292,12 +464,14 @@ export default function PropertyDetailsPage() {
   };
 
   const approveProperty = async () => {
-    if (
-      !organization ||
-      !property ||
-      isOwner ||
-      property.organizationApproved
-    ) {
+    const alreadyApproved = property?.organizationApproved === true;
+
+    if (!organization || !property || isOwner || alreadyApproved) {
+      return;
+    }
+
+    if (!navigator.onLine) {
+      toast.error("Connect to the internet before approving this property.");
       return;
     }
 
@@ -317,7 +491,7 @@ export default function PropertyDetailsPage() {
     setApproving(true);
 
     try {
-      const updatedDocument = await databases.updateDocument(
+      await databases.updateDocument(
         databaseId,
         propertiesCollectionId,
         property.$id,
@@ -326,9 +500,31 @@ export default function PropertyDetailsPage() {
         },
       );
 
-      const approvedProperty = updatedDocument as unknown as Property;
+      const verifiedDocument = (await databases.getDocument(
+        databaseId,
+        propertiesCollectionId,
+        property.$id,
+      )) as unknown as Property;
 
-      setProperty(approvedProperty);
+      const approvedInDatabase =
+        verifiedDocument.organizationApproved === true;
+
+      setProperty((current) =>
+        current
+          ? {
+              ...current,
+              organizationApproved: approvedInDatabase ? true : null,
+              $updatedAt: verifiedDocument.$updatedAt || current.$updatedAt,
+            }
+          : current,
+      );
+
+      if (!approvedInDatabase) {
+        throw new Error(
+          "Appwrite did not save the approval. The property is still not approved.",
+        );
+      }
+
       cacheService.remove(CACHE_KEYS.PROPERTIES);
       cacheService.remove(CACHE_KEYS.PROPERTY(property.$id));
 
@@ -386,6 +582,22 @@ export default function PropertyDetailsPage() {
   }
 
   if (!property) return null;
+
+  const isOrganizationApproved =
+    property.organizationApproved === true;
+  const readableReviews = getReadableReviews(property);
+  const ratedReviews = readableReviews.filter((review) => review.rating > 0);
+  const calculatedRating =
+    ratedReviews.length > 0
+      ? ratedReviews.reduce((total, review) => total + review.rating, 0) /
+        ratedReviews.length
+      : clampRating(property.rating);
+  const ratingLabel =
+    calculatedRating > 0
+      ? calculatedRating.toFixed(
+          Number.isInteger(calculatedRating) ? 0 : 1,
+        )
+      : "Not rated";
 
   const images = [
     property.image1,
@@ -474,7 +686,7 @@ export default function PropertyDetailsPage() {
                         </span>
                       )}
 
-                      {property.organizationApproved ? (
+                      {isOrganizationApproved ? (
                         <span className="inline-flex items-center gap-1 rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-300">
                           <BadgeCheck className="h-3.5 w-3.5" />
                           Organization approved
@@ -518,9 +730,9 @@ export default function PropertyDetailsPage() {
                     <button
                       type="button"
                       onClick={() => void approveProperty()}
-                      disabled={approving || property.organizationApproved}
+                      disabled={approving || isOrganizationApproved}
                       className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold shadow-sm transition disabled:cursor-not-allowed ${
-                        property.organizationApproved
+                        isOrganizationApproved
                           ? "border border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-300"
                           : "bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
                       }`}
@@ -532,7 +744,7 @@ export default function PropertyDetailsPage() {
                       )}
                       {approving
                         ? "Approving…"
-                        : property.organizationApproved
+                        : isOrganizationApproved
                           ? "Organization approved"
                           : "Approve property"}
                     </button>
@@ -792,23 +1004,110 @@ export default function PropertyDetailsPage() {
                       )}
                     </div>
 
-                    {(property.rating !== undefined ||
-                      property.review ||
-                      property.reviews) && (
-                      <div className="mt-5 rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
-                        <div className="flex items-center gap-2">
-                          <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                          <p className="font-bold">
-                            {property.rating ?? "Not rated"}
-                          </p>
+                    {(readableReviews.length > 0 ||
+                      calculatedRating > 0) && (
+                      <section className="mt-6 border-t border-gray-200 pt-5 dark:border-gray-700">
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                          <div>
+                            <h3 className="font-bold">Student reviews</h3>
+                            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                              {readableReviews.length} written{" "}
+                              {readableReviews.length === 1
+                                ? "review"
+                                : "reviews"}
+                            </p>
+                          </div>
+
+                          <div className="inline-flex items-center gap-2 self-start rounded-xl border border-yellow-200 bg-yellow-50 px-3 py-2 dark:border-yellow-900 dark:bg-yellow-950/30">
+                            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                            <span className="text-lg font-bold text-gray-900 dark:text-white">
+                              {ratingLabel}
+                            </span>
+                            {calculatedRating > 0 && (
+                              <span className="text-xs text-gray-500 dark:text-gray-400">
+                                out of 5
+                              </span>
+                            )}
+                          </div>
                         </div>
 
-                        {(property.review || property.reviews) && (
-                          <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-300">
-                            {property.review || property.reviews}
+                        {readableReviews.length > 0 ? (
+                          <div className="mt-4 space-y-3">
+                            {readableReviews.map((review, index) => {
+                              const reviewDate = formatReviewDate(review.date);
+                              const reviewerInitial =
+                                review.userName.trim().charAt(0).toUpperCase() ||
+                                "A";
+
+                              return (
+                                <article
+                                  key={`${review.userName}-${review.date || "undated"}-${index}`}
+                                  className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900"
+                                >
+                                  <div className="flex items-start gap-3">
+                                    <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--accent-100)] font-bold text-[var(--accent-700)] dark:bg-[var(--accent-950)] dark:text-[var(--accent-300)]">
+                                      {review.userAvatar ? (
+                                        <Image
+                                          src={review.userAvatar}
+                                          alt={review.userName}
+                                          fill
+                                          sizes="44px"
+                                          className="object-cover"
+                                          unoptimized
+                                        />
+                                      ) : (
+                                        <span>{reviewerInitial}</span>
+                                      )}
+                                    </div>
+
+                                    <div className="min-w-0 flex-1">
+                                      <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+                                        <div>
+                                          <p className="font-semibold text-gray-900 dark:text-white">
+                                            {review.userName}
+                                          </p>
+
+                                          <div
+                                            className="mt-1 flex items-center gap-0.5"
+                                            aria-label={`${review.rating} out of 5 stars`}
+                                          >
+                                            {Array.from({ length: 5 }).map(
+                                              (_, starIndex) => (
+                                                <Star
+                                                  key={starIndex}
+                                                  className={`h-4 w-4 ${
+                                                    starIndex < review.rating
+                                                      ? "fill-yellow-400 text-yellow-400"
+                                                      : "text-gray-300 dark:text-gray-600"
+                                                  }`}
+                                                />
+                                              ),
+                                            )}
+                                          </div>
+                                        </div>
+
+                                        {reviewDate && (
+                                          <time className="text-xs text-gray-400">
+                                            {reviewDate}
+                                          </time>
+                                        )}
+                                      </div>
+
+                                      <p className="mt-3 whitespace-pre-line break-words text-sm leading-6 text-gray-600 dark:text-gray-300">
+                                        {review.review}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </article>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <p className="mt-4 rounded-xl bg-gray-50 p-4 text-sm text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+                            No written reviews are available for this property.
                           </p>
                         )}
-                      </div>
+                      </section>
                     )}
                   </div>
                 </section>

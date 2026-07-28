@@ -19,7 +19,7 @@ export interface Property extends Models.Document {
   image2: string;
   image3: string;
   creatorId: string;
-  organizationApproved?: boolean;
+  organizationApproved?: boolean | null;
   rating?: number;
   review?: string;
   likes?: number;
