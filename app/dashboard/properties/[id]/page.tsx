@@ -685,18 +685,6 @@ export default function PropertyDetailsPage() {
                           Within Us
                         </span>
                       )}
-
-                      {isOrganizationApproved ? (
-                        <span className="inline-flex items-center gap-1 rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-300">
-                          <BadgeCheck className="h-3.5 w-3.5" />
-                          Organization approved
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
-                          <Clock3 className="h-3.5 w-3.5" />
-                          Not approved
-                        </span>
-                      )}
                     </div>
 
                     <p className="mt-1 flex items-center gap-1 truncate text-sm text-gray-500 dark:text-gray-400">
