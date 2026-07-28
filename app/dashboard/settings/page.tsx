@@ -49,7 +49,13 @@ interface OrganizationSettings {
 
 export default function SettingsPage() {
   const { organization, user, logout, isOffline } = useAuth();
-  const { theme, accentColor, toggleTheme, setAccentColor } = useTheme();
+  const {
+  theme,
+  resolvedTheme,
+  accentColor,
+  toggleTheme,
+  setAccentColor,
+} = useTheme();
   const router = useRouter();
   const searchParams = useSearchParams();
   

@@ -141,6 +141,8 @@ export default function DashboardPage() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  
+
   // Function to check sidebar state from localStorage
   const checkSidebarState = useCallback(() => {
     if (isMobile) {
