@@ -1949,7 +1949,7 @@ export default function NewPropertyPage() {
 
                       <MapPicker
                         onLocationSelect={selectMapLocation}
-                        theme={theme}
+                        theme={resolvedTheme}
                         initialLat={
                           form.latitude
                             ? Number(form.latitude)

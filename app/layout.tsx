@@ -13,6 +13,11 @@ export const metadata: Metadata = {
   title: "Nookly - Property Management",
   description: "Manage your properties efficiently",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/images/icon.png",
+    shortcut: "/images/icon.png",
+    apple: "/images/icon.png",
+  },
 };
 
 export const viewport: Viewport = {
