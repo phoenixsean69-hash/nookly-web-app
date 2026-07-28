@@ -34,8 +34,8 @@ import {
   Trash2,
   Upload,
   Users,
-  Video,
   Waves,
+  Video,
   Wifi,
   Wind,
   X,
@@ -61,26 +61,10 @@ import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
 import { databases, storage } from "@/lib/appwrite/config";
 import { updateOrganizationPropertyCount } from "@/lib/appwrite/helpers";
-import {
-  compressVideoFile,
-  VIDEO_COMPRESSION_THRESHOLD_BYTES,
-} from "@/lib/video-compression";
 
 const PROPERTY_BUCKET_ID =
   process.env.NEXT_PUBLIC_APPWRITE_PROPERTIES_BUCKET_ID!;
-const VIDEO_BUCKET_ID =
-  process.env.NEXT_PUBLIC_APPWRITE_VIDEOS_BUCKET_ID || PROPERTY_BUCKET_ID;
 
-const configuredSourceVideoLimit = Number(
-  process.env.NEXT_PUBLIC_MAX_SOURCE_VIDEO_SIZE_MB,
-);
-const MAX_SOURCE_VIDEO_SIZE_MB =
-  Number.isFinite(configuredSourceVideoLimit) &&
-  configuredSourceVideoLimit > 0
-    ? configuredSourceVideoLimit
-    : 750;
-const MAX_SOURCE_VIDEO_SIZE_BYTES =
-  MAX_SOURCE_VIDEO_SIZE_MB * 1024 * 1024;
 const MAX_IMAGE_SIZE_BYTES = 8 * 1024 * 1024;
 
 const ACCEPTED_IMAGE_TYPES = [
@@ -88,15 +72,6 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/png",
   "image/webp",
 ];
-
-const ACCEPTED_VIDEO_TYPES = [
-  "video/mp4",
-  "video/webm",
-  "video/quicktime",
-  "video/x-m4v",
-];
-
-const ACCEPTED_VIDEO_EXTENSIONS = ["mp4", "webm", "mov", "m4v"];
 
 const propertyTypes = [
   "House",
@@ -138,13 +113,11 @@ const curfewOptions = [
 ];
 
 type ImageKey = "image1" | "image2" | "image3";
-type VideoKey = "video1" | "video2" | "video3";
-type MediaKey = ImageKey | VideoKey;
 type SlotField = "totalSlots" | "occupiedSlots" | "availableSlots";
 type RoomTypeCode = (typeof roomOptions)[number]["value"];
 
-type MediaFileState<T extends string> = Record<T, File | null>;
-type MediaPreviewState<T extends string> = Record<T, string>;
+type MediaFileState = Record<ImageKey, File | null>;
+type MediaPreviewState = Record<ImageKey, string>;
 
 interface FormState {
   propertyName: string;
@@ -183,21 +156,6 @@ interface UploadProgress {
   current: number;
   total: number;
   label: string;
-}
-
-type VideoCompressionStatus =
-  | "idle"
-  | "compressing"
-  | "ready"
-  | "failed";
-
-interface VideoCompressionState {
-  status: VideoCompressionStatus;
-  progress: number;
-  originalSize: number;
-  finalSize: number;
-  message: string;
-  wasCompressed: boolean;
 }
 
 interface SectionCardProps {
@@ -374,14 +332,6 @@ function toNonNegativeInteger(value: string | number, fallback = 0): number {
   return Math.max(0, parsed);
 }
 
-function isSameFile(first: File, second: File): boolean {
-  return (
-    first.name === second.name &&
-    first.size === second.size &&
-    first.lastModified === second.lastModified
-  );
-}
-
 function validateImage(file: File): string | null {
   if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
     return "Choose a JPG, PNG, or WEBP image.";
@@ -393,26 +343,6 @@ function validateImage(file: File): string | null {
 
   if (file.size === 0) {
     return "The selected image is empty.";
-  }
-
-  return null;
-}
-
-function validateVideo(file: File): string | null {
-  const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
-  const hasAcceptedType = ACCEPTED_VIDEO_TYPES.includes(file.type);
-  const hasAcceptedExtension = ACCEPTED_VIDEO_EXTENSIONS.includes(extension);
-
-  if (!hasAcceptedType && !hasAcceptedExtension) {
-    return "Choose an MP4, WEBM, MOV, or M4V video.";
-  }
-
-  if (file.size > MAX_SOURCE_VIDEO_SIZE_BYTES) {
-    return `The source video must be ${MAX_SOURCE_VIDEO_SIZE_MB} MB or smaller.`;
-  }
-
-  if (file.size === 0) {
-    return "The selected video is empty.";
   }
 
   return null;
@@ -462,11 +392,6 @@ export default function NewPropertyPage() {
   const margin = useDashboardMargin();
 
   const previewUrls = useRef(new Set<string>());
-  const videoCompressionJobs = useRef<Record<VideoKey, number>>({
-    video1: 0,
-    video2: 0,
-    video3: 0,
-  });
   const lastEditedAvailability = useRef<"occupied" | "available">("available");
 
   const [form, setForm] = useState<FormState>({
@@ -498,68 +423,16 @@ export default function NewPropertyPage() {
 
   const [boardingRooms, setBoardingRooms] = useState<BoardingRoom[]>([]);
 
-  const [imageFiles, setImageFiles] = useState<MediaFileState<ImageKey>>({
+  const [imageFiles, setImageFiles] = useState<MediaFileState>({
     image1: null,
     image2: null,
     image3: null,
   });
 
-  const [imagePreviews, setImagePreviews] = useState<
-    MediaPreviewState<ImageKey>
-  >({
+  const [imagePreviews, setImagePreviews] = useState<MediaPreviewState>({
     image1: "",
     image2: "",
     image3: "",
-  });
-
-  const [videoFiles, setVideoFiles] = useState<MediaFileState<VideoKey>>({
-    video1: null,
-    video2: null,
-    video3: null,
-  });
-
-  const [videoOriginalFiles, setVideoOriginalFiles] =
-    useState<MediaFileState<VideoKey>>({
-      video1: null,
-      video2: null,
-      video3: null,
-    });
-
-  const [videoCompression, setVideoCompression] = useState<
-    Record<VideoKey, VideoCompressionState>
-  >({
-    video1: {
-      status: "idle",
-      progress: 0,
-      originalSize: 0,
-      finalSize: 0,
-      message: "",
-      wasCompressed: false,
-    },
-    video2: {
-      status: "idle",
-      progress: 0,
-      originalSize: 0,
-      finalSize: 0,
-      message: "",
-      wasCompressed: false,
-    },
-    video3: {
-      status: "idle",
-      progress: 0,
-      originalSize: 0,
-      finalSize: 0,
-      message: "",
-      wasCompressed: false,
-    },
-  });
-
-  const [videoPreviews, setVideoPreviews] = useState<
-    MediaPreviewState<VideoKey>
-  >({
-    video1: "",
-    video2: "",
-    video3: "",
   });
 
   const [showMapPicker, setShowMapPicker] = useState(false);
@@ -572,9 +445,6 @@ export default function NewPropertyPage() {
     useState<UploadProgress | null>(null);
 
   const isBoarding = form.type === "Boarding";
-  const isCompressingVideo = Object.values(videoCompression).some(
-    (item) => item.status === "compressing",
-  );
   const totalSlots = toNonNegativeInteger(form.totalSlots, 1);
   const occupiedSlots = toNonNegativeInteger(form.occupiedSlots);
   const availableSlots = toNonNegativeInteger(form.availableSlots);
@@ -606,12 +476,8 @@ export default function NewPropertyPage() {
     roomPrices.length > 0 ? Math.max(...roomPrices) : null;
 
   const selectedUploadCount = useMemo(
-    () =>
-      [
-        ...Object.values(imageFiles),
-        ...(isBoarding ? Object.values(videoFiles) : []),
-      ].filter(Boolean).length,
-    [imageFiles, isBoarding, videoFiles],
+    () => Object.values(imageFiles).filter(Boolean).length,
+    [imageFiles],
   );
 
   const completedSteps = useMemo(() => {
@@ -653,14 +519,8 @@ export default function NewPropertyPage() {
   }, []);
 
   const setObjectPreview = useCallback(
-    <T extends MediaKey>(
-      key: T,
-      file: File,
-      setter: React.Dispatch<
-        React.SetStateAction<Record<T, string>>
-      >,
-    ) => {
-      setter((current) => {
+    (key: ImageKey, file: File) => {
+      setImagePreviews((current) => {
         const previous = current[key];
 
         if (previous) {
@@ -677,26 +537,18 @@ export default function NewPropertyPage() {
     [],
   );
 
-  const removeObjectPreview = useCallback(
-    <T extends MediaKey>(
-      key: T,
-      setter: React.Dispatch<
-        React.SetStateAction<Record<T, string>>
-      >,
-    ) => {
-      setter((current) => {
-        const previous = current[key];
+  const removeObjectPreview = useCallback((key: ImageKey) => {
+    setImagePreviews((current) => {
+      const previous = current[key];
 
-        if (previous) {
-          URL.revokeObjectURL(previous);
-          previewUrls.current.delete(previous);
-        }
+      if (previous) {
+        URL.revokeObjectURL(previous);
+        previewUrls.current.delete(previous);
+      }
 
-        return { ...current, [key]: "" };
-      });
-    },
-    [],
-  );
+      return { ...current, [key]: "" };
+    });
+  }, []);
 
   const selectImage = (key: ImageKey, file: File | null) => {
     if (!file) return;
@@ -710,170 +562,12 @@ export default function NewPropertyPage() {
 
     setError("");
     setImageFiles((current) => ({ ...current, [key]: file }));
-    setObjectPreview(key, file, setImagePreviews);
+    setObjectPreview(key, file);
   };
 
   const removeImage = (key: ImageKey) => {
     setImageFiles((current) => ({ ...current, [key]: null }));
-    removeObjectPreview(key, setImagePreviews);
-  };
-
-  const selectVideo = async (
-    key: VideoKey,
-    file: File | null,
-  ) => {
-    if (!file) return;
-
-    const validationError = validateVideo(file);
-
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
-
-    const duplicate = Object.entries(videoOriginalFiles).some(
-      ([existingKey, existingFile]) =>
-        existingKey !== key &&
-        existingFile !== null &&
-        isSameFile(existingFile, file),
-    );
-
-    if (duplicate) {
-      setError("That video is already selected in another video slot.");
-      return;
-    }
-
-    const jobId = videoCompressionJobs.current[key] + 1;
-    videoCompressionJobs.current[key] = jobId;
-
-    setError("");
-    setVideoOriginalFiles((current) => ({
-      ...current,
-      [key]: file,
-    }));
-    setVideoFiles((current) => ({ ...current, [key]: null }));
-    setObjectPreview(key, file, setVideoPreviews);
-
-    if (file.size <= VIDEO_COMPRESSION_THRESHOLD_BYTES) {
-      setVideoFiles((current) => ({ ...current, [key]: file }));
-      setVideoCompression((current) => ({
-        ...current,
-        [key]: {
-          status: "ready",
-          progress: 1,
-          originalSize: file.size,
-          finalSize: file.size,
-          message: "",
-          wasCompressed: false,
-        },
-      }));
-      return;
-    }
-
-    setVideoCompression((current) => ({
-      ...current,
-      [key]: {
-        status: "compressing",
-        progress: 0,
-        originalSize: file.size,
-        finalSize: 0,
-        message: "Preparing hardware-accelerated compression…",
-        wasCompressed: true,
-      },
-    }));
-
-    try {
-      const result = await compressVideoFile(file, {
-        onProgress: (progress) => {
-          if (videoCompressionJobs.current[key] !== jobId) return;
-
-          setVideoCompression((current) => ({
-            ...current,
-            [key]: {
-              ...current[key],
-              status: "compressing",
-              progress,
-              message:
-                progress < 0.05
-                  ? "Reading video information…"
-                  : `Compressing… ${Math.round(progress * 100)}%`,
-            },
-          }));
-        },
-      });
-
-      if (videoCompressionJobs.current[key] !== jobId) {
-        return;
-      }
-
-      setVideoFiles((current) => ({
-        ...current,
-        [key]: result.file,
-      }));
-      setObjectPreview(key, result.file, setVideoPreviews);
-      setVideoCompression((current) => ({
-        ...current,
-        [key]: {
-          status: "ready",
-          progress: 1,
-          originalSize: result.originalSize,
-          finalSize: result.compressedSize,
-          message: result.wasCompressed
-            ? `Compressed to ${formatFileSize(result.compressedSize)}.`
-            : "No compression was needed.",
-          wasCompressed: result.wasCompressed,
-        },
-      }));
-    } catch (compressionError) {
-      if (videoCompressionJobs.current[key] !== jobId) {
-        return;
-      }
-
-      setVideoFiles((current) => ({ ...current, [key]: null }));
-      removeObjectPreview(key, setVideoPreviews);
-
-      const message =
-        compressionError instanceof Error
-          ? compressionError.message
-          : "The video could not be compressed.";
-
-      setVideoCompression((current) => ({
-        ...current,
-        [key]: {
-          status: "failed",
-          progress: 0,
-          originalSize: file.size,
-          finalSize: 0,
-          message,
-          wasCompressed: false,
-        },
-      }));
-
-      setError(
-        `Video ${Number(key.slice(-1))} could not be prepared. ${message}`,
-      );
-    }
-  };
-
-  const removeVideo = (key: VideoKey) => {
-    videoCompressionJobs.current[key] += 1;
-    setVideoFiles((current) => ({ ...current, [key]: null }));
-    setVideoOriginalFiles((current) => ({
-      ...current,
-      [key]: null,
-    }));
-    setVideoCompression((current) => ({
-      ...current,
-      [key]: {
-        status: "idle",
-        progress: 0,
-        originalSize: 0,
-        finalSize: 0,
-        message: "",
-        wasCompressed: false,
-      },
-    }));
-    removeObjectPreview(key, setVideoPreviews);
+    removeObjectPreview(key);
   };
 
   const updateAddress = (
@@ -1144,10 +838,6 @@ export default function NewPropertyPage() {
   };
 
   const validateForm = (): string | null => {
-    if (isCompressingVideo) {
-      return "Wait for the selected videos to finish compressing.";
-    }
-
     if (!organization?.$id || !organization.userId) {
       return "Your organization account is not ready. Refresh and try again.";
     }
@@ -1229,10 +919,6 @@ export default function NewPropertyPage() {
       if (roomOccupiedTotal > occupiedSlots) {
         return "The occupied room-type breakdown cannot exceed the overall occupied slots.";
       }
-
-      if (!VIDEO_BUCKET_ID) {
-        return "The video upload bucket is not configured.";
-      }
     }
 
     return null;
@@ -1289,23 +975,16 @@ export default function NewPropertyPage() {
       image3: "",
     };
 
-    const uploadedVideos: Record<VideoKey, string> = {
-      video1: "",
-      video2: "",
-      video3: "",
-    };
-
     const listingDocumentId = ID.unique();
     let propertyCreated = false;
     let boardingCreated = false;
 
     try {
       const uploadQueue: Array<{
-        key: MediaKey;
+        key: ImageKey;
         file: File;
         bucketId: string;
         label: string;
-        mediaType: "image" | "video";
       }> = [];
 
       (Object.keys(imageFiles) as ImageKey[]).forEach(
@@ -1318,29 +997,10 @@ export default function NewPropertyPage() {
               file,
               bucketId: PROPERTY_BUCKET_ID,
               label: `Image ${index + 1}`,
-              mediaType: "image",
             });
           }
         },
       );
-
-      if (isBoarding) {
-        (Object.keys(videoFiles) as VideoKey[]).forEach(
-          (key, index) => {
-            const file = videoFiles[key];
-
-            if (file) {
-              uploadQueue.push({
-                key,
-                file,
-                bucketId: VIDEO_BUCKET_ID,
-                label: `Video ${index + 1}`,
-                mediaType: "video",
-              });
-            }
-          },
-        );
-      }
 
       for (let index = 0; index < uploadQueue.length; index += 1) {
         const item = uploadQueue[index];
@@ -1358,12 +1018,7 @@ export default function NewPropertyPage() {
         );
 
         uploadedFiles.push(uploaded);
-
-        if (item.mediaType === "image") {
-          uploadedImages[item.key as ImageKey] = uploaded.url;
-        } else {
-          uploadedVideos[item.key as VideoKey] = uploaded.url;
-        }
+        uploadedImages[item.key] = uploaded.url;
       }
 
       const price = Number(form.price);
@@ -1413,9 +1068,6 @@ export default function NewPropertyPage() {
           image1: uploadedImages.image1,
           image2: uploadedImages.image2,
           image3: uploadedImages.image3,
-          video1: isBoarding ? uploadedVideos.video1 : "",
-          video2: isBoarding ? uploadedVideos.video2 : "",
-          video3: isBoarding ? uploadedVideos.video3 : "",
           isAvailable,
           roomFor,
           curfew: form.curfew,
@@ -1460,9 +1112,6 @@ export default function NewPropertyPage() {
             image1: uploadedImages.image1,
             image2: uploadedImages.image2,
             image3: uploadedImages.image3,
-            video1: uploadedVideos.video1,
-            video2: uploadedVideos.video2,
-            video3: uploadedVideos.video3,
             creatorId: organization.userId,
             likes: 0,
             isAvailable,
@@ -1640,6 +1289,23 @@ export default function NewPropertyPage() {
                       {label}
                     </div>
                   ))}
+                </div>
+              </div>
+
+              {/* Video Verification Notice */}
+              <div className="mb-5 rounded-2xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-900 dark:bg-blue-950/30">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-full bg-blue-100 p-2 dark:bg-blue-900/50">
+                    <Video className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-blue-700 dark:text-blue-300">
+                      Video verification coming soon
+                    </p>
+                    <p className="text-sm text-blue-600 dark:text-blue-400">
+                      Upload videos of your property to give tenants a virtual tour. This feature will be available in the next update.
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -2584,173 +2250,6 @@ export default function NewPropertyPage() {
                   </SectionCard>
                 )}
 
-                {isBoarding && (
-                  <SectionCard
-                    icon={Video}
-                    title="Boarding Videos"
-                    description="Choose actual video files. Anything above 5 MB is compressed in the browser before Appwrite upload, without Base64 conversion."
-                    cardClass={cardClass}
-                  >
-                    <div className="grid gap-4 lg:grid-cols-3">
-                      {(["video1", "video2", "video3"] as VideoKey[]).map(
-                        (key, index) => {
-                          const file = videoFiles[key];
-                          const originalFile = videoOriginalFiles[key];
-                          const preview = videoPreviews[key];
-                          const compression = videoCompression[key];
-
-                          return (
-                            <div key={key}>
-                              <label className="mb-2 block text-sm font-semibold">
-                                Video {index + 1}
-                              </label>
-
-                              <div className="overflow-hidden rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-950">
-                                {preview ? (
-                                  <div>
-                                    <video
-                                      src={preview}
-                                      controls
-                                      preload="metadata"
-                                      playsInline
-                                      className="aspect-video w-full bg-black object-contain"
-                                    >
-                                      Your browser cannot preview this
-                                      video.
-                                    </video>
-
-                                    <div className="space-y-2 p-3">
-                                      <p className="truncate text-xs font-semibold">
-                                        {file?.name ?? originalFile?.name}
-                                      </p>
-
-                                      {compression.status === "compressing" && (
-                                        <div>
-                                          <div className="flex items-center justify-between text-xs font-semibold text-blue-600 dark:text-blue-300">
-                                            <span>{compression.message}</span>
-                                            <span>
-                                              {Math.round(
-                                                compression.progress * 100,
-                                              )}
-                                              %
-                                            </span>
-                                          </div>
-                                          <div className="mt-2 h-2 overflow-hidden rounded-full bg-blue-100 dark:bg-blue-950">
-                                            <div
-                                              className="h-full rounded-full bg-blue-600 transition-all"
-                                              style={{
-                                                width: `${Math.max(
-                                                  3,
-                                                  compression.progress * 100,
-                                                )}%`,
-                                              }}
-                                            />
-                                          </div>
-                                          <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                                            Original:{" "}
-                                            {formatFileSize(
-                                              compression.originalSize,
-                                            )}
-                                          </p>
-                                        </div>
-                                      )}
-
-                                      {compression.status === "ready" && (
-                                        <div className="rounded-xl border border-green-200 bg-green-50 p-2.5 text-xs text-green-700 dark:border-green-900 dark:bg-green-950/30 dark:text-green-300">
-                                          <p className="font-semibold">
-                                            {compression.message}
-                                          </p>
-                                          {compression.wasCompressed && (
-                                            <p className="mt-1">
-                                              {formatFileSize(
-                                                compression.originalSize,
-                                              )}{" "}
-                                              →{" "}
-                                              {formatFileSize(
-                                                compression.finalSize,
-                                              )}
-                                            </p>
-                                          )}
-                                        </div>
-                                      )}
-
-                                      {compression.status === "failed" && (
-                                        <div className="rounded-xl border border-red-200 bg-red-50 p-2.5 text-xs text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-red-300">
-                                          {compression.message}
-                                        </div>
-                                      )}
-
-                                      <div className="flex gap-2">
-                                        <label className="flex-1 cursor-pointer rounded-xl border border-gray-200 px-3 py-2 text-center text-xs font-semibold hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800">
-                                          Replace
-                                          <input
-                                            type="file"
-                                            accept="video/mp4,video/webm,video/quicktime,video/x-m4v,.mp4,.webm,.mov,.m4v"
-                                            className="hidden"
-                                            disabled={submitting || isCompressingVideo}
-                                            onChange={(event) => {
-                                              void selectVideo(
-                                                key,
-                                                event.target
-                                                  .files?.[0] ?? null,
-                                              );
-                                              event.currentTarget.value =
-                                                "";
-                                            }}
-                                          />
-                                        </label>
-
-                                        <button
-                                          type="button"
-                                          onClick={() =>
-                                            removeVideo(key)
-                                          }
-                                          disabled={submitting}
-                                          className="rounded-xl bg-red-600 px-3 py-2 text-xs font-semibold text-white disabled:opacity-50"
-                                        >
-                                          Remove
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <label className="flex aspect-video cursor-pointer flex-col items-center justify-center gap-2 p-5 text-center text-gray-500">
-                                    <Video className="h-10 w-10" />
-                                    <span className="text-sm font-semibold">
-                                      Choose Video {index + 1}
-                                    </span>
-                                    <span className="text-xs">
-                                      MP4, WEBM, MOV or M4V · source max{" "}
-                                      {MAX_SOURCE_VIDEO_SIZE_MB} MB
-                                    </span>
-                                    <span className="text-[11px] font-medium text-green-600 dark:text-green-400">
-                                      Files above 5 MB compress automatically
-                                    </span>
-                                    <input
-                                      type="file"
-                                      accept="video/mp4,video/webm,video/quicktime,video/x-m4v,.mp4,.webm,.mov,.m4v"
-                                      className="hidden"
-                                      disabled={submitting || isCompressingVideo}
-                                      onChange={(event) => {
-                                        void selectVideo(
-                                          key,
-                                          event.target.files?.[0] ??
-                                            null,
-                                        );
-                                        event.currentTarget.value = "";
-                                      }}
-                                    />
-                                  </label>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        },
-                      )}
-                    </div>
-                  </SectionCard>
-                )}
-
                 <SectionCard
                   icon={Sparkles}
                   title="Facilities"
@@ -2876,7 +2375,7 @@ export default function NewPropertyPage() {
                       </p>
                       <div className="mt-2 flex flex-wrap gap-2 text-xs">
                         <span className="rounded-full bg-gray-100 px-3 py-1.5 font-semibold dark:bg-gray-800">
-                          {selectedUploadCount} media file
+                          {selectedUploadCount} image
                           {selectedUploadCount === 1 ? "" : "s"}
                         </span>
                         <span className="rounded-full bg-blue-100 px-3 py-1.5 font-semibold text-blue-700 dark:bg-blue-950 dark:text-blue-300">
@@ -2911,15 +2410,10 @@ export default function NewPropertyPage() {
 
                       <button
                         type="submit"
-                        disabled={submitting || isCompressingVideo}
+                        disabled={submitting}
                         className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--accent-500)] px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        {isCompressingVideo ? (
-                          <>
-                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                            Compressing videos…
-                          </>
-                        ) : submitting ? (
+                        {submitting ? (
                           <>
                             <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
                             Uploading and saving…
