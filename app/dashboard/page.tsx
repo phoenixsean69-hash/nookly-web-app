@@ -803,7 +803,7 @@ const statCards = [
         <div className={`min-h-screen transition-colors duration-500 ${
           isOffline 
             ? 'bg-gray-100 dark:bg-gray-800' 
-            : theme === 'dark'
+            : resolvedTheme === 'dark'
             ? 'bg-gray-900'
             : 'bg-linear-to-br from-blue-50 via-white to-orange-50'
         }`}>
@@ -829,7 +829,7 @@ const statCards = [
       <div className={`min-h-screen transition-colors duration-500 ${
         isOffline 
           ? 'bg-gray-100 dark:bg-gray-800' 
-          : theme === 'dark'
+          : resolvedTheme === 'dark'
           ? 'bg-gray-900'
           : 'bg-orange-50'
       }`}>
@@ -1604,7 +1604,7 @@ const statCards = [
               <div className={`rounded-2xl shadow-lg hover:shadow-xl transition-all border flex flex-col ${
                 isOffline 
                   ? 'bg-gray-600 dark:bg-gray-700 border-gray-400/30' 
-                  : theme === 'dark'
+                  : resolvedTheme === 'dark'
                   ? 'bg-gray-800 border-gray-600'
                   : 'bg-indigo-900 border-blue-400/30'
               }`}>

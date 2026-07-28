@@ -30,10 +30,10 @@ export function NotificationTest() {
 
   return (
     <div className={`p-4 rounded-lg ${
-      theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100'
+      resolvedTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-100'
     }`}>
       <h3 className={`text-sm font-semibold mb-3 ${
-        theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
+        resolvedTheme === 'dark' ? 'text-gray-200' : 'text-gray-700'
       }`}>
         🔔 Test Notifications
       </h3>
@@ -43,7 +43,7 @@ export function NotificationTest() {
             key={index}
             onClick={() => sendNotification(test.title, test.body)}
             className={`px-3 py-1.5 rounded text-xs transition ${
-              theme === 'dark'
+              resolvedTheme === 'dark'
                 ? 'bg-blue-600 hover:bg-blue-700 text-white'
                 : 'bg-blue-500 hover:bg-blue-600 text-white'
             }`}

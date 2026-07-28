@@ -38,7 +38,7 @@ export function StatsCard({
   actions
 }: StatsCardProps) {
   const { resolvedTheme } = useTheme();
-  const isDark = theme === 'dark';
+  const isDark = resolvedTheme === 'dark';
   
   const getPropertyValue = (prop: any, id?: string) => {
     if (id === 'totalViews' || id === 'views') return prop.views || 0;
