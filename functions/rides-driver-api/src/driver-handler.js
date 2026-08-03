@@ -381,6 +381,13 @@ const isMarketplaceReady = (driver, relationships, vehicles) =>
       Boolean(vehicle.backImageFileId),
   );
 
+const hasApprovedRelationshipForOrganization = (relationships, organizationId) =>
+  relationships.some(
+    (relationship) =>
+      String(relationship.organizationId || "") === String(organizationId || "") &&
+      VERIFIED_RELATIONSHIP_STATUSES.has(normalize(relationship.status)),
+  );
+
 const upsertDriverOnboarding = async ({
   databases,
   tablesDB,
@@ -784,6 +791,9 @@ export default async ({ req, res, log, error }) => {
       relationships,
       vehicles,
     );
+    const hasApprovedRelationship = relationships.some((relationship) =>
+      VERIFIED_RELATIONSHIP_STATUSES.has(normalize(relationship.status)),
+    );
 
     if (method === "GET" && path === "/onboarding") {
       return ok(res, {
@@ -959,6 +969,20 @@ export default async ({ req, res, log, error }) => {
     if (method === "POST" && path === "/availability") {
       const isOnline = body.isOnline === true;
 
+      if (isOnline && !hasApprovedRelationship) {
+        const suspendedRelationship = relationships.find(
+          (relationship) => normalize(relationship.status) === "suspended",
+        );
+
+        return fail(
+          res,
+          403,
+          suspendedRelationship?.suspensionReason
+            ? `Driver access is suspended: ${suspendedRelationship.suspensionReason}`
+            : "Driver access is suspended or has not been approved by an organization.",
+        );
+      }
+
       await tablesDB.updateRow({
         databaseId: DATABASE_ID,
         tableId: TABLES.drivers,
@@ -984,6 +1008,18 @@ export default async ({ req, res, log, error }) => {
         .trim()
         .toLowerCase();
       const allowed = STATUS_TRANSITIONS[ride.status] ?? new Set();
+
+      if (
+        ride.status === "scheduled" &&
+        nextStatus !== "cancelled" &&
+        !hasApprovedRelationshipForOrganization(relationships, ride.organizationId)
+      ) {
+        return fail(
+          res,
+          403,
+          "Your organization access is suspended. This scheduled ride cannot be started.",
+        );
+      }
 
       if (!allowed.has(nextStatus)) {
         return fail(

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   AlertTriangle,
@@ -27,6 +27,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
 import { Header } from "@/components/dashboard/header";
+import { DriverSuspensionControls } from "@/components/drivers/driver-suspension-controls";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { ProtectedRoute } from "@/components/protected-route";
 import { useTheme } from "@/contexts/theme-context";
@@ -35,6 +36,7 @@ import {
   getDriverReviewApplication,
   getDriverStoredFileUrl,
   isDriverApplicationApproved,
+  isDriverApplicationSuspended,
 } from "@/lib/driver-review.service";
 import { sendDriverApprovedPushNotification } from "@/lib/push-notification.service";
 import type {
@@ -179,6 +181,9 @@ export default function DriverApplicationDetailsPage() {
   const approved = application
     ? isDriverApplicationApproved(application)
     : false;
+  const suspended = application
+    ? isDriverApplicationSuspended(application)
+    : false;
 
   const missingRequirements = useMemo(
     () => (application ? getMissingRequirements(application) : []),
@@ -186,7 +191,12 @@ export default function DriverApplicationDetailsPage() {
   );
 
   const approveApplication = async () => {
-    if (!application || approved || !application.requirements.readyForApproval) {
+    if (
+      !application ||
+      approved ||
+      suspended ||
+      !application.requirements.readyForApproval
+    ) {
       return;
     }
 
@@ -309,7 +319,12 @@ export default function DriverApplicationDetailsPage() {
                         {profile.name}
                       </h1>
 
-                      {approved ? (
+                      {suspended ? (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-red-200 bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300">
+                          <AlertTriangle className="h-3.5 w-3.5" />
+                          Driver suspended
+                        </span>
+                      ) : approved ? (
                         <span className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
                           <BadgeCheck className="h-3.5 w-3.5" />
                           Approved driver
@@ -344,31 +359,38 @@ export default function DriverApplicationDetailsPage() {
                     Refresh
                   </button>
 
+                  {!suspended && (
                   <button
-                    type="button"
-                    onClick={() => setShowApproveDialog(true)}
-                    disabled={
-                      approved ||
-                      approving ||
-                      !application.requirements.readyForApproval
-                    }
-                    className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold shadow-sm transition disabled:cursor-not-allowed ${
-                      approved
-                        ? "border border-blue-200 bg-blue-500 text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-                        : "bg-blue-600 text-white hover:bg-blue-800 disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:bg-gray-800 dark:disabled:text-gray-500"
-                    }`}
-                  >
-                    {approved ? (
-                      <BadgeCheck className="h-4 w-4" />
-                    ) : (
-                      <CheckCircle className="h-4 w-4" />
-                    )}
-                    {approved ? "Driver approved" : "Approve driver"}
-                  </button>
+                      type="button"
+                      onClick={() => setShowApproveDialog(true)}
+                      disabled={
+                        approved ||
+                        approving ||
+                        !application.requirements.readyForApproval
+                      }
+                      className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold shadow-sm transition disabled:cursor-not-allowed ${
+                        approved
+                          ? "border border-blue-200 bg-blue-500 text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+                          : "bg-blue-600 text-white hover:bg-blue-800 disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:bg-gray-800 dark:disabled:text-gray-500"
+                      }`}
+                    >
+                      {approved ? (
+                        <BadgeCheck className="h-4 w-4" />
+                      ) : (
+                        <CheckCircle className="h-4 w-4" />
+                      )}
+                      {approved ? "Driver approved" : "Approve driver"}
+                    </button>
+                  )}
+
+                  <DriverSuspensionControls
+                    application={application}
+                    onUpdated={(updated) => setApplication(updated)}
+                  />
                 </div>
               </div>
 
-              {!approved && missingRequirements.length > 0 && (
+              {!approved && !suspended && missingRequirements.length > 0 && (
                 <div className="mb-5 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-800 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
                   <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
                   <div>
@@ -378,6 +400,23 @@ export default function DriverApplicationDetailsPage() {
                     <p className="mt-1 text-sm leading-6 text-amber-700 dark:text-amber-300">
                       Missing: {missingRequirements.join(", ")}.
                     </p>
+                  </div>
+                </div>
+              )}
+
+              {suspended && (
+                <div className="mb-5 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-900 dark:border-red-900 dark:bg-red-950/30 dark:text-red-100">
+                  <div className="flex items-start gap-3">
+                    <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
+                    <div>
+                      <p className="font-bold">Organization access suspended</p>
+                      <p className="mt-1 text-sm leading-6">
+                        {institution.suspensionReason || "No suspension reason was recorded."}
+                      </p>
+                      <p className="mt-2 text-xs opacity-75">
+                        Suspended {formatDate(institution.suspendedAt)}
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -535,20 +574,26 @@ export default function DriverApplicationDetailsPage() {
 
                     <div
                       className={`mt-5 rounded-xl border p-4 ${
-                        approved
-                          ? "border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/30"
+                        suspended
+                          ? "border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950/30"
+                          : approved
+                            ? "border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/30"
                           : "border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800"
                       }`}
                     >
                       <p className="font-semibold">
-                        {approved
-                          ? "Marketplace access enabled"
-                          : "Marketplace access pending"}
+                        {suspended
+                          ? "Marketplace access suspended"
+                          : approved
+                            ? "Marketplace access enabled"
+                            : "Marketplace access pending"}
                       </p>
                       <p className="mt-1 text-sm leading-6 text-gray-500 dark:text-gray-400">
-                        {approved
-                          ? "This driver can use verified Driver Mode features and receive organization ride work."
-                          : "Approving updates the driver profile, institution relationship and selected vehicle together."}
+                        {suspended
+                          ? "This driver cannot receive or accept new ride work from your organization until reinstated."
+                          : approved
+                            ? "This driver can use verified Driver Mode features and receive organization ride work."
+                            : "Approving updates the driver profile, institution relationship and selected vehicle together."}
                       </p>
                     </div>
                   </section>
@@ -559,7 +604,7 @@ export default function DriverApplicationDetailsPage() {
         </div>
       </div>
 
-      {showApproveDialog && !approved && (
+      {showApproveDialog && !approved && !suspended && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-900">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">

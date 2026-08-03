@@ -89,6 +89,8 @@ export interface DriverReviewInstitution {
   acknowledgedAt?: string;
   verifiedAt?: string;
   suspendedAt?: string;
+  suspendedBy?: string;
+  suspensionReason?: string;
   notes?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -102,6 +104,12 @@ export interface DriverReviewRequirements {
   hasCompleteVehicleImages: boolean;
   hasVehicle: boolean;
   readyForApproval: boolean;
+}
+
+export interface DriverSuspensionResult {
+  application: DriverReviewApplication;
+  activeRideContinues: boolean;
+  activeRideId?: string;
 }
 
 export interface DriverReviewApplication {

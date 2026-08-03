@@ -26,6 +26,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
 import {
   isDriverApplicationApproved,
+  isDriverApplicationSuspended,
   listDriverReviewApplications,
 } from "@/lib/driver-review.service";
 import type {
@@ -96,6 +97,15 @@ function getApplicationDate(
 }
 
 function getStatus(application: DriverReviewApplication) {
+  if (isDriverApplicationSuspended(application)) {
+    return {
+      label: "Suspended",
+      className:
+        "border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300",
+      icon: FileWarning,
+    };
+  }
+
   if (isDriverApplicationApproved(application)) {
     return {
       label: "Approved",
@@ -186,7 +196,8 @@ export default function DriverApplicationsPage() {
       (application) =>
         !isDriverApplicationApproved(application) &&
         application.profile.verificationStatus !== "rejected" &&
-        application.institution.status !== "rejected",
+        application.institution.status !== "rejected" &&
+        !isDriverApplicationSuspended(application),
     ).length;
 
     return {
@@ -204,11 +215,12 @@ export default function DriverApplicationsPage() {
       const rejected =
         application.profile.verificationStatus === "rejected" ||
         application.institution.status === "rejected";
+      const suspended = isDriverApplicationSuspended(application);
 
       const tabMatches =
         activeTab === "all" ||
         (activeTab === "approved" && approved) ||
-        (activeTab === "pending" && !approved && !rejected);
+        (activeTab === "pending" && !approved && !rejected && !suspended);
 
       if (!tabMatches) return false;
       if (!normalizedSearch) return true;
@@ -472,7 +484,7 @@ interface SummaryCardProps {
   icon: typeof Clock3;
   label: string;
   value: number;
-  tone: "amber" | "blue" | "blue";
+  tone: "amber" | "blue";
 }
 
 function SummaryCard({ icon: Icon, label, value, tone }: SummaryCardProps) {
@@ -481,7 +493,6 @@ function SummaryCard({ icon: Icon, label, value, tone }: SummaryCardProps) {
       "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-300",
     blue:
       "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900 dark:bg-blue-950/30 dark:text-blue-300",
-    blue: "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900 dark:bg-blue-950/30 dark:text-blue-300",
   }[tone];
 
   return (

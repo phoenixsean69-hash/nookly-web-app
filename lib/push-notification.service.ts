@@ -148,3 +148,73 @@ export async function sendDriverApprovedPushNotification(
     },
   });
 }
+
+
+interface SendDriverSuspendedPushInput {
+  recipientUserId: string;
+  driverId: string;
+  organizationId: string;
+  organizationName: string;
+  reason: string;
+  activeRideContinues: boolean;
+}
+
+interface SendDriverReinstatedPushInput {
+  recipientUserId: string;
+  driverId: string;
+  organizationId: string;
+  organizationName: string;
+}
+
+export async function sendDriverSuspendedPushNotification(
+  input: SendDriverSuspendedPushInput,
+): Promise<PushDeliveryResult> {
+  const recipientUserId = input.recipientUserId.trim();
+  const organizationName = input.organizationName.trim() || "your organization";
+  const reason = input.reason.trim();
+
+  if (!recipientUserId) {
+    throw new Error("The suspended driver does not have a valid user ID.");
+  }
+
+  const rideMessage = input.activeRideContinues
+    ? " You may finish the ride already in progress, but you cannot accept new work from this organization."
+    : " You cannot accept new work from this organization.";
+
+  return executePushRequest<PushDeliveryResult>("/send-to-user", {
+    recipientUserId,
+    title: "Driver access suspended",
+    body: `Your driver access with ${organizationName} has been suspended. Reason: ${reason}.${rideMessage}`,
+    data: {
+      type: "driver_suspended",
+      source: "nookly_web_organization",
+      driverId: input.driverId.trim(),
+      organizationId: input.organizationId.trim(),
+      reason,
+      activeRideContinues: input.activeRideContinues,
+    },
+  });
+}
+
+export async function sendDriverReinstatedPushNotification(
+  input: SendDriverReinstatedPushInput,
+): Promise<PushDeliveryResult> {
+  const recipientUserId = input.recipientUserId.trim();
+  const organizationName = input.organizationName.trim() || "your organization";
+
+  if (!recipientUserId) {
+    throw new Error("The reinstated driver does not have a valid user ID.");
+  }
+
+  return executePushRequest<PushDeliveryResult>("/send-to-user", {
+    recipientUserId,
+    title: "Driver access reinstated ✅",
+    body: `Your driver access with ${organizationName} has been reinstated. You may go online and accept ride work again.`,
+    data: {
+      type: "driver_reinstated",
+      source: "nookly_web_organization",
+      driverId: input.driverId.trim(),
+      organizationId: input.organizationId.trim(),
+    },
+  });
+}

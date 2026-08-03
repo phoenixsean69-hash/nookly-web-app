@@ -24,7 +24,13 @@ const TABLES = {
     "APPWRITE_RIDE_DRIVER_INSTITUTIONS_TABLE_ID",
     "ride_driver_institutions",
   ),
+  rides: env(
+    "APPWRITE_RIDES_TABLE_ID",
+    env("EXPO_PUBLIC_APPWRITE_RIDES_COLLECTION_ID", "rides"),
+  ),
 };
+
+const ACTIVE_RIDE_STATUSES = new Set(["boarding", "active", "delayed"]);
 
 const APPROVED_RELATIONSHIP_STATUSES = new Set([
   "active",
@@ -45,6 +51,21 @@ const ok = (res, data, status = 200) =>
 
 const fail = (res, status, message) =>
   res.json({ ok: false, error: message }, status);
+
+const parseBody = (req) => {
+  const bodyText = typeof req.bodyText === "string" ? req.bodyText.trim() : "";
+  if (!bodyText) return {};
+  try { return JSON.parse(bodyText); } catch { return {}; }
+};
+
+const requireString = (value, label, maxLength = 500) => {
+  const normalized = String(value ?? "").trim();
+  if (!normalized) throw statusError(400, `${label} is required.`);
+  if (normalized.length > maxLength) {
+    throw statusError(400, `${label} must be ${maxLength} characters or fewer.`);
+  }
+  return normalized;
+};
 
 const statusError = (statusCode, message) =>
   Object.assign(new Error(message), { statusCode });
@@ -160,6 +181,17 @@ const getOrganizationRelationship = async (
   }
 
   return relationship;
+};
+
+const getActiveRide = async (tablesDB, driverId) => {
+  const rides = await listAllRows(
+    tablesDB,
+    TABLES.rides,
+    [Query.equal("driverId", driverId)],
+    100,
+  );
+
+  return rides.find((ride) => ACTIVE_RIDE_STATUSES.has(normalize(ride.status))) ?? null;
 };
 
 const getDriverVehicles = async (tablesDB, driverId) =>
@@ -311,6 +343,10 @@ const approveApplication = async ({
     driverId,
   );
 
+  if (normalize(application.institution.status) === "suspended") {
+    throw statusError(409, "This driver is suspended. Use the reinstate action instead.");
+  }
+
   if (application.marketplaceReady) {
     return application;
   }
@@ -441,6 +477,135 @@ const approveApplication = async ({
   return buildApplication(tablesDB, organization.$id, driverId);
 };
 
+
+const suspendApplication = async ({
+  tablesDB,
+  organization,
+  accountId,
+  driverId,
+  reason,
+}) => {
+  const application = await buildApplication(
+    tablesDB,
+    organization.$id,
+    driverId,
+  );
+
+  if (normalize(application.institution.status) === "suspended") {
+    const activeRide = await getActiveRide(tablesDB, driverId);
+    return {
+      application,
+      activeRideContinues: Boolean(activeRide),
+      ...(activeRide ? { activeRideId: activeRide.$id } : {}),
+    };
+  }
+
+  if (!APPROVED_RELATIONSHIP_STATUSES.has(normalize(application.institution.status))) {
+    throw statusError(409, "Only an approved driver can be suspended.");
+  }
+
+  const suspensionReason = requireString(reason, "Suspension reason", 500);
+  const timestamp = nowIso();
+  const activeRide = await getActiveRide(tablesDB, driverId);
+  const relationship = application.institution;
+  const profile = application.profile;
+
+  const previousRelationship = {
+    status: relationship.status,
+    suspensionReason: relationship.suspensionReason ?? null,
+    suspendedAt: relationship.suspendedAt ?? null,
+    suspendedBy: relationship.suspendedBy ?? null,
+    updatedAt: relationship.updatedAt,
+  };
+
+  await tablesDB.updateRow({
+    databaseId: DATABASE_ID,
+    tableId: TABLES.driverInstitutions,
+    rowId: relationship.$id,
+    data: {
+      status: "suspended",
+      suspensionReason,
+      suspendedAt: timestamp,
+      suspendedBy: accountId,
+      updatedAt: timestamp,
+    },
+  });
+
+  if (!activeRide) {
+    try {
+      await tablesDB.updateRow({
+        databaseId: DATABASE_ID,
+        tableId: TABLES.drivers,
+        rowId: profile.$id,
+        data: {
+          isOnline: false,
+          availabilityNote: `Suspended by ${getOrganizationName(organization)}. ${suspensionReason}`.slice(0, 500),
+          updatedAt: timestamp,
+        },
+      });
+    } catch (updateError) {
+      await tablesDB.updateRow({
+        databaseId: DATABASE_ID,
+        tableId: TABLES.driverInstitutions,
+        rowId: relationship.$id,
+        data: previousRelationship,
+      });
+      throw updateError;
+    }
+  }
+
+  return {
+    application: await buildApplication(tablesDB, organization.$id, driverId),
+    activeRideContinues: Boolean(activeRide),
+    ...(activeRide ? { activeRideId: activeRide.$id } : {}),
+  };
+};
+
+const reinstateApplication = async ({
+  tablesDB,
+  organization,
+  driverId,
+}) => {
+  const application = await buildApplication(
+    tablesDB,
+    organization.$id,
+    driverId,
+  );
+
+  if (normalize(application.institution.status) !== "suspended") {
+    if (application.marketplaceReady) return application;
+    throw statusError(409, "This driver is not currently suspended.");
+  }
+
+  const timestamp = nowIso();
+
+  await tablesDB.updateRow({
+    databaseId: DATABASE_ID,
+    tableId: TABLES.driverInstitutions,
+    rowId: application.institution.$id,
+    data: {
+      status: "approved",
+      suspensionReason: null,
+      suspendedAt: null,
+      suspendedBy: null,
+      updatedAt: timestamp,
+    },
+  });
+
+  await tablesDB.updateRow({
+    databaseId: DATABASE_ID,
+    tableId: TABLES.drivers,
+    rowId: application.profile.$id,
+    data: {
+      isOnline: false,
+      availabilityNote: `Reinstated by ${getOrganizationName(organization)}.`,
+      updatedAt: timestamp,
+    },
+  });
+
+  return buildApplication(tablesDB, organization.$id, driverId);
+};
+
 export default async ({ req, res, log, error }) => {
   try {
     requiredConfig();
@@ -462,6 +627,7 @@ export default async ({ req, res, log, error }) => {
     const tablesDB = new TablesDB(client);
     const organization = await getSignedInOrganization(databases, accountId);
     const parts = path.split("/").filter(Boolean);
+    const body = parseBody(req);
 
     if (method === "GET" && path === "/organization/drivers") {
       const applications = await listOrganizationApplications(
@@ -503,6 +669,43 @@ export default async ({ req, res, log, error }) => {
       );
 
       return ok(res, approved);
+    }
+
+
+    if (
+      method === "POST" &&
+      parts.length === 4 &&
+      parts[0] === "organization" &&
+      parts[1] === "drivers" &&
+      parts[3] === "suspend"
+    ) {
+      const suspended = await suspendApplication({
+        tablesDB,
+        organization,
+        accountId,
+        driverId: parts[2],
+        reason: body.reason,
+      });
+
+      log?.(`Organization ${organization.$id} suspended driver ${parts[2]}.`);
+      return ok(res, suspended);
+    }
+
+    if (
+      method === "POST" &&
+      parts.length === 4 &&
+      parts[0] === "organization" &&
+      parts[1] === "drivers" &&
+      parts[3] === "reinstate"
+    ) {
+      const reinstated = await reinstateApplication({
+        tablesDB,
+        organization,
+        driverId: parts[2],
+      });
+
+      log?.(`Organization ${organization.$id} reinstated driver ${parts[2]}.`);
+      return ok(res, reinstated);
     }
 
     return fail(res, 404, "Organization driver-review route not found.");

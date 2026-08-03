@@ -3,7 +3,10 @@
 import { Functions } from "appwrite";
 
 import { rawClient } from "@/lib/appwrite/config";
-import type { DriverReviewApplication } from "@/types/driver-review";
+import type {
+  DriverReviewApplication,
+  DriverSuspensionResult,
+} from "@/types/driver-review";
 
 const functions = new Functions(rawClient);
 
@@ -121,6 +124,26 @@ export async function approveDriverReviewApplication(
   );
 }
 
+export async function suspendDriverReviewApplication(
+  driverId: string,
+  reason: string,
+): Promise<DriverSuspensionResult> {
+  return executeDriverReviewRequest<DriverSuspensionResult>(
+    `/organization/drivers/${encodeURIComponent(driverId)}/suspend`,
+    "POST",
+    { reason },
+  );
+}
+
+export async function reinstateDriverReviewApplication(
+  driverId: string,
+): Promise<DriverReviewApplication> {
+  return executeDriverReviewRequest<DriverReviewApplication>(
+    `/organization/drivers/${encodeURIComponent(driverId)}/reinstate`,
+    "POST",
+  );
+}
+
 export function getDriverStoredFileUrl(fileId?: string): string {
   const normalizedFileId = fileId?.trim() || "";
   const endpoint = process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT?.replace(/\/+$/, "");
@@ -156,4 +179,10 @@ export function isDriverApplicationApproved(
     vehicle.conditionStatus === "approved" &&
     vehicle.roadworthinessStatus === "approved"
   );
+}
+
+export function isDriverApplicationSuspended(
+  application: DriverReviewApplication,
+): boolean {
+  return application.institution.status === "suspended";
 }
