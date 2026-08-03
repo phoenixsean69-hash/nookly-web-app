@@ -411,7 +411,7 @@ export default function MessagesPage() {
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
                   placeholder="Search messages"
-                  className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-500)] dark:border-gray-700 dark:bg-gray-900"
+                  className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-700)] dark:border-gray-700 dark:bg-gray-900"
                 />
               </label>
 
@@ -482,7 +482,7 @@ export default function MessagesPage() {
                                   unoptimized
                                 />
                               ) : (
-                                <CategoryIcon className="h-5 w-5 text-[var(--accent-500)]" />
+                                <CategoryIcon className="h-5 w-5 text-[var(--accent-700)]" />
                               )}
                             </div>
 
@@ -495,7 +495,7 @@ export default function MessagesPage() {
                                   {new Date(inquiry.$createdAt).toLocaleDateString()}
                                 </span>
                               </div>
-                              <p className="mt-0.5 truncate text-xs font-medium text-[var(--accent-500)]">
+                              <p className="mt-0.5 truncate text-xs font-medium text-[var(--accent-700)]">
                                 {inquiry.propertyName}
                               </p>
                               <p className="mt-1 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">
@@ -537,7 +537,7 @@ export default function MessagesPage() {
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                           <h2 className="font-bold">{selectedInquiry.writer}</h2>
-                          <p className="text-sm text-[var(--accent-500)]">
+                          <p className="text-sm text-[var(--accent-700)]">
                             {selectedInquiry.propertyName}
                           </p>
                         </div>
@@ -626,14 +626,14 @@ export default function MessagesPage() {
                         onChange={(event) => setResponseText(event.target.value)}
                         rows={3}
                         placeholder="Write the organization response…"
-                        className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 p-3 text-sm outline-none focus:border-[var(--accent-500)] dark:border-gray-700 dark:bg-gray-950"
+                        className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 p-3 text-sm outline-none focus:border-[var(--accent-700)] dark:border-gray-700 dark:bg-gray-950"
                       />
                       <div className="mt-3 flex justify-end">
                         <button
                           type="button"
                           onClick={() => void sendResponse()}
                           disabled={saving || !responseText.trim()}
-                          className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent-500)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 disabled:opacity-50"
+                          className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent-700)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 disabled:opacity-50"
                         >
                           <Send className="h-4 w-4" />
                           {saving ? "Saving…" : "Save response"}

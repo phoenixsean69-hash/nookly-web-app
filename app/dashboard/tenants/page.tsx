@@ -504,7 +504,7 @@ export default function TenantsPage() {
 
                 <Link
                   href="/dashboard/tenants/new"
-                  className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent-500)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm"
+                  className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent-700)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm"
                 >
                   <PlusCircle className="h-4 w-4" />
                   Add tenant
@@ -563,7 +563,7 @@ export default function TenantsPage() {
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
                   placeholder="Search tenants and requests"
-                  className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-500)] dark:border-gray-700 dark:bg-gray-900"
+                  className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-700)] dark:border-gray-700 dark:bg-gray-900"
                 />
               </label>
 
@@ -585,7 +585,7 @@ export default function TenantsPage() {
               {loading ? (
                 <div className="flex h-72 items-center justify-center">
                   <div className="text-center">
-                    <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent-500)] dark:border-gray-700" />
+                    <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent-700)] dark:border-gray-700" />
                     <p className="mt-4 text-sm text-gray-500">
                       Loading tenants and requests…
                     </p>

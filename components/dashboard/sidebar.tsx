@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   BarChart3,
   Calendar,
+  CarFront,
   ChevronLeft,
   ChevronRight,
   Home,
@@ -64,6 +65,12 @@ const navigationItems: NavigationItem[] = [
     name: "Tenants & Requests",
     href: "/dashboard/tenants",
     icon: Users,
+    offlineEnabled: false,
+  },
+  {
+    name: "Drivers",
+    href: "/dashboard/drivers",
+    icon: CarFront,
     offlineEnabled: false,
   },
   {

@@ -164,7 +164,7 @@ export default function TaskDetailsPage() {
             <Header />
             <div className="flex h-[70vh] items-center justify-center">
               <div className="text-center">
-                <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent-500)] dark:border-gray-700" />
+                <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent-700)] dark:border-gray-700" />
                 <p className="mt-4 text-sm text-gray-500">Loading task…</p>
               </div>
             </div>
@@ -246,7 +246,7 @@ export default function TaskDetailsPage() {
                   </button>
                   <Link
                     href={`/dashboard/tasks/${task.$id}/edit`}
-                    className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent-500)] px-4 py-2.5 text-sm font-semibold text-white"
+                    className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent-700)] px-4 py-2.5 text-sm font-semibold text-white"
                   >
                     <Edit className="h-4 w-4" />
                     Edit
@@ -292,7 +292,7 @@ export default function TaskDetailsPage() {
                   <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
                     <p className="text-xs uppercase text-gray-400">Due date</p>
                     <p className="mt-2 flex items-center gap-2 font-semibold">
-                      <Calendar className="h-4 w-4 text-[var(--accent-500)]" />
+                      <Calendar className="h-4 w-4 text-[var(--accent-700)]" />
                       {new Date(task.dueDate).toLocaleString()}
                     </p>
                   </div>
@@ -300,7 +300,7 @@ export default function TaskDetailsPage() {
                   <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
                     <p className="text-xs uppercase text-gray-400">Property</p>
                     <p className="mt-2 flex items-center gap-2 font-semibold">
-                      <Building2 className="h-4 w-4 text-[var(--accent-500)]" />
+                      <Building2 className="h-4 w-4 text-[var(--accent-700)]" />
                       {property?.propertyName ||
                         task.propertyName ||
                         "General organization task"}
@@ -310,7 +310,7 @@ export default function TaskDetailsPage() {
 
                 <div className="mt-6">
                   <h2 className="flex items-center gap-2 font-bold">
-                    <FileText className="h-5 w-5 text-[var(--accent-500)]" />
+                    <FileText className="h-5 w-5 text-[var(--accent-700)]" />
                     Description
                   </h2>
                   <p className="mt-3 whitespace-pre-line rounded-xl bg-gray-50 p-4 text-sm leading-6 text-gray-600 dark:bg-gray-800 dark:text-gray-300">

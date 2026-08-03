@@ -43,7 +43,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="mt-4 px-6 py-2 bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition-colors"
+              className="mt-4 px-6 py-2 bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition-colors"
             >
               Retry
             </button>
@@ -63,7 +63,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="mt-4 px-6 py-2 bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition-colors"
+              className="mt-4 px-6 py-2 bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition-colors"
             >
               Refresh Page
             </button>

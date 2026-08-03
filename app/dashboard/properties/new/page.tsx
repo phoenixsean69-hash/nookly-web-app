@@ -194,7 +194,7 @@ function SectionCard({
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h2 className="flex items-center gap-2 text-lg font-bold">
-            <Icon className="h-5 w-5 text-[var(--accent-500)]" />
+            <Icon className="h-5 w-5 text-[var(--accent-700)]" />
             {title}
           </h2>
           {description && (
@@ -255,7 +255,7 @@ function SlotControl({
           disabled={disabled}
           onFocus={(event) => event.currentTarget.select()}
           onChange={(event) => onChange(event.target.value)}
-          className={`min-w-0 flex-1 rounded-xl border px-3 py-2.5 text-center text-lg font-bold outline-none focus:border-[var(--accent-500)] ${inputClass}`}
+          className={`min-w-0 flex-1 rounded-xl border px-3 py-2.5 text-center text-lg font-bold outline-none focus:border-[var(--accent-700)] ${inputClass}`}
         />
 
         <button
@@ -1234,7 +1234,7 @@ export default function NewPropertyPage() {
                           {completedSteps} of 5 essentials ready
                         </p>
                       </div>
-                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--accent-500)] text-sm font-bold text-white">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--accent-700)] text-sm font-bold text-white">
                         {Math.round((completedSteps / 5) * 100)}%
                       </div>
                     </div>
@@ -1488,7 +1488,7 @@ export default function NewPropertyPage() {
                               propertyName: event.target.value,
                             }))
                           }
-                          className={`w-full rounded-xl border py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-500)] ${inputClass}`}
+                          className={`w-full rounded-xl border py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-700)] ${inputClass}`}
                           placeholder="e.g. Sunrise Student Residence"
                         />
                       </div>
@@ -1514,7 +1514,7 @@ export default function NewPropertyPage() {
                                 : current.roomFor,
                           }));
                         }}
-                        className={`w-full rounded-xl border px-3 py-2.5 text-sm outline-none focus:border-[var(--accent-500)] ${inputClass}`}
+                        className={`w-full rounded-xl border px-3 py-2.5 text-sm outline-none focus:border-[var(--accent-700)] ${inputClass}`}
                       >
                         <option value="">Select type</option>
                         {propertyTypes.map((type) => (
@@ -1543,7 +1543,7 @@ export default function NewPropertyPage() {
                             }))
                           }
                           rows={5}
-                          className={`w-full resize-none rounded-xl border py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-500)] ${inputClass}`}
+                          className={`w-full resize-none rounded-xl border py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-700)] ${inputClass}`}
                           placeholder="Describe the rooms, environment, rules, nearby places and what makes the property special."
                         />
                       </div>
@@ -1563,7 +1563,7 @@ export default function NewPropertyPage() {
                         setShowMapPicker((current) => !current)
                       }
                       disabled={submitting}
-                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--accent-500)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--accent-700)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
                     >
                       <Map className="h-4 w-4" />
                       {showMapPicker
@@ -1653,7 +1653,7 @@ export default function NewPropertyPage() {
                               event.target.value,
                             )
                           }
-                          className={`w-full rounded-xl border py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-500)] ${inputClass}`}
+                          className={`w-full rounded-xl border py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-700)] ${inputClass}`}
                           placeholder="123"
                         />
                       </div>
@@ -1672,7 +1672,7 @@ export default function NewPropertyPage() {
                             event.target.value,
                           )
                         }
-                        className={`w-full rounded-xl border px-3 py-2.5 text-sm outline-none focus:border-[var(--accent-500)] ${inputClass}`}
+                        className={`w-full rounded-xl border px-3 py-2.5 text-sm outline-none focus:border-[var(--accent-700)] ${inputClass}`}
                         placeholder="Main Street"
                       />
                     </label>
@@ -1690,7 +1690,7 @@ export default function NewPropertyPage() {
                             event.target.value,
                           )
                         }
-                        className={`w-full rounded-xl border px-3 py-2.5 text-sm outline-none focus:border-[var(--accent-500)] ${inputClass}`}
+                        className={`w-full rounded-xl border px-3 py-2.5 text-sm outline-none focus:border-[var(--accent-700)] ${inputClass}`}
                         placeholder="Neighbourhood"
                       />
                     </label>
@@ -1708,7 +1708,7 @@ export default function NewPropertyPage() {
                             event.target.value,
                           )
                         }
-                        className={`w-full rounded-xl border px-3 py-2.5 text-sm outline-none focus:border-[var(--accent-500)] ${inputClass}`}
+                        className={`w-full rounded-xl border px-3 py-2.5 text-sm outline-none focus:border-[var(--accent-700)] ${inputClass}`}
                         placeholder="Bindura"
                       />
                     </label>
@@ -1822,7 +1822,7 @@ export default function NewPropertyPage() {
                                   [item.field]: event.target.value,
                                 }))
                               }
-                              className={`w-full rounded-xl border py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-500)] ${inputClass}`}
+                              className={`w-full rounded-xl border py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-700)] ${inputClass}`}
                             />
                           </div>
                         </label>
@@ -1844,7 +1844,7 @@ export default function NewPropertyPage() {
                               curfew: event.target.value,
                             }))
                           }
-                          className={`w-full rounded-xl border py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-500)] ${inputClass}`}
+                          className={`w-full rounded-xl border py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-700)] ${inputClass}`}
                         >
                           {curfewOptions.map((option) => (
                             <option key={option} value={option}>
@@ -1856,11 +1856,11 @@ export default function NewPropertyPage() {
                     </label>
                   </div>
 
-                  <div className="mt-6 rounded-2xl border border-[var(--accent-500)]/20 bg-[var(--accent-500)]/5 p-4 sm:p-5">
+                  <div className="mt-6 rounded-2xl border border-[var(--accent-700)]/20 bg-[var(--accent-700)]/5 p-4 sm:p-5">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <h3 className="flex items-center gap-2 font-bold">
-                          <Gauge className="h-5 w-5 text-[var(--accent-500)]" />
+                          <Gauge className="h-5 w-5 text-[var(--accent-700)]" />
                           Live Availability Planner
                         </h3>
                         <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
@@ -2016,7 +2016,7 @@ export default function NewPropertyPage() {
                           addBoardingRoom(event.target.value);
                           event.currentTarget.value = "";
                         }}
-                        className={`w-full rounded-xl border px-3 py-2.5 text-sm outline-none focus:border-[var(--accent-500)] sm:w-64 ${inputClass}`}
+                        className={`w-full rounded-xl border px-3 py-2.5 text-sm outline-none focus:border-[var(--accent-700)] sm:w-64 ${inputClass}`}
                       >
                         <option value="">+ Add room type</option>
                         {roomOptions
@@ -2114,7 +2114,7 @@ export default function NewPropertyPage() {
                                           event.target.value,
                                         )
                                       }
-                                      className={`w-full rounded-xl border py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-500)] ${inputClass}`}
+                                      className={`w-full rounded-xl border py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-700)] ${inputClass}`}
                                       placeholder="Monthly price"
                                     />
                                   </div>
@@ -2142,7 +2142,7 @@ export default function NewPropertyPage() {
                                           event.target.value,
                                         )
                                       }
-                                      className={`w-full rounded-xl border py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-500)] ${inputClass}`}
+                                      className={`w-full rounded-xl border py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-700)] ${inputClass}`}
                                     />
                                   </div>
                                 </label>
@@ -2167,7 +2167,7 @@ export default function NewPropertyPage() {
                                         event.target.checked,
                                       )
                                     }
-                                    className="h-5 w-5 accent-[var(--accent-500)]"
+                                    className="h-5 w-5 accent-[var(--accent-700)]"
                                   />
                                 </label>
                               </div>
@@ -2283,7 +2283,7 @@ export default function NewPropertyPage() {
                             disabled={submitting}
                             className={`flex items-center gap-2 rounded-xl border p-3 text-left text-sm font-semibold transition ${
                               active
-                                ? "border-[var(--accent-500)] bg-[var(--accent-500)] text-white"
+                                ? "border-[var(--accent-700)] bg-[var(--accent-700)] text-white"
                                 : dark
                                   ? "border-gray-700 bg-gray-950 hover:border-gray-600"
                                   : "border-gray-200 bg-gray-50 hover:border-gray-300"
@@ -2312,7 +2312,7 @@ export default function NewPropertyPage() {
                           }
                         }}
                         placeholder="Facility name"
-                        className={`min-w-0 flex-1 rounded-xl border px-3 py-2.5 text-sm outline-none focus:border-[var(--accent-500)] ${inputClass}`}
+                        className={`min-w-0 flex-1 rounded-xl border px-3 py-2.5 text-sm outline-none focus:border-[var(--accent-700)] ${inputClass}`}
                       />
                       <button
                         type="button"
@@ -2320,7 +2320,7 @@ export default function NewPropertyPage() {
                         disabled={
                           submitting || !customFacility.trim()
                         }
-                        className="rounded-xl bg-[var(--accent-500)] px-4 text-white disabled:opacity-50"
+                        className="rounded-xl bg-[var(--accent-700)] px-4 text-white disabled:opacity-50"
                       >
                         Add
                       </button>
@@ -2411,7 +2411,7 @@ export default function NewPropertyPage() {
                       <button
                         type="submit"
                         disabled={submitting}
-                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--accent-500)] px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--accent-700)] px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {submitting ? (
                           <>

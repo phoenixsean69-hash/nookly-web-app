@@ -320,7 +320,7 @@ export default function ProfilePage() {
                   resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                 }`}>
                   <User className={`w-5 h-5 transition-colors duration-300 ${
-                    resolvedTheme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-500)]"
+                    resolvedTheme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-700)]"
                   }`} />
                   Profile Information
                 </h2>
@@ -332,8 +332,8 @@ export default function ProfilePage() {
                       <label className="cursor-pointer">
                         <div className={`w-28 h-28 rounded-full overflow-hidden border-4 transition-colors duration-300 bg-gray-100 dark:bg-gray-700 flex items-center justify-center ${
                           resolvedTheme === "dark" 
-                            ? "border-[var(--accent-500)]" 
-                            : "border-[var(--accent-500)]"
+                            ? "border-[var(--accent-700)]" 
+                            : "border-[var(--accent-700)]"
                         }`}>
                           {getAvatarUrl() ? (
                             <Image
@@ -356,8 +356,8 @@ export default function ProfilePage() {
                         </div>
                         <div className={`absolute bottom-1 right-1 rounded-full p-2 shadow-lg transition-colors duration-300 ${
                           resolvedTheme === "dark" 
-                            ? "bg-[var(--accent-500)] hover:bg-[var(--accent-600)]" 
-                            : "bg-[var(--accent-500)] hover:bg-[var(--accent-600)]"
+                            ? "bg-[var(--accent-700)] hover:bg-[var(--accent-600)]" 
+                            : "bg-[var(--accent-700)] hover:bg-[var(--accent-600)]"
                         }`}>
                           <Upload className="w-4 h-4 text-white" />
                         </div>
@@ -403,7 +403,7 @@ export default function ProfilePage() {
                           required
                           value={formData.name}
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                          className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                             resolvedTheme === "dark" 
                               ? "bg-gray-700 text-gray-100 placeholder-gray-400" 
                               : "border border-gray-200 text-gray-900 bg-white"
@@ -431,7 +431,7 @@ export default function ProfilePage() {
                           type="email"
                           required
                           value={formData.email}
-                          className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 cursor-not-allowed ${
+                          className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 cursor-not-allowed ${
                             resolvedTheme === "dark" 
                               ? "bg-gray-700 text-gray-400" 
                               : "border border-gray-200 text-gray-500 bg-gray-50"
@@ -465,7 +465,7 @@ export default function ProfilePage() {
                           type="tel"
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                          className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                          className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                             resolvedTheme === "dark" 
                               ? "bg-gray-700 text-gray-100 placeholder-gray-400" 
                               : "border border-gray-200 text-gray-900 bg-white"
@@ -482,8 +482,8 @@ export default function ProfilePage() {
                       disabled={loading}
                       className={`px-6 py-2.5 rounded-lg transition disabled:opacity-50 flex items-center gap-2 font-medium shadow-sm hover:shadow-md ${
                         resolvedTheme === "dark"
-                          ? "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
-                          : "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
+                          ? "bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white"
+                          : "bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white"
                       }`}
                     >
                       {loading ? (
@@ -512,7 +512,7 @@ export default function ProfilePage() {
                   resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                 }`}>
                   <Lock className={`w-5 h-5 transition-colors duration-300 ${
-                    resolvedTheme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-500)]"
+                    resolvedTheme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-700)]"
                   }`} />
                   Password
                 </h2>
@@ -563,7 +563,7 @@ export default function ProfilePage() {
                             required
                             value={passwordData.currentPassword}
                             onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                            className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                            className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                               resolvedTheme === "dark" 
                                 ? "bg-gray-700 text-gray-100 placeholder-gray-400" 
                                 : "border border-gray-200 text-gray-900 bg-white"
@@ -592,7 +592,7 @@ export default function ProfilePage() {
                             required
                             value={passwordData.newPassword}
                             onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                            className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                            className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                               resolvedTheme === "dark" 
                                 ? "bg-gray-700 text-gray-100 placeholder-gray-400" 
                                 : "border border-gray-200 text-gray-900 bg-white"
@@ -626,7 +626,7 @@ export default function ProfilePage() {
                             required
                             value={passwordData.confirmPassword}
                             onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                            className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                            className={`w-full pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                               resolvedTheme === "dark" 
                                 ? "bg-gray-700 text-gray-100 placeholder-gray-400" 
                                 : "border border-gray-200 text-gray-900 bg-white"
@@ -643,8 +643,8 @@ export default function ProfilePage() {
                         disabled={loading}
                         className={`flex-1 px-4 py-2.5 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2 font-medium shadow-sm hover:shadow-md ${
                           resolvedTheme === "dark"
-                            ? "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
-                            : "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
+                            ? "bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white"
+                            : "bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white"
                         }`}
                       >
                         {loading ? (

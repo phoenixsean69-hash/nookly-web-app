@@ -44,14 +44,14 @@ export default function LoginPage() {
         <div className={`absolute inset-0 transition-colors duration-300 ${
           resolvedTheme === "dark" 
             ? "bg-gradient-to-br from-gray-900/90 via-gray-800/85 to-gray-700/60" 
-            : "bg-gradient-to-br from-blue-900/80 via-blue-800/70 to-[var(--accent-500)]/30"
+            : "bg-gradient-to-br from-blue-900/80 via-blue-800/70 to-[var(--accent-700)]/30"
         }`} />
       </div>
 
       {/* Animated accent circles */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <div className={`absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl animate-pulse transition-colors duration-300 ${
-          resolvedTheme === "dark" ? "bg-gray-600/20" : "bg-[var(--accent-500)]/20"
+          resolvedTheme === "dark" ? "bg-gray-600/20" : "bg-[var(--accent-700)]/20"
         }`} />
         <div className={`absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl animate-pulse delay-1000 transition-colors duration-300 ${
           resolvedTheme === "dark" ? "bg-gray-500/20" : "bg-blue-600/20"
@@ -67,10 +67,10 @@ export default function LoginPage() {
           <div className={`bg-gradient-to-r px-8 py-6 relative overflow-hidden transition-colors duration-300 ${
             resolvedTheme === "dark" 
               ? "from-gray-700 via-gray-700 to-gray-600" 
-              : "from-[#1e3a5f] via-[#1e3a5f] to-[var(--accent-500)]"
+              : "from-[#1e3a5f] via-[#1e3a5f] to-[var(--accent-700)]"
           }`}>
             <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl transition-colors duration-300 ${
-              resolvedTheme === "dark" ? "bg-gray-500/20" : "bg-[var(--accent-500)]/20"
+              resolvedTheme === "dark" ? "bg-gray-500/20" : "bg-[var(--accent-700)]/20"
             }`} />
             <div className="relative text-center">
               <div className={`inline-block p-2.5 rounded-full mb-3 transition-colors duration-300 ${
@@ -127,7 +127,7 @@ export default function LoginPage() {
                     required
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
@@ -153,7 +153,7 @@ export default function LoginPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
@@ -179,7 +179,7 @@ export default function LoginPage() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
@@ -196,7 +196,7 @@ export default function LoginPage() {
                   className={`text-xs transition-colors duration-300 ${
                     resolvedTheme === "dark" 
                       ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                      : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                      : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
                   } hover:underline`}
                 >
                   Forgot password?
@@ -207,7 +207,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-[var(--accent-500)] text-white rounded-lg font-semibold hover:bg-[var(--accent-600)] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full py-3 bg-[var(--accent-700)] text-white rounded-lg font-semibold hover:bg-[var(--accent-600)] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>
@@ -226,7 +226,7 @@ export default function LoginPage() {
                 Don&apos;t have an account?{" "}
                 <Link
                   href="/register"
-                  className="text-[var(--accent-500)] dark:text-[var(--accent-400)] font-semibold hover:underline"
+                  className="text-[var(--accent-700)] dark:text-[var(--accent-400)] font-semibold hover:underline"
                 >
                   Create Account
                 </Link>

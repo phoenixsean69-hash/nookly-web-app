@@ -569,7 +569,7 @@ export default function PropertyDetailsPage() {
 
             <div className="flex h-[70vh] items-center justify-center">
               <div className="text-center">
-                <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent-500)] dark:border-gray-700" />
+                <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent-700)] dark:border-gray-700" />
                 <p className="mt-4 text-sm text-gray-500">
                   Loading property…
                 </p>
@@ -804,7 +804,7 @@ export default function PropertyDetailsPage() {
                             onClick={() => setSelectedImage(image)}
                             className={`relative aspect-[4/3] overflow-hidden rounded-xl border-2 ${
                               selectedImage === image
-                                ? "border-[var(--accent-500)]"
+                                ? "border-[var(--accent-700)]"
                                 : "border-transparent"
                             }`}
                           >
@@ -824,7 +824,7 @@ export default function PropertyDetailsPage() {
                   <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
-                        <p className="text-sm font-semibold text-[var(--accent-500)]">
+                        <p className="text-sm font-semibold text-[var(--accent-700)]">
                           {property.type || "Property"}
                         </p>
 
@@ -885,7 +885,7 @@ export default function PropertyDetailsPage() {
                             key={item.label}
                             className="rounded-xl bg-gray-50 p-3 text-center dark:bg-gray-800"
                           >
-                            <Icon className="mx-auto h-5 w-5 text-[var(--accent-500)]" />
+                            <Icon className="mx-auto h-5 w-5 text-[var(--accent-700)]" />
                             <p className="mt-2 font-bold">{item.value}</p>
                             <p className="text-[10px] uppercase text-gray-400">
                               {item.label}
@@ -924,7 +924,7 @@ export default function PropertyDetailsPage() {
 
                   <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                     <h2 className="flex items-center gap-2 font-bold">
-                      <Info className="h-5 w-5 text-[var(--accent-500)]" />
+                      <Info className="h-5 w-5 text-[var(--accent-700)]" />
                       Complete listing details
                     </h2>
 
@@ -1103,7 +1103,7 @@ export default function PropertyDetailsPage() {
                 <aside className="space-y-5">
                   <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                     <h2 className="flex items-center gap-2 font-bold">
-                      <Building2 className="h-5 w-5 text-[var(--accent-500)]" />
+                      <Building2 className="h-5 w-5 text-[var(--accent-700)]" />
                       Performance
                     </h2>
 
@@ -1130,7 +1130,7 @@ export default function PropertyDetailsPage() {
                     <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                       <div className="flex items-center justify-between gap-3">
                         <h2 className="flex items-center gap-2 font-bold">
-                          <Users className="h-5 w-5 text-[var(--accent-500)]" />
+                          <Users className="h-5 w-5 text-[var(--accent-700)]" />
                           Occupancy
                         </h2>
 
@@ -1141,7 +1141,7 @@ export default function PropertyDetailsPage() {
 
                       <div className="mt-3 h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
                         <div
-                          className="h-full rounded-full bg-[var(--accent-500)]"
+                          className="h-full rounded-full bg-[var(--accent-700)]"
                           style={{ width: `${occupancy}%` }}
                         />
                       </div>
@@ -1168,7 +1168,7 @@ export default function PropertyDetailsPage() {
                     <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                       <div className="flex items-center justify-between">
                         <h2 className="flex items-center gap-2 font-bold">
-                          <Users className="h-5 w-5 text-[var(--accent-500)]" />
+                          <Users className="h-5 w-5 text-[var(--accent-700)]" />
                           Active tenants
                         </h2>
 
@@ -1226,7 +1226,7 @@ export default function PropertyDetailsPage() {
                   ) : (
                     <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                       <h2 className="flex items-center gap-2 font-bold">
-                        <ShieldCheck className="h-5 w-5 text-[var(--accent-500)]" />
+                        <ShieldCheck className="h-5 w-5 text-[var(--accent-700)]" />
                         Access level
                       </h2>
 
@@ -1305,7 +1305,7 @@ interface DetailRowProps {
 function DetailRow({ icon: Icon, label, value }: DetailRowProps) {
   return (
     <div className="flex items-start gap-3 rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
-      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent-500)]" />
+      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent-700)]" />
 
       <div className="min-w-0">
         <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">

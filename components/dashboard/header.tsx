@@ -149,7 +149,7 @@ export function Header() {
           <div className="flex items-start">
             <div className="flex-shrink-0 pt-0.5">
               <div className="w-10 h-10 rounded-full bg-[var(--accent-50)] dark:bg-[var(--accent-950)]/30 flex items-center justify-center">
-                <Settings className="w-5 h-5 text-[var(--accent-500)] dark:text-[var(--accent-400)]" />
+                <Settings className="w-5 h-5 text-[var(--accent-700)] dark:text-[var(--accent-400)]" />
               </div>
             </div>
             <div className="ml-3 flex-1">
@@ -165,7 +165,7 @@ export function Header() {
         <div className="flex border-l border-gray-200 dark:border-gray-700">
           <button
             onClick={() => toast.dismiss(t.id)}
-            className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-[var(--accent-500)] hover:text-[var(--accent-600)] dark:text-[var(--accent-400)] dark:hover:text-[var(--accent-300)] focus:outline-none"
+            className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-[var(--accent-700)] hover:text-[var(--accent-600)] dark:text-[var(--accent-400)] dark:hover:text-[var(--accent-300)] focus:outline-none"
           >
             Close
           </button>
@@ -457,7 +457,7 @@ export function Header() {
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case "view":
-        return <Eye className="w-4 h-4 text-[var(--accent-500)] dark:text-[var(--accent-400)]" />;
+        return <Eye className="w-4 h-4 text-[var(--accent-700)] dark:text-[var(--accent-400)]" />;
       case "like":
         return <Heart className="w-4 h-4 text-red-500" />;
       case "request":
@@ -509,7 +509,7 @@ export function Header() {
           {unreadCount > 0 && (
             <button
               onClick={markAllAsRead}
-              className="text-xs text-[var(--accent-500)] hover:text-[var(--accent-600)] dark:text-[var(--accent-400)] dark:hover:text-[var(--accent-300)]"
+              className="text-xs text-[var(--accent-700)] hover:text-[var(--accent-600)] dark:text-[var(--accent-400)] dark:hover:text-[var(--accent-300)]"
             >
               Mark all as read
             </button>
@@ -564,7 +564,7 @@ export function Header() {
                             key={i}
                             className={`w-3 h-3 ${
                               i < (notif.rating || 0)
-                                ? "text-yellow-400 fill-yellow-400"
+                                ? "text-orange-400 fill-orange-400"
                                 : "text-gray-300 dark:text-gray-600"
                             }`}
                           />
@@ -577,7 +577,7 @@ export function Header() {
                         e.stopPropagation();
                         setShowNotifications(false);
                       }}
-                      className="text-xs text-[var(--accent-500)] hover:text-[var(--accent-600)] dark:text-[var(--accent-400)] dark:hover:text-[var(--accent-300)] mt-2 inline-block"
+                      className="text-xs text-[var(--accent-700)] hover:text-[var(--accent-600)] dark:text-[var(--accent-400)] dark:hover:text-[var(--accent-300)] mt-2 inline-block"
                     >
                       View Property →
                     </Link>
@@ -593,7 +593,7 @@ export function Header() {
         <div className="p-2 border-t border-gray-100 dark:border-gray-700 text-center sticky bottom-0 bg-white dark:bg-gray-800">
           <Link
             href="/dashboard/notifications"
-            className="text-xs text-[var(--accent-500)] hover:text-[var(--accent-600)] dark:text-[var(--accent-400)] dark:hover:text-[var(--accent-300)]"
+            className="text-xs text-[var(--accent-700)] hover:text-[var(--accent-600)] dark:text-[var(--accent-400)] dark:hover:text-[var(--accent-300)]"
             onClick={() => setShowNotifications(false)}
           >
             View all notifications
@@ -650,7 +650,7 @@ export function Header() {
               {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
-                className="p-2 text-gray-500 hover:text-[var(--accent-500)] hover:bg-[var(--accent-50)] dark:text-gray-400 dark:hover:text-[var(--accent-400)] dark:hover:bg-[var(--accent-950)]/30 rounded-lg transition-colors duration-300"
+                className="p-2 text-gray-500 hover:text-[var(--accent-700)] hover:bg-[var(--accent-50)] dark:text-gray-400 dark:hover:text-[var(--accent-400)] dark:hover:bg-[var(--accent-950)]/30 rounded-lg transition-colors duration-300"
                 aria-label="Toggle theme"
               >
                 {resolvedTheme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -663,7 +663,7 @@ export function Header() {
                 <button
                   ref={notificationButtonRef}
                   onClick={toggleNotifications}
-                  className="relative p-2 text-gray-500 hover:text-[var(--accent-500)] hover:bg-[var(--accent-50)] dark:text-gray-400 dark:hover:text-[var(--accent-400)] dark:hover:bg-[var(--accent-950)]/30 rounded-lg transition-colors duration-300"
+                  className="relative p-2 text-gray-500 hover:text-[var(--accent-700)] hover:bg-[var(--accent-50)] dark:text-gray-400 dark:hover:text-[var(--accent-400)] dark:hover:bg-[var(--accent-950)]/30 rounded-lg transition-colors duration-300"
                   disabled={isOffline}
                 >
                   <Bell className="w-5 h-5" />
@@ -676,7 +676,7 @@ export function Header() {
               {/* Settings */}
               <Link
                 href="/dashboard/settings?tab=preferences"
-                className="p-2 text-gray-500 hover:text-[var(--accent-500)] hover:bg-[var(--accent-50)] dark:text-gray-400 dark:hover:text-[var(--accent-400)] dark:hover:bg-[var(--accent-950)]/30 rounded-lg transition-colors duration-300"
+                className="p-2 text-gray-500 hover:text-[var(--accent-700)] hover:bg-[var(--accent-50)] dark:text-gray-400 dark:hover:text-[var(--accent-400)] dark:hover:bg-[var(--accent-950)]/30 rounded-lg transition-colors duration-300"
               >
                 <Settings className="w-5 h-5" />
               </Link>
@@ -699,7 +699,7 @@ export function Header() {
                     />
                   </div>
                 ) : (
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-800 to-[var(--accent-500)] rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-800 to-[var(--accent-700)] rounded-full flex items-center justify-center text-white font-bold text-sm">
                     {displayInitial}
                   </div>
                 )}
@@ -807,7 +807,7 @@ export function Header() {
           <div className="flex items-center gap-0.5">
             <button
               onClick={toggleTheme}
-              className="p-2 text-gray-500 hover:text-[var(--accent-500)] hover:bg-[var(--accent-50)] dark:text-gray-400 dark:hover:text-[var(--accent-400)] dark:hover:bg-[var(--accent-950)]/30 rounded-lg transition-colors duration-300"
+              className="p-2 text-gray-500 hover:text-[var(--accent-700)] hover:bg-[var(--accent-50)] dark:text-gray-400 dark:hover:text-[var(--accent-400)] dark:hover:bg-[var(--accent-950)]/30 rounded-lg transition-colors duration-300"
               aria-label="Toggle theme"
             >
               {resolvedTheme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -818,7 +818,7 @@ export function Header() {
               <button
                 ref={notificationButtonRef}
                 onClick={toggleNotifications}
-                className="relative p-2 text-gray-500 hover:text-[var(--accent-500)] hover:bg-[var(--accent-50)] dark:text-gray-400 dark:hover:text-[var(--accent-400)] dark:hover:bg-[var(--accent-950)]/30 rounded-lg transition-colors duration-300"
+                className="relative p-2 text-gray-500 hover:text-[var(--accent-700)] hover:bg-[var(--accent-50)] dark:text-gray-400 dark:hover:text-[var(--accent-400)] dark:hover:bg-[var(--accent-950)]/30 rounded-lg transition-colors duration-300"
                 disabled={isOffline}
               >
                 <Bell className="w-5 h-5" />
@@ -836,7 +836,7 @@ export function Header() {
                   window.location.href = "/dashboard/settings?tab=preferences";
                 }, 300);
               }}
-              className="p-2 text-gray-500 hover:text-[var(--accent-500)] hover:bg-[var(--accent-50)] dark:text-gray-400 dark:hover:text-[var(--accent-400)] dark:hover:bg-[var(--accent-950)]/30 rounded-lg transition-colors duration-300"
+              className="p-2 text-gray-500 hover:text-[var(--accent-700)] hover:bg-[var(--accent-50)] dark:text-gray-400 dark:hover:text-[var(--accent-400)] dark:hover:bg-[var(--accent-950)]/30 rounded-lg transition-colors duration-300"
             >
               <Settings className="w-5 h-5" />
             </button>
@@ -850,7 +850,7 @@ export function Header() {
                       <div className="flex items-start">
                         <div className="flex-shrink-0 pt-0.5">
                           {orgAvatar ? (
-                            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[var(--accent-500)]">
+                            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[var(--accent-700)]">
                               <Image
                                 src={orgAvatar}
                                 alt={orgName}
@@ -860,7 +860,7 @@ export function Header() {
                               />
                             </div>
                           ) : (
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-800 to-[var(--accent-500)] rounded-full flex items-center justify-center text-white font-bold text-sm">
+                            <div className="w-10 h-10 bg-gradient-to-br from-blue-800 to-[var(--accent-700)] rounded-full flex items-center justify-center text-white font-bold text-sm">
                               {displayInitial}
                             </div>
                           )}
@@ -874,7 +874,7 @@ export function Header() {
                             <Link
                               href="/dashboard/settings?tab=profile"
                               onClick={() => toast.dismiss(t.id)}
-                              className="text-xs text-[var(--accent-500)] hover:text-[var(--accent-600)] dark:text-[var(--accent-400)] dark:hover:text-[var(--accent-300)]"
+                              className="text-xs text-[var(--accent-700)] hover:text-[var(--accent-600)] dark:text-[var(--accent-400)] dark:hover:text-[var(--accent-300)]"
                             >
                               Profile Settings →
                             </Link>
@@ -918,7 +918,7 @@ export function Header() {
                   />
                 </div>
               ) : (
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-800 to-[var(--accent-500)] rounded-full flex items-center justify-center text-white font-bold text-sm">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-800 to-[var(--accent-700)] rounded-full flex items-center justify-center text-white font-bold text-sm">
                   {displayInitial}
                 </div>
               )}

@@ -233,7 +233,7 @@ export default function EditTaskPage() {
             <Header />
             <div className="flex h-[70vh] items-center justify-center">
               <div className="text-center">
-                <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent-500)] dark:border-gray-700" />
+                <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent-700)] dark:border-gray-700" />
                 <p className="mt-4 text-sm text-gray-500">Loading task…</p>
               </div>
             </div>
@@ -426,7 +426,7 @@ export default function EditTaskPage() {
                   <button
                     type="submit"
                     disabled={saving || isOffline}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--accent-500)] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--accent-700)] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
                   >
                     <Save className="h-4 w-4" />
                     {saving ? "Saving…" : "Save changes"}

@@ -211,14 +211,14 @@ if (
         <div className={`absolute inset-0 transition-colors duration-300 ${
           resolvedTheme === "dark" 
             ? "bg-gradient-to-br from-gray-900/90 via-gray-900/80 to-gray-800/60" 
-            : "bg-gradient-to-br from-[#1e3a5f]/80 via-[#1e3a5f]/70 to-[var(--accent-500)]/30"
+            : "bg-gradient-to-br from-[#1e3a5f]/80 via-[#1e3a5f]/70 to-[var(--accent-700)]/30"
         }`} />
       </div>
 
       {/* Animated accent circles */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className={`absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl animate-pulse transition-colors duration-300 ${
-          resolvedTheme === "dark" ? "bg-gray-600/10" : "bg-[var(--accent-500)]/10"
+          resolvedTheme === "dark" ? "bg-gray-600/10" : "bg-[var(--accent-700)]/10"
         }`} />
         <div className={`absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl animate-pulse delay-1000 transition-colors duration-300 ${
           resolvedTheme === "dark" ? "bg-gray-500/10" : "bg-blue-600/10"
@@ -234,10 +234,10 @@ if (
           <div className={`bg-gradient-to-r px-8 py-6 relative overflow-hidden transition-colors duration-300 ${
             resolvedTheme === "dark" 
               ? "from-gray-700 via-gray-700 to-gray-600" 
-              : "from-[#1e3a5f] via-[#1e3a5f] to-[var(--accent-500)]"
+              : "from-[#1e3a5f] via-[#1e3a5f] to-[var(--accent-700)]"
           }`}>
             <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl transition-colors duration-300 ${
-              resolvedTheme === "dark" ? "bg-gray-500/20" : "bg-[var(--accent-500)]/20"
+              resolvedTheme === "dark" ? "bg-gray-500/20" : "bg-[var(--accent-700)]/20"
             }`} />
             <div className="relative text-center">
               <div className={`inline-block p-2.5 rounded-full mb-3 transition-colors duration-300 ${
@@ -278,11 +278,11 @@ if (
                     <div className={`w-24 h-24 rounded-full flex items-center justify-center relative overflow-hidden border-2 shadow-md transition-colors duration-300 ${
                       resolvedTheme === "dark" 
                         ? "border-gray-500 bg-gray-700" 
-                        : "border-[var(--accent-500)] bg-gray-100"
+                        : "border-[var(--accent-700)] bg-gray-100"
                     }`}>
                       {uploadingAvatar ? (
                         <div className={`w-8 h-8 border-2 border-t-transparent rounded-full animate-spin transition-colors duration-300 ${
-                          resolvedTheme === "dark" ? "border-gray-400" : "border-[var(--accent-500)]"
+                          resolvedTheme === "dark" ? "border-gray-400" : "border-[var(--accent-700)]"
                         }`} />
                       ) : formData.avatar ? (
                         <img src={formData.avatar} alt="Avatar" className="w-full h-full object-cover" />
@@ -294,7 +294,7 @@ if (
                         <Upload size={32} className="text-gray-400 dark:text-gray-500" />
                       )}
                       <div className={`absolute bottom-0 right-0 rounded-full p-1.5 shadow-md transition-colors duration-300 ${
-                        resolvedTheme === "dark" ? "bg-gray-600" : "bg-[var(--accent-500)]"
+                        resolvedTheme === "dark" ? "bg-gray-600" : "bg-[var(--accent-700)]"
                       }`}>
                         <Upload size={12} className="text-white" />
                       </div>
@@ -339,7 +339,7 @@ if (
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
@@ -458,7 +458,7 @@ if (
           city: e.target.value,
         })
       }
-      className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
+      className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
         resolvedTheme === "dark"
           ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400"
           : "border border-gray-300 text-gray-900 bg-white"
@@ -485,7 +485,7 @@ if (
                     type="text"
                     value={formData.username}
                     onChange={(e) => setFormData({ ...formData, username: e.target.value.toLowerCase().replace(/\s/g, '') })}
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
@@ -517,7 +517,7 @@ if (
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
@@ -543,7 +543,7 @@ if (
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
@@ -569,7 +569,7 @@ if (
                     type={showPassword ? "text" : "password"}
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className={`w-full pl-10 pr-12 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
+                    className={`w-full pl-10 pr-12 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
@@ -602,7 +602,7 @@ if (
                     type={showConfirmPassword ? "text" : "password"}
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                    className={`w-full pl-10 pr-12 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] focus:border-[var(--accent-500)] transition-colors duration-300 ${
+                    className={`w-full pl-10 pr-12 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
@@ -632,7 +632,7 @@ if (
               <button
                 type="submit"
                 disabled={loading || uploadingAvatar}
-                className="w-full py-3 bg-[var(--accent-500)] text-white rounded-lg font-semibold hover:bg-[var(--accent-600)] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full py-3 bg-[var(--accent-700)] text-white rounded-lg font-semibold hover:bg-[var(--accent-600)] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading || uploadingAvatar ? (
                   <>
@@ -652,7 +652,7 @@ if (
                 resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
               }`}>
                 Already have an account?{" "}
-                <a href="/login" className="text-[var(--accent-500)] dark:text-[var(--accent-400)] font-semibold hover:underline">
+                <a href="/login" className="text-[var(--accent-700)] dark:text-[var(--accent-400)] font-semibold hover:underline">
                   Sign In
                 </a>
               </p>

@@ -299,7 +299,7 @@ export default function NewTenantPage() {
               >
                 <div className="mb-6 flex flex-col items-center">
                   <label className="relative cursor-pointer">
-                    <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-4 border-[var(--accent-500)] bg-gray-100 dark:bg-gray-800">
+                    <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-4 border-[var(--accent-700)] bg-gray-100 dark:bg-gray-800">
                       {avatarPreview ? (
                         <Image
                           src={avatarPreview}
@@ -313,7 +313,7 @@ export default function NewTenantPage() {
                         <User className="h-12 w-12 text-gray-400" />
                       )}
                     </div>
-                    <span className="absolute bottom-0 right-0 rounded-full bg-[var(--accent-500)] p-2 text-white shadow">
+                    <span className="absolute bottom-0 right-0 rounded-full bg-[var(--accent-700)] p-2 text-white shadow">
                       <Upload className="h-4 w-4" />
                     </span>
                     <input
@@ -525,7 +525,7 @@ export default function NewTenantPage() {
                   <button
                     type="submit"
                     disabled={saving || loadingProperties}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--accent-500)] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--accent-700)] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
                   >
                     <Save className="h-4 w-4" />
                     {saving ? "Saving…" : "Create tenant"}

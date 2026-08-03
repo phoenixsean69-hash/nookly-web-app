@@ -815,7 +815,7 @@ const statCards = [
             <main className="p-6">
               <div className="flex items-center justify-center h-96">
                 <div className="text-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--accent-500)] mx-auto" />
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--accent-700)] mx-auto" />
                   <p className="mt-4 text-gray-600 dark:text-gray-400">Loading dashboard...</p>
                 </div>
               </div>
@@ -847,7 +847,7 @@ const statCards = [
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                     isOffline 
                       ? 'bg-gray-400 dark:bg-gray-600' 
-                      : 'bg-[var(--accent-500)]'
+                      : 'bg-[var(--accent-700)]'
                   }`}>
                     <LayoutDashboard className="w-4 h-4 text-white" />
                   </div>
@@ -872,7 +872,7 @@ const statCards = [
                   className={`flex items-center gap-1 text-xs px-3 py-1 bg-white dark:bg-gray-700 rounded-lg shadow-sm hover:shadow border border-gray-200 dark:border-gray-600 transition ${
                     isOffline 
                       ? "text-gray-400 dark:text-gray-500 cursor-not-allowed" 
-                      : "text-gray-500 dark:text-gray-300 hover:text-[var(--accent-500)] dark:hover:text-[var(--accent-400)]"
+                      : "text-gray-500 dark:text-gray-300 hover:text-[var(--accent-700)] dark:hover:text-[var(--accent-400)]"
                   }`}
                 >
                   <RefreshCw className={`w-3 h-3 ${isOffline ? "" : "hover:rotate-180 transition-transform duration-500"}`} />
@@ -919,7 +919,7 @@ const statCards = [
                       </div>
                       <Link
                         href="/dashboard/properties"
-                        className="text-[var(--accent-500)] dark:text-[var(--accent-400)] hover:text-[var(--accent-600)] dark:hover:text-[var(--accent-300)] text-xs font-medium flex items-center gap-1 group"
+                        className="text-[var(--accent-700)] dark:text-[var(--accent-400)] hover:text-[var(--accent-600)] dark:hover:text-[var(--accent-300)] text-xs font-medium flex items-center gap-1 group"
                       >
                         View All{" "}
                         <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
@@ -940,7 +940,7 @@ const statCards = [
                           </p>
                           <Link
                             href="/dashboard/properties/new"
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white text-xs rounded-lg transition"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white text-xs rounded-lg transition"
                           >
                             <PlusCircle className="w-3.5 h-3.5" />
                             Add Property
@@ -982,7 +982,7 @@ const statCards = [
     </div>
     <div className="min-w-0 flex-1">
       <div className="flex items-center gap-1.5">
-        <h3 className={`text-xs font-semibold truncate group-hover:text-[var(--accent-500)] dark:group-hover:text-[var(--accent-400)] transition-colors ${
+        <h3 className={`text-xs font-semibold truncate group-hover:text-[var(--accent-700)] dark:group-hover:text-[var(--accent-400)] transition-colors ${
           isOffline ? 'text-gray-700 dark:text-gray-200' : 'text-gray-800 dark:text-gray-200'
         }`}>
           {property.propertyName}
@@ -997,7 +997,7 @@ const statCards = [
         <span className="text-[10px] text-gray-500 dark:text-gray-400">
           {property.bedrooms} bed • {property.bathrooms} bath
         </span>
-        <span className="text-[10px] font-semibold text-[var(--accent-500)] dark:text-[var(--accent-400)]">
+        <span className="text-[10px] font-semibold text-[var(--accent-700)] dark:text-[var(--accent-400)]">
           ${property.price}/mo
         </span>
       </div>
@@ -1073,7 +1073,7 @@ const statCards = [
                           className={`text-[10px] px-2 py-1 rounded-lg transition flex items-center gap-1 ${
                             isOffline 
                               ? 'bg-gray-200 dark:bg-gray-600 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
-                              : 'bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white'
+                              : 'bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white'
                           }`}
                         >
                           <RefreshCw className="w-3 h-3" />
@@ -1432,7 +1432,7 @@ const statCards = [
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                         isOffline 
                           ? 'bg-gray-400 dark:bg-gray-600' 
-                          : 'bg-[var(--accent-500)]'
+                          : 'bg-[var(--accent-700)]'
                       }`}>
                         <Activity className="w-4 h-4 text-white" />
                       </div>
@@ -1568,7 +1568,7 @@ const statCards = [
                   <div className="flex gap-2 mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
                     <Link
                       href="/dashboard/properties"
-                      className="flex-1 text-center text-[10px] text-[var(--accent-500)] dark:text-[var(--accent-400)] hover:text-[var(--accent-600)] dark:hover:text-[var(--accent-300)] font-medium py-1.5 rounded-lg hover:bg-[var(--accent-50)] dark:hover:bg-[var(--accent-950)]/20 transition-all border border-gray-200 dark:border-gray-700 hover:border-[var(--accent-200)] dark:hover:border-[var(--accent-800)]"
+                      className="flex-1 text-center text-[10px] text-[var(--accent-700)] dark:text-[var(--accent-400)] hover:text-[var(--accent-600)] dark:hover:text-[var(--accent-300)] font-medium py-1.5 rounded-lg hover:bg-[var(--accent-50)] dark:hover:bg-[var(--accent-950)]/20 transition-all border border-gray-200 dark:border-gray-700 hover:border-[var(--accent-200)] dark:hover:border-[var(--accent-800)]"
                     >
                       View All Activity →
                     </Link>
@@ -1760,7 +1760,7 @@ const statCards = [
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                         isOffline 
                           ? 'bg-gray-400 dark:bg-gray-600' 
-                          : 'bg-[var(--accent-500)]'
+                          : 'bg-[var(--accent-700)]'
                       }`}>
                         <Calendar className="w-4 h-4 text-white" />
                       </div>
@@ -1821,7 +1821,7 @@ const statCards = [
                       {!isOffline && (
                         <Link
                           href="/dashboard/tasks/new"
-                          className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white text-sm rounded-lg transition"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white text-sm rounded-lg transition"
                         >
                           <PlusCircle className="w-4 h-4" />
                           Create Task
@@ -1861,7 +1861,7 @@ const statCards = [
                           
                           return (
                             <Link href={`/dashboard/tasks/${topTask.$id}`} className={`block p-3 rounded-lg transition-all duration-300 group cursor-pointer border-l-4 ${priorityColor} ${isOffline ? 'bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 border-gray-200 dark:border-gray-600' : 'bg-white dark:bg-gray-800 hover:shadow-md border-gray-200 dark:border-gray-600'}`}>
-                              <p className={`text-xs font-semibold group-hover:text-[var(--accent-500)] dark:group-hover:text-[var(--accent-400)] transition-colors line-clamp-2 flex-1 ${isOffline ? 'text-gray-700 dark:text-gray-300' : 'text-gray-800 dark:text-gray-200'}`}>{topTask.title}</p>
+                              <p className={`text-xs font-semibold group-hover:text-[var(--accent-700)] dark:group-hover:text-[var(--accent-400)] transition-colors line-clamp-2 flex-1 ${isOffline ? 'text-gray-700 dark:text-gray-300' : 'text-gray-800 dark:text-gray-200'}`}>{topTask.title}</p>
                               <div className="flex flex-wrap items-center gap-1.5 mt-2">
                                 <span className={`text-[8px] px-1.5 py-0.5 rounded-full font-medium ${getPriorityColor(topTask.priority)}`}>{topTask.priority}</span>
                                 <span className={`text-[8px] flex items-center gap-0.5 ${overdue ? "text-red-600 dark:text-red-400 font-medium" : "text-gray-500 dark:text-gray-400"}`}>
@@ -1897,7 +1897,7 @@ const statCards = [
                                 </select>
                               </div>
                             ))}
-                            {upcomingTasks.length > 3 && <Link href="/dashboard/tasks" className="text-[8px] text-[var(--accent-500)] dark:text-[var(--accent-400)] hover:underline block text-center">Manage all tasks →</Link>}
+                            {upcomingTasks.length > 3 && <Link href="/dashboard/tasks" className="text-[8px] text-[var(--accent-700)] dark:text-[var(--accent-400)] hover:underline block text-center">Manage all tasks →</Link>}
                           </div>
                         ) : (
                           <div className="text-center py-6 border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-lg"><p className="text-[8px] text-gray-400 dark:text-gray-500">No tasks to prioritize</p></div>
@@ -1941,16 +1941,16 @@ const statCards = [
                           <h3 className="text-[10px] font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Quick Actions</h3>
                         </div>
                         <div className="space-y-2">
-                          <Link href="/dashboard/tasks/new" className={`block p-3 rounded-lg text-center transition-all duration-300 border-2 border-dashed ${isOffline ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-500 text-gray-400 dark:text-gray-500 cursor-not-allowed' : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-[var(--accent-500)] dark:hover:border-[var(--accent-400)] hover:bg-[var(--accent-50)] dark:hover:bg-[var(--accent-950)]/20'}`}>
-                            <PlusCircle className={`w-5 h-5 mx-auto mb-1 ${isOffline ? 'text-gray-400 dark:text-gray-500' : 'text-[var(--accent-500)] dark:text-[var(--accent-400)]'}`} />
+                          <Link href="/dashboard/tasks/new" className={`block p-3 rounded-lg text-center transition-all duration-300 border-2 border-dashed ${isOffline ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-500 text-gray-400 dark:text-gray-500 cursor-not-allowed' : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-[var(--accent-700)] dark:hover:border-[var(--accent-400)] hover:bg-[var(--accent-50)] dark:hover:bg-[var(--accent-950)]/20'}`}>
+                            <PlusCircle className={`w-5 h-5 mx-auto mb-1 ${isOffline ? 'text-gray-400 dark:text-gray-500' : 'text-[var(--accent-700)] dark:text-[var(--accent-400)]'}`} />
                             <p className={`text-[10px] font-medium ${isOffline ? 'text-gray-400 dark:text-gray-500' : 'text-gray-700 dark:text-gray-300'}`}>Create New Task</p>
                           </Link>
-                          <Link href="/dashboard/tasks" className={`block p-3 rounded-lg text-center transition-all duration-300 border ${isOffline ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-500 text-gray-400 dark:text-gray-500 cursor-not-allowed' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:border-[var(--accent-500)] dark:hover:border-[var(--accent-400)] hover:bg-[var(--accent-50)] dark:hover:bg-[var(--accent-950)]/20'}`}>
+                          <Link href="/dashboard/tasks" className={`block p-3 rounded-lg text-center transition-all duration-300 border ${isOffline ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-500 text-gray-400 dark:text-gray-500 cursor-not-allowed' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:border-[var(--accent-700)] dark:hover:border-[var(--accent-400)] hover:bg-[var(--accent-50)] dark:hover:bg-[var(--accent-950)]/20'}`}>
                             <p className={`text-[10px] font-medium ${isOffline ? 'text-gray-400 dark:text-gray-500' : 'text-gray-700 dark:text-gray-300'}`}>View All Tasks</p>
                             <p className="text-[8px] text-gray-400 dark:text-gray-500">{upcomingTasks.length} pending</p>
                           </Link>
                           {!isOffline && (
-                            <button onClick={() => { fetchDashboardData(); const btn = document.activeElement; if (btn) { const originalText = btn.innerHTML; btn.innerHTML = '✓ Refreshed'; setTimeout(() => { btn.innerHTML = originalText; }, 2000); } }} className="w-full p-2.5 rounded-lg text-center transition-all duration-300 border border-gray-200 dark:border-gray-600 hover:border-[var(--accent-500)] dark:hover:border-[var(--accent-400)] hover:bg-[var(--accent-50)] dark:hover:bg-[var(--accent-950)]/20 bg-white dark:bg-gray-800">
+                            <button onClick={() => { fetchDashboardData(); const btn = document.activeElement; if (btn) { const originalText = btn.innerHTML; btn.innerHTML = '✓ Refreshed'; setTimeout(() => { btn.innerHTML = originalText; }, 2000); } }} className="w-full p-2.5 rounded-lg text-center transition-all duration-300 border border-gray-200 dark:border-gray-600 hover:border-[var(--accent-700)] dark:hover:border-[var(--accent-400)] hover:bg-[var(--accent-50)] dark:hover:bg-[var(--accent-950)]/20 bg-white dark:bg-gray-800">
                               <div className="flex items-center justify-center gap-1.5">
                                 <RefreshCw className="w-3 h-3 text-gray-500 dark:text-gray-400" />
                                 <span className="text-[10px] text-gray-600 dark:text-gray-300">Refresh Tasks</span>
@@ -1968,13 +1968,13 @@ const statCards = [
             {/* SECTION 6: QUICK ACTION BUTTONS */}
             <section className="mb-8">
               <h2 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
-                <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${isOffline ? 'bg-gray-400 dark:bg-gray-600' : 'bg-[var(--accent-500)]'}`}>
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${isOffline ? 'bg-gray-400 dark:bg-gray-600' : 'bg-[var(--accent-700)]'}`}>
                   <Zap className="w-3 h-3 text-white" />
                 </div>
                 Quick Actions
               </h2>
               <div className={`grid grid-cols-1 md:grid-cols-4 gap-4 ${isOffline ? 'opacity-75' : ''}`}>
-                <Link href="/dashboard/properties/new" className={`group relative overflow-hidden rounded-xl p-4 text-white hover:shadow-xl transition-all transform hover:scale-105 border ${isOffline ? 'bg-gray-500 dark:bg-gray-600 border-gray-400/30 cursor-not-allowed' : 'bg-linear-to-r from-[var(--accent-500)] to-[var(--accent-600)] border-[var(--accent-400)]/30'}`}>
+                <Link href="/dashboard/properties/new" className={`group relative overflow-hidden rounded-xl p-4 text-white hover:shadow-xl transition-all transform hover:scale-105 border ${isOffline ? 'bg-gray-500 dark:bg-gray-600 border-gray-400/30 cursor-not-allowed' : 'bg-linear-to-r from-[var(--accent-700)] to-[var(--accent-600)] border-[var(--accent-400)]/30'}`}>
                   <div className="relative flex items-center gap-3">
                     <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform border border-white/20">
                       <PlusCircle className="w-5 h-5" />
@@ -1998,7 +1998,7 @@ const statCards = [
                   </div>
                   <div className="absolute inset-0 bg-white/10 translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
                 </Link>
-                <Link href="/dashboard/messages" className={`group relative overflow-hidden rounded-xl p-4 text-white hover:shadow-xl transition-all transform hover:scale-105 border ${isOffline ? 'bg-gray-500 dark:bg-gray-600 border-gray-400/30 cursor-not-allowed' : 'bg-linear-to-r from-[var(--accent-500)] to-[var(--accent-600)] border-[var(--accent-400)]/30'}`}>
+                <Link href="/dashboard/messages" className={`group relative overflow-hidden rounded-xl p-4 text-white hover:shadow-xl transition-all transform hover:scale-105 border ${isOffline ? 'bg-gray-500 dark:bg-gray-600 border-gray-400/30 cursor-not-allowed' : 'bg-linear-to-r from-[var(--accent-700)] to-[var(--accent-600)] border-[var(--accent-400)]/30'}`}>
                   <div className="relative flex items-center gap-3">
                     <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform border border-white/20">
                       <MessageCircle className="w-5 h-5" />

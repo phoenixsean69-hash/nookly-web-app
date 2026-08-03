@@ -312,7 +312,7 @@ export default function TenantDetailsPage() {
             <main className="p-3 sm:p-4 md:p-6">
               <div className="flex items-center justify-center h-96">
                 <div className="text-center">
-                  <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-[var(--accent-500)] mx-auto" />
+                  <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-[var(--accent-700)] mx-auto" />
                   <p className={`mt-4 text-sm sm:text-base transition-colors duration-300 ${
                     resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                   }`}>
@@ -354,7 +354,7 @@ export default function TenantDetailsPage() {
                   </p>
                   <Link
                     href="/dashboard/tenants"
-                    className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
+                    className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
                   >
                     <ArrowLeft className="w-4 h-4" />
                     Back to Tenants
@@ -415,7 +415,7 @@ export default function TenantDetailsPage() {
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                 <div className="flex items-start gap-3 sm:gap-4">
                   {displayAvatar ? (
-                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden ring-2 ring-[var(--accent-500)]/30 flex-shrink-0">
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden ring-2 ring-[var(--accent-700)]/30 flex-shrink-0">
                       <Image
                         src={displayAvatar}
                         alt={displayName}
@@ -464,7 +464,7 @@ export default function TenantDetailsPage() {
                   <h2 className={`text-sm font-semibold mb-4 flex items-center gap-2 ${
                     resolvedTheme === "dark" ? "text-gray-200" : "text-gray-700"
                   }`}>
-                    <User className="w-4 h-4 text-[var(--accent-500)]" />
+                    <User className="w-4 h-4 text-[var(--accent-700)]" />
                     {isFromRequests ? 'Requestor Information' : 'Tenant Information'}
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -512,7 +512,7 @@ export default function TenantDetailsPage() {
                   <h2 className={`text-sm font-semibold mb-4 flex items-center gap-2 ${
                     resolvedTheme === "dark" ? "text-gray-200" : "text-gray-700"
                   }`}>
-                    <Building2 className="w-4 h-4 text-[var(--accent-500)]" />
+                    <Building2 className="w-4 h-4 text-[var(--accent-700)]" />
                     Property Details
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -632,7 +632,7 @@ export default function TenantDetailsPage() {
                   <h2 className={`text-sm font-semibold mb-4 flex items-center gap-2 ${
                     resolvedTheme === "dark" ? "text-gray-200" : "text-gray-700"
                   }`}>
-                    <Clock className="w-4 h-4 text-[var(--accent-500)]" />
+                    <Clock className="w-4 h-4 text-[var(--accent-700)]" />
                     Status Information
                   </h2>
                   <div className="space-y-3">
@@ -681,7 +681,7 @@ export default function TenantDetailsPage() {
                   <h2 className={`text-sm font-semibold mb-4 flex items-center gap-2 ${
                     resolvedTheme === "dark" ? "text-gray-200" : "text-gray-700"
                   }`}>
-                    <FileText className="w-4 h-4 text-[var(--accent-500)]" />
+                    <FileText className="w-4 h-4 text-[var(--accent-700)]" />
                     Source Information
                   </h2>
                   <div className="space-y-2">

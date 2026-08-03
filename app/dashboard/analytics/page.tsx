@@ -1688,7 +1688,7 @@ export default function AnalyticsPage() {
             className={`mt-2 text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
               resolvedTheme === "dark" 
                 ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
             }`}
           >
             {seeMoreLabel} <ChevronRight className="w-3 h-3" />
@@ -1822,7 +1822,7 @@ export default function AnalyticsPage() {
             <div className="flex items-center justify-center h-[80vh] px-4">
               <div className="text-center">
                 <div className={`w-12 h-12 sm:w-16 sm:h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-4 ${
-                  resolvedTheme === "dark" ? "border-[var(--accent-500)]" : "border-[var(--accent-500)]"
+                  resolvedTheme === "dark" ? "border-[var(--accent-700)]" : "border-[var(--accent-700)]"
                 }`} />
                 <p className={`text-sm sm:text-base transition-colors duration-300 ${
                   resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
@@ -1859,8 +1859,8 @@ export default function AnalyticsPage() {
                   <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
                     <div className={`p-1.5 sm:p-2 rounded-xl shadow-lg transition-colors duration-300 ${
                       resolvedTheme === "dark" 
-                        ? "bg-[var(--accent-500)] shadow-[var(--accent-500)]/25" 
-                        : "bg-gradient-to-br from-[var(--accent-500)] to-[var(--accent-600)] shadow-[var(--accent-500)]/25"
+                        ? "bg-[var(--accent-700)] shadow-[var(--accent-700)]/25" 
+                        : "bg-gradient-to-br from-[var(--accent-700)] to-[var(--accent-600)] shadow-[var(--accent-700)]/25"
                     }`}>
                       <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
@@ -1889,7 +1889,7 @@ export default function AnalyticsPage() {
                         onClick={() => setTimeRange(range as any)}
                         className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                           timeRange === range
-                            ? `bg-[var(--accent-500)] text-white shadow-md`
+                            ? `bg-[var(--accent-700)] text-white shadow-md`
                             : resolvedTheme === "dark"
                             ? "text-gray-400 hover:bg-gray-700"
                             : "text-gray-600 hover:bg-gray-100"
@@ -1905,7 +1905,7 @@ export default function AnalyticsPage() {
                     className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl shadow-sm border transition-colors duration-300 ${
                       resolvedTheme === "dark" 
                         ? "bg-gray-800 border-gray-700 text-gray-400 hover:text-[var(--accent-400)]" 
-                        : "bg-white border-gray-200 text-gray-600 hover:text-[var(--accent-500)]"
+                        : "bg-white border-gray-200 text-gray-600 hover:text-[var(--accent-700)]"
                     }`}
                   >
                     <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -1985,7 +1985,7 @@ export default function AnalyticsPage() {
                 <div className={`rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer ${
                   resolvedTheme === "dark" 
                     ? "bg-gradient-to-br from-gray-700 to-gray-600" 
-                    : "bg-gradient-to-br from-[var(--accent-500)] to-[var(--accent-600)]"
+                    : "bg-gradient-to-br from-[var(--accent-700)] to-[var(--accent-600)]"
                 }`}>
                   <div className="flex items-center justify-between mb-3 sm:mb-4">
                     <div className="p-1.5 sm:p-2 bg-white/20 rounded-xl">
@@ -2029,7 +2029,7 @@ export default function AnalyticsPage() {
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
                         resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                          : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                          : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
                       }`}
                     >
                       <FileText className="w-3 h-3" />
@@ -2063,7 +2063,7 @@ export default function AnalyticsPage() {
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
                         resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                          : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                          : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
                       }`}
                     >
                       <FileText className="w-3 h-3" />
@@ -2074,7 +2074,7 @@ export default function AnalyticsPage() {
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
                         resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                          : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                          : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
                       }`}
                     >
                       See More <ChevronRight className="w-3 h-3" />
@@ -2110,7 +2110,7 @@ export default function AnalyticsPage() {
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
                         resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                          : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                          : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
                       }`}
                     >
                       <FileText className="w-3 h-3" />
@@ -2152,7 +2152,7 @@ export default function AnalyticsPage() {
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
                         resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                          : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                          : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
                       }`}
                     >
                       <FileText className="w-3 h-3" />
@@ -2163,7 +2163,7 @@ export default function AnalyticsPage() {
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
                         resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                          : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                          : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
                       }`}
                     >
                       See All <ChevronRight className="w-3 h-3" />
@@ -2207,7 +2207,7 @@ export default function AnalyticsPage() {
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
                         resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                          : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                          : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
                       }`}
                     >
                       <FileText className="w-3 h-3" />
@@ -2251,7 +2251,7 @@ export default function AnalyticsPage() {
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
                         resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                          : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                          : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
                       }`}
                     >
                       <FileText className="w-3 h-3" />
@@ -2262,7 +2262,7 @@ export default function AnalyticsPage() {
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
                         resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                          : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                          : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
                       }`}
                     >
                       See All <ChevronRight className="w-3 h-3" />
@@ -2298,7 +2298,7 @@ export default function AnalyticsPage() {
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
                         resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                          : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                          : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
                       }`}
                     >
                       <FileText className="w-3 h-3" />
@@ -2309,7 +2309,7 @@ export default function AnalyticsPage() {
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
                         resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                          : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                          : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
                       }`}
                     >
                       See All <ChevronRight className="w-3 h-3" />
@@ -2349,7 +2349,7 @@ export default function AnalyticsPage() {
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
                         resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                          : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                          : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
                       }`}
                     >
                       <FileText className="w-3 h-3" />
@@ -2450,7 +2450,7 @@ export default function AnalyticsPage() {
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
                         resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                          : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                          : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
                       }`}
                     >
                       <FileText className="w-3 h-3" />
@@ -2460,7 +2460,7 @@ export default function AnalyticsPage() {
                       <button className={`text-xs sm:text-sm font-medium transition-colors duration-300 ${
                         resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                          : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                          : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
                       }`}>
                         View All →
                       </button>
@@ -2477,7 +2477,7 @@ export default function AnalyticsPage() {
                     <button className={`mt-3 sm:mt-4 text-sm sm:text-base font-medium transition-colors duration-300 ${
                       resolvedTheme === "dark" 
                         ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                        : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                        : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
                     }`}>
                       Add your first property →
                     </button>
@@ -2520,7 +2520,7 @@ export default function AnalyticsPage() {
                                 resolvedTheme === "dark" ? "text-gray-500" : "text-gray-400"
                               }`}>#{i + 1}</span>
                               <Link href={`/dashboard/properties/${property.id}`}>
-                                <span className={`text-xs sm:text-sm font-medium transition-colors duration-300 hover:text-[var(--accent-500)] dark:hover:text-[var(--accent-400)] ${
+                                <span className={`text-xs sm:text-sm font-medium transition-colors duration-300 hover:text-[var(--accent-700)] dark:hover:text-[var(--accent-400)] ${
                                   resolvedTheme === "dark" ? "text-gray-200" : "text-gray-900"
                                 }`}>
                                   {property.name.length > 15 ? property.name.slice(0, 15) + '...' : property.name}
@@ -2545,8 +2545,8 @@ export default function AnalyticsPage() {
                                 <div
                                   className={`h-1.5 sm:h-2 rounded-full ${
                                     resolvedTheme === "dark" 
-                                      ? "bg-gradient-to-r from-[var(--accent-500)] to-[var(--accent-600)]" 
-                                      : "bg-gradient-to-r from-[var(--accent-500)] to-[var(--accent-600)]"
+                                      ? "bg-gradient-to-r from-[var(--accent-700)] to-[var(--accent-600)]" 
+                                      : "bg-gradient-to-r from-[var(--accent-700)] to-[var(--accent-600)]"
                                   }`}
                                   style={{ width: `${(property.views / analytics.topProperties[0].views) * 100}%` }}
                                 />
@@ -2598,7 +2598,7 @@ export default function AnalyticsPage() {
                       className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 transition-colors duration-300 ${
                         resolvedTheme === "dark" 
                           ? "text-[var(--accent-400)] hover:text-[var(--accent-300)]" 
-                          : "text-[var(--accent-500)] hover:text-[var(--accent-600)]"
+                          : "text-[var(--accent-700)] hover:text-[var(--accent-600)]"
                       }`}
                     >
                       <FileText className="w-3 h-3" />
@@ -2708,7 +2708,7 @@ export default function AnalyticsPage() {
                               return (
                                 <div key={activity.id} className="flex items-center justify-between gap-2">
                                   <Link href={`/dashboard/properties/${activity.propertyId}`} className="flex-1 min-w-0">
-                                    <span className={`text-xs sm:text-sm transition-colors duration-300 hover:text-[var(--accent-500)] dark:hover:text-[var(--accent-400)] ${
+                                    <span className={`text-xs sm:text-sm transition-colors duration-300 hover:text-[var(--accent-700)] dark:hover:text-[var(--accent-400)] ${
                                       resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                                     }`}>
                                       {activity.count || 1} {activity.type === "view" ? "view" : activity.type === "like" ? "like" : "request"}
@@ -2772,7 +2772,7 @@ export default function AnalyticsPage() {
                   className={`p-1 rounded-lg transition-colors duration-300 ${
                     resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
-                      : "hover:bg-gray-100 text-[var(--accent-500)]"
+                      : "hover:bg-gray-100 text-[var(--accent-700)]"
                   }`}
                   title="Export CSV"
                 >
@@ -2824,7 +2824,7 @@ export default function AnalyticsPage() {
             }`}>
               <button
                 onClick={() => setShowModal(false)}
-                className="w-full py-2 text-xs font-medium bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
+                className="w-full py-2 text-xs font-medium bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
               >
                 Close
               </button>
@@ -2855,7 +2855,7 @@ export default function AnalyticsPage() {
                   className={`p-1 rounded-lg transition-colors duration-300 ${
                     resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
-                      : "hover:bg-gray-100 text-[var(--accent-500)]"
+                      : "hover:bg-gray-100 text-[var(--accent-700)]"
                   }`}
                   title="Export CSV"
                 >
@@ -2915,7 +2915,7 @@ export default function AnalyticsPage() {
             }`}>
               <button
                 onClick={() => setShowViewsModal(false)}
-                className="w-full py-2 text-xs font-medium bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
+                className="w-full py-2 text-xs font-medium bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
               >
                 Close
               </button>
@@ -2946,7 +2946,7 @@ export default function AnalyticsPage() {
                   className={`p-1 rounded-lg transition-colors duration-300 ${
                     resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
-                      : "hover:bg-gray-100 text-[var(--accent-500)]"
+                      : "hover:bg-gray-100 text-[var(--accent-700)]"
                   }`}
                   title="Export CSV"
                 >
@@ -3006,7 +3006,7 @@ export default function AnalyticsPage() {
             }`}>
               <button
                 onClick={() => setShowLikesModal(false)}
-                className="w-full py-2 text-xs font-medium bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
+                className="w-full py-2 text-xs font-medium bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
               >
                 Close
               </button>
@@ -3037,7 +3037,7 @@ export default function AnalyticsPage() {
                   className={`p-1 rounded-lg transition-colors duration-300 ${
                     resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
-                      : "hover:bg-gray-100 text-[var(--accent-500)]"
+                      : "hover:bg-gray-100 text-[var(--accent-700)]"
                   }`}
                   title="Export CSV"
                 >
@@ -3097,7 +3097,7 @@ export default function AnalyticsPage() {
             }`}>
               <button
                 onClick={() => setShowRequestsModal(false)}
-                className="w-full py-2 text-xs font-medium bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
+                className="w-full py-2 text-xs font-medium bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
               >
                 Close
               </button>
@@ -3128,7 +3128,7 @@ export default function AnalyticsPage() {
                   className={`p-1 rounded-lg transition-colors duration-300 ${
                     resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
-                      : "hover:bg-gray-100 text-[var(--accent-500)]"
+                      : "hover:bg-gray-100 text-[var(--accent-700)]"
                   }`}
                   title="Export CSV"
                 >
@@ -3195,7 +3195,7 @@ export default function AnalyticsPage() {
             }`}>
               <button
                 onClick={() => setShowRevenueModal(false)}
-                className="w-full py-2 text-xs font-medium bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
+                className="w-full py-2 text-xs font-medium bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
               >
                 Close
               </button>
@@ -3226,7 +3226,7 @@ export default function AnalyticsPage() {
                   className={`p-1 rounded-lg transition-colors duration-300 ${
                     resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
-                      : "hover:bg-gray-100 text-[var(--accent-500)]"
+                      : "hover:bg-gray-100 text-[var(--accent-700)]"
                   }`}
                   title="Export CSV"
                 >
@@ -3286,7 +3286,7 @@ export default function AnalyticsPage() {
             }`}>
               <button
                 onClick={() => setShowRevenueDailyModal(false)}
-                className="w-full py-2 text-xs font-medium bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
+                className="w-full py-2 text-xs font-medium bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
               >
                 Close
               </button>
@@ -3317,7 +3317,7 @@ export default function AnalyticsPage() {
                   className={`p-1 rounded-lg transition-colors duration-300 ${
                     resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
-                      : "hover:bg-gray-100 text-[var(--accent-500)]"
+                      : "hover:bg-gray-100 text-[var(--accent-700)]"
                   }`}
                   title="Export CSV"
                 >
@@ -3375,7 +3375,7 @@ export default function AnalyticsPage() {
             }`}>
               <button
                 onClick={() => setShowOccupancyModal(false)}
-                className="w-full py-2 text-xs font-medium bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
+                className="w-full py-2 text-xs font-medium bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
               >
                 Close
               </button>
@@ -3406,7 +3406,7 @@ export default function AnalyticsPage() {
                   className={`p-1 rounded-lg transition-colors duration-300 ${
                     resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
-                      : "hover:bg-gray-100 text-[var(--accent-500)]"
+                      : "hover:bg-gray-100 text-[var(--accent-700)]"
                   }`}
                   title="Export CSV"
                 >
@@ -3492,7 +3492,7 @@ export default function AnalyticsPage() {
             }`}>
               <button
                 onClick={() => setShowPropertyTypesModal(false)}
-                className="w-full py-2 text-xs font-medium bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
+                className="w-full py-2 text-xs font-medium bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
               >
                 Close
               </button>
@@ -3523,7 +3523,7 @@ export default function AnalyticsPage() {
                   className={`p-1 rounded-lg transition-colors duration-300 ${
                     resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
-                      : "hover:bg-gray-100 text-[var(--accent-500)]"
+                      : "hover:bg-gray-100 text-[var(--accent-700)]"
                   }`}
                   title="Export CSV"
                 >
@@ -3587,7 +3587,7 @@ export default function AnalyticsPage() {
             }`}>
               <button
                 onClick={() => setShowResponseTimeModal(false)}
-                className="w-full py-2 text-xs font-medium bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
+                className="w-full py-2 text-xs font-medium bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
               >
                 Close
               </button>
@@ -3618,7 +3618,7 @@ export default function AnalyticsPage() {
                   className={`p-1 rounded-lg transition-colors duration-300 ${
                     resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
-                      : "hover:bg-gray-100 text-[var(--accent-500)]"
+                      : "hover:bg-gray-100 text-[var(--accent-700)]"
                   }`}
                   title="Export CSV"
                 >
@@ -3685,7 +3685,7 @@ export default function AnalyticsPage() {
             }`}>
               <button
                 onClick={() => setShowLocationsModal(false)}
-                className="w-full py-2 text-xs font-medium bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
+                className="w-full py-2 text-xs font-medium bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
               >
                 Close
               </button>
@@ -3716,7 +3716,7 @@ export default function AnalyticsPage() {
                   className={`p-1 rounded-lg transition-colors duration-300 ${
                     resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
-                      : "hover:bg-gray-100 text-[var(--accent-500)]"
+                      : "hover:bg-gray-100 text-[var(--accent-700)]"
                   }`}
                   title="Export CSV"
                 >
@@ -3789,7 +3789,7 @@ export default function AnalyticsPage() {
             }`}>
               <button
                 onClick={() => setShowSeasonalModal(false)}
-                className="w-full py-2 text-xs font-medium bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
+                className="w-full py-2 text-xs font-medium bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
               >
                 Close
               </button>
@@ -3820,7 +3820,7 @@ export default function AnalyticsPage() {
                   className={`p-1 rounded-lg transition-colors duration-300 ${
                     resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
-                      : "hover:bg-gray-100 text-[var(--accent-500)]"
+                      : "hover:bg-gray-100 text-[var(--accent-700)]"
                   }`}
                   title="Export CSV"
                 >
@@ -3881,7 +3881,7 @@ export default function AnalyticsPage() {
             }`}>
               <button
                 onClick={() => setShowMaintenanceModal(false)}
-                className="w-full py-2 text-xs font-medium bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
+                className="w-full py-2 text-xs font-medium bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
               >
                 Close
               </button>
@@ -3920,7 +3920,7 @@ export default function AnalyticsPage() {
                   className={`p-1 rounded-lg transition-colors duration-300 ${
                     resolvedTheme === "dark" 
                       ? "hover:bg-gray-700 text-[var(--accent-400)]" 
-                      : "hover:bg-gray-100 text-[var(--accent-500)]"
+                      : "hover:bg-gray-100 text-[var(--accent-700)]"
                   }`}
                   title="Export CSV"
                 >
@@ -3973,7 +3973,7 @@ export default function AnalyticsPage() {
                         <div className="flex items-center gap-2">
                           <StatusIcon className={`w-4 h-4 ${statusTextColors[item.status]}`} />
                           <Link href={`/dashboard/properties/${item.id}`}>
-                            <span className={`text-sm font-semibold transition-colors duration-300 hover:text-[var(--accent-500)] ${
+                            <span className={`text-sm font-semibold transition-colors duration-300 hover:text-[var(--accent-700)] ${
                               resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
                             }`}>{item.name}</span>
                           </Link>
@@ -4016,7 +4016,7 @@ export default function AnalyticsPage() {
             }`}>
               <button
                 onClick={() => setShowPropertyHealthModal(false)}
-                className="w-full py-2 text-xs font-medium bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
+                className="w-full py-2 text-xs font-medium bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition"
               >
                 Close
               </button>

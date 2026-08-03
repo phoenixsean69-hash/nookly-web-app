@@ -28,7 +28,7 @@ const ClientMapPicker = dynamic<MapPickerProps>(
     loading: () => (
       <div className="flex h-96 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700">
         <div className="text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-[var(--accent-500)]" />
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-[var(--accent-700)]" />
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
             Loading map...
           </p>

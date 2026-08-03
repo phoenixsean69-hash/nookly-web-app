@@ -1,0 +1,773 @@
+"use client";
+
+import {
+  AlertTriangle,
+  ArrowLeft,
+  BadgeCheck,
+  Calendar,
+  CarFront,
+  CheckCircle,
+  Clock3,
+  ExternalLink,
+  FileCheck2,
+  FileText,
+  LoaderCircle,
+  Mail,
+  MapPin,
+  Phone,
+  RefreshCw,
+  ShieldCheck,
+  UserRound,
+  Users,
+  XCircle,
+} from "lucide-react";
+import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
+
+import { Header } from "@/components/dashboard/header";
+import { Sidebar } from "@/components/dashboard/sidebar";
+import { ProtectedRoute } from "@/components/protected-route";
+import { useTheme } from "@/contexts/theme-context";
+import {
+  approveDriverReviewApplication,
+  getDriverReviewApplication,
+  getDriverStoredFileUrl,
+  isDriverApplicationApproved,
+} from "@/lib/driver-review.service";
+import type {
+  DriverReviewApplication,
+  DriverReviewVehicle,
+} from "@/types/driver-review";
+
+function useDashboardMargin(): string {
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobile, setMobile] = useState(false);
+
+  useEffect(() => {
+    const update = () => {
+      setMobile(window.innerWidth < 768);
+      setCollapsed(localStorage.getItem("sidebarCollapsed") === "true");
+    };
+
+    const handleToggle = (event: Event) => {
+      const detail = (event as CustomEvent<{ isCollapsed?: boolean }>).detail;
+      setCollapsed(
+        detail?.isCollapsed ??
+          localStorage.getItem("sidebarCollapsed") === "true",
+      );
+    };
+
+    update();
+    window.addEventListener("resize", update);
+    window.addEventListener("storage", update);
+    window.addEventListener("sidebarToggle", handleToggle);
+
+    return () => {
+      window.removeEventListener("resize", update);
+      window.removeEventListener("storage", update);
+      window.removeEventListener("sidebarToggle", handleToggle);
+    };
+  }, []);
+
+  if (mobile) return "ml-0";
+  return collapsed ? "ml-16" : "ml-64";
+}
+
+function formatDate(value?: string): string {
+  if (!value) return "Not provided";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Not provided";
+  }
+
+  return date.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function formatStatus(value?: string): string {
+  if (!value) return "Not set";
+
+  return value
+    .split("_")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function getMissingRequirements(application: DriverReviewApplication): string[] {
+  const missing: string[] = [];
+
+  if (!application.requirements.hasDriverLicence) {
+    missing.push("Driver licence document");
+  }
+
+  if (!application.requirements.hasNationalId) {
+    missing.push("National ID document");
+  }
+
+  if (!application.requirements.hasVehicle) {
+    missing.push("Vehicle profile");
+  } else if (!application.requirements.hasCompleteVehicleImages) {
+    missing.push("Front, side and back vehicle images");
+  }
+
+  return missing;
+}
+
+export default function DriverApplicationDetailsPage() {
+  const { resolvedTheme } = useTheme();
+  const router = useRouter();
+  const params = useParams<{ id: string }>();
+  const driverId = params.id;
+  const margin = useDashboardMargin();
+
+  const [application, setApplication] =
+    useState<DriverReviewApplication | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [approving, setApproving] = useState(false);
+  const [showApproveDialog, setShowApproveDialog] = useState(false);
+
+  const dark = resolvedTheme === "dark";
+
+  const loadApplication = useCallback(
+    async (showToast = false) => {
+      if (!driverId) return;
+
+      if (!navigator.onLine) {
+        setLoading(false);
+        setRefreshing(false);
+        toast.error("Driver applications require an internet connection.");
+        return;
+      }
+
+      try {
+        const result = await getDriverReviewApplication(driverId);
+        setApplication(result);
+
+        if (showToast) {
+          toast.success("Application refreshed.");
+        }
+      } catch (error) {
+        console.error("Unable to load driver application:", error);
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : "Unable to load this driver application.",
+        );
+        router.replace("/dashboard/drivers");
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
+      }
+    },
+    [driverId, router],
+  );
+
+  useEffect(() => {
+    void loadApplication();
+  }, [loadApplication]);
+
+  const approved = application
+    ? isDriverApplicationApproved(application)
+    : false;
+
+  const missingRequirements = useMemo(
+    () => (application ? getMissingRequirements(application) : []),
+    [application],
+  );
+
+  const approveApplication = async () => {
+    if (!application || approved || !application.requirements.readyForApproval) {
+      return;
+    }
+
+    setApproving(true);
+
+    try {
+      const result = await approveDriverReviewApplication(
+        application.profile.$id,
+      );
+      setApplication(result);
+      setShowApproveDialog(false);
+      toast.success(`${result.profile.name} is now an approved driver.`);
+      window.dispatchEvent(new CustomEvent("driverApplicationsUpdated"));
+    } catch (error) {
+      console.error("Unable to approve driver:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Unable to approve driver.",
+      );
+    } finally {
+      setApproving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <ProtectedRoute>
+        <div
+          className={`min-h-screen ${
+            dark ? "bg-gray-950 text-white" : "bg-gray-50 text-gray-900"
+          }`}
+        >
+          <Sidebar />
+          <div className={`${margin} transition-all duration-300`}>
+            <Header />
+            <div className="flex h-[70vh] items-center justify-center">
+              <div className="text-center">
+                <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent-500)] dark:border-gray-700" />
+                <p className="mt-4 text-sm text-gray-500">
+                  Loading driver application…
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ProtectedRoute>
+    );
+  }
+
+  if (!application) return null;
+
+  const { profile, institution, primaryVehicle } = application;
+  const applicationDate =
+    profile.documentsSubmittedAt ||
+    institution.createdAt ||
+    institution.$createdAt ||
+    profile.createdAt ||
+    profile.$createdAt;
+
+  return (
+    <ProtectedRoute>
+      <div
+        className={`min-h-screen ${
+          dark
+            ? "bg-gray-950 text-white"
+            : "bg-gradient-to-br from-blue-50 via-white to-orange-50 text-gray-900"
+        }`}
+      >
+        <Sidebar />
+
+        <div className={`${margin} transition-all duration-300`}>
+          <Header />
+
+          <main className="p-3 sm:p-5 lg:p-6">
+            <div className="mx-auto max-w-7xl">
+              <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex min-w-0 items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => router.back()}
+                    className="rounded-xl border border-gray-200 bg-white p-2.5 text-gray-600 shadow-sm transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+                    aria-label="Go back"
+                  >
+                    <ArrowLeft className="h-5 w-5" />
+                  </button>
+
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h1 className="truncate text-2xl font-bold sm:text-3xl">
+                        {profile.name}
+                      </h1>
+
+                      {approved ? (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-300">
+                          <BadgeCheck className="h-3.5 w-3.5" />
+                          Approved driver
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                          <Clock3 className="h-3.5 w-3.5" />
+                          Pending review
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                      Submitted {formatDate(applicationDate)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setRefreshing(true);
+                      void loadApplication(true);
+                    }}
+                    disabled={refreshing}
+                    className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+                  >
+                    <RefreshCw
+                      className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
+                    />
+                    Refresh
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowApproveDialog(true)}
+                    disabled={
+                      approved ||
+                      approving ||
+                      !application.requirements.readyForApproval
+                    }
+                    className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold shadow-sm transition disabled:cursor-not-allowed ${
+                      approved
+                        ? "border border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-300"
+                        : "bg-green-600 text-white hover:bg-green-700 disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:bg-gray-800 dark:disabled:text-gray-500"
+                    }`}
+                  >
+                    {approved ? (
+                      <BadgeCheck className="h-4 w-4" />
+                    ) : (
+                      <CheckCircle className="h-4 w-4" />
+                    )}
+                    {approved ? "Driver approved" : "Approve driver"}
+                  </button>
+                </div>
+              </div>
+
+              {!approved && missingRequirements.length > 0 && (
+                <div className="mb-5 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-800 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
+                  <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
+                  <div>
+                    <p className="font-semibold">
+                      This application is not ready for approval
+                    </p>
+                    <p className="mt-1 text-sm leading-6 text-amber-700 dark:text-amber-300">
+                      Missing: {missingRequirements.join(", ")}.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              <div className="grid gap-5 xl:grid-cols-[1fr_0.95fr]">
+                <div className="space-y-5">
+                  <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                      <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800">
+                        {profile.avatar ? (
+                          <Image
+                            src={profile.avatar}
+                            alt={profile.name}
+                            width={80}
+                            height={80}
+                            className="h-full w-full object-cover"
+                            unoptimized
+                          />
+                        ) : (
+                          <UserRound className="h-10 w-10 text-gray-400" />
+                        )}
+                      </div>
+
+                      <div className="min-w-0">
+                        <h2 className="text-xl font-bold">Driver profile</h2>
+                        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                          Identity, contact and emergency information submitted from Nookly Mobile.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                      <DetailRow
+                        icon={UserRound}
+                        label="Full name"
+                        value={profile.name}
+                      />
+                      <DetailRow
+                        icon={Phone}
+                        label="Phone"
+                        value={profile.phone || "Not provided"}
+                      />
+                      <DetailRow
+                        icon={Mail}
+                        label="Email"
+                        value={profile.email || "Not provided"}
+                      />
+                      <DetailRow
+                        icon={ShieldCheck}
+                        label="Verification"
+                        value={formatStatus(profile.verificationStatus)}
+                      />
+                      <DetailRow
+                        icon={Users}
+                        label="Emergency contact"
+                        value={profile.emergencyContactName || "Not provided"}
+                      />
+                      <DetailRow
+                        icon={Phone}
+                        label="Emergency phone"
+                        value={profile.emergencyContactPhone || "Not provided"}
+                      />
+                      <DetailRow
+                        icon={MapPin}
+                        label="Service areas"
+                        value={profile.serviceAreas?.join(", ") || "Not provided"}
+                      />
+                      <DetailRow
+                        icon={Calendar}
+                        label="Documents submitted"
+                        value={formatDate(profile.documentsSubmittedAt)}
+                      />
+                    </div>
+                  </section>
+
+                  <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+                    <h2 className="flex items-center gap-2 text-lg font-bold">
+                      <FileCheck2 className="h-5 w-5 text-[var(--accent-500)]" />
+                      Driver documents
+                    </h2>
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                      Open each submitted document before approving the driver.
+                    </p>
+
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                      <DocumentCard
+                        title="Driver licence"
+                        fileId={profile.driverLicenceFileId}
+                      />
+                      <DocumentCard
+                        title="National ID"
+                        fileId={profile.nationalIdFileId}
+                      />
+                    </div>
+                  </section>
+
+                  {institution.notes && (
+                    <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+                      <h2 className="font-bold">Application notes</h2>
+                      <p className="mt-3 whitespace-pre-line text-sm leading-6 text-gray-600 dark:text-gray-300">
+                        {institution.notes}
+                      </p>
+                    </section>
+                  )}
+                </div>
+
+                <div className="space-y-5">
+                  <VehicleSection vehicle={primaryVehicle} />
+
+                  <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+                    <h2 className="flex items-center gap-2 text-lg font-bold">
+                      <ShieldCheck className="h-5 w-5 text-[var(--accent-500)]" />
+                      Approval status
+                    </h2>
+
+                    <div className="mt-4 space-y-3">
+                      <ApprovalCheck
+                        complete={
+                          profile.verificationStatus === "verified" &&
+                          profile.status === "active"
+                        }
+                        label="Driver profile verified"
+                      />
+                      <ApprovalCheck
+                        complete={[
+                          "approved",
+                          "active",
+                          "acknowledged",
+                          "verified",
+                        ].includes(institution.status)}
+                        label="Organization relationship approved"
+                      />
+                      <ApprovalCheck
+                        complete={
+                          primaryVehicle?.status === "active" &&
+                          primaryVehicle.conditionStatus === "approved" &&
+                          primaryVehicle.roadworthinessStatus === "approved"
+                        }
+                        label="Vehicle approved and roadworthy"
+                      />
+                      <ApprovalCheck
+                        complete={
+                          application.requirements.hasDriverLicence &&
+                          application.requirements.hasNationalId
+                        }
+                        label="Required identity documents submitted"
+                      />
+                      <ApprovalCheck
+                        complete={
+                          application.requirements.hasCompleteVehicleImages
+                        }
+                        label="All vehicle views submitted"
+                      />
+                    </div>
+
+                    <div
+                      className={`mt-5 rounded-xl border p-4 ${
+                        approved
+                          ? "border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950/30"
+                          : "border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800"
+                      }`}
+                    >
+                      <p className="font-semibold">
+                        {approved
+                          ? "Marketplace access enabled"
+                          : "Marketplace access pending"}
+                      </p>
+                      <p className="mt-1 text-sm leading-6 text-gray-500 dark:text-gray-400">
+                        {approved
+                          ? "This driver can use verified Driver Mode features and receive organization ride work."
+                          : "Approving updates the driver profile, institution relationship and selected vehicle together."}
+                      </p>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      {showApproveDialog && !approved && (
+        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-900">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">
+              <BadgeCheck className="h-6 w-6" />
+            </div>
+
+            <h2 className="mt-4 text-xl font-bold">Approve this driver?</h2>
+            <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400">
+              This will verify {profile.name}, approve the organization relationship and activate the reviewed vehicle.
+            </p>
+
+            <div className="mt-5 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-800">
+              <p className="font-semibold">{profile.name}</p>
+              <p className="mt-1 text-gray-500 dark:text-gray-400">
+                {primaryVehicle
+                  ? `${primaryVehicle.make} ${primaryVehicle.model} · ${primaryVehicle.registrationNumber}`
+                  : "No vehicle submitted"}
+              </p>
+            </div>
+
+            <div className="mt-6 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowApproveDialog(false)}
+                disabled={approving}
+                className="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 disabled:opacity-50 dark:border-gray-700 dark:text-gray-200"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => void approveApplication()}
+                disabled={approving}
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+              >
+                {approving ? (
+                  <LoaderCircle className="h-4 w-4 animate-spin" />
+                ) : (
+                  <CheckCircle className="h-4 w-4" />
+                )}
+                {approving ? "Approving…" : "Confirm approval"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </ProtectedRoute>
+  );
+}
+
+interface DetailRowProps {
+  icon: typeof UserRound;
+  label: string;
+  value: string;
+}
+
+function DetailRow({ icon: Icon, label, value }: DetailRowProps) {
+  return (
+    <div className="flex items-start gap-3 rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
+      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent-500)]" />
+      <div className="min-w-0">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">
+          {label}
+        </p>
+        <p className="mt-1 break-words text-sm font-medium">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function DocumentCard({ title, fileId }: { title: string; fileId?: string }) {
+  const url = getDriverStoredFileUrl(fileId);
+
+  return (
+    <div className="rounded-xl border border-gray-200 p-4 dark:border-gray-700">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300">
+          <FileText className="h-5 w-5" />
+        </div>
+
+        {url ? (
+          <a
+            href={url}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold transition hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+          >
+            Open
+            <ExternalLink className="h-3.5 w-3.5" />
+          </a>
+        ) : (
+          <span className="rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-600 dark:bg-red-900/30 dark:text-red-300">
+            Missing
+          </span>
+        )}
+      </div>
+
+      <p className="mt-4 font-semibold">{title}</p>
+      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+        {url ? "Submitted document" : "No document was submitted"}
+      </p>
+    </div>
+  );
+}
+
+function VehicleSection({ vehicle }: { vehicle: DriverReviewVehicle | null }) {
+  if (!vehicle) {
+    return (
+      <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <div className="flex items-start gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-300">
+            <XCircle className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold">No vehicle submitted</h2>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              A complete vehicle profile is required before approval.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const images = [
+    { label: "Front view", fileId: vehicle.frontImageFileId },
+    { label: "Side view", fileId: vehicle.sideImageFileId },
+    { label: "Back view", fileId: vehicle.backImageFileId },
+  ];
+
+  return (
+    <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="flex items-center gap-2 text-lg font-bold">
+            <CarFront className="h-5 w-5 text-[var(--accent-500)]" />
+            Vehicle review
+          </h2>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            {vehicle.make} {vehicle.model} · {vehicle.registrationNumber}
+          </p>
+        </div>
+
+        <span className="rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs font-semibold capitalize dark:border-gray-700 dark:bg-gray-800">
+          {formatStatus(vehicle.status)}
+        </span>
+      </div>
+
+      <div className="mt-4 grid grid-cols-3 gap-2">
+        {images.map((image) => {
+          const url = getDriverStoredFileUrl(image.fileId);
+
+          return (
+            <div key={image.label}>
+              <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800">
+                {url ? (
+                  <a href={url} target="_blank" rel="noreferrer">
+                    <Image
+                      src={url}
+                      alt={image.label}
+                      fill
+                      sizes="(max-width: 768px) 33vw, 220px"
+                      className="object-cover transition hover:scale-105"
+                      unoptimized
+                    />
+                  </a>
+                ) : (
+                  <div className="flex h-full items-center justify-center">
+                    <CarFront className="h-7 w-7 text-gray-300" />
+                  </div>
+                )}
+              </div>
+              <p className="mt-1 text-center text-[10px] font-semibold uppercase text-gray-400">
+                {image.label}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-5 grid gap-3 sm:grid-cols-2">
+        <VehicleDetail label="Registration" value={vehicle.registrationNumber} />
+        <VehicleDetail
+          label="Vehicle"
+          value={`${vehicle.make} ${vehicle.model}`}
+        />
+        <VehicleDetail label="Color" value={vehicle.color || "Not provided"} />
+        <VehicleDetail
+          label="Capacity"
+          value={`${vehicle.passengerCapacity || vehicle.capacity || 0} passengers`}
+        />
+        <VehicleDetail
+          label="Manufacture year"
+          value={vehicle.manufactureYear?.toString() || "Not provided"}
+        />
+        <VehicleDetail
+          label="Vehicle type"
+          value={formatStatus(vehicle.vehicleType)}
+        />
+        <VehicleDetail
+          label="Insurance expiry"
+          value={formatDate(vehicle.insuranceExpiry)}
+        />
+        <VehicleDetail
+          label="Fitness expiry"
+          value={formatDate(vehicle.fitnessExpiry)}
+        />
+        <VehicleDetail
+          label="Condition review"
+          value={formatStatus(vehicle.conditionStatus)}
+        />
+        <VehicleDetail
+          label="Roadworthiness"
+          value={formatStatus(vehicle.roadworthinessStatus)}
+        />
+      </div>
+    </section>
+  );
+}
+
+function VehicleDetail({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
+      <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">
+        {label}
+      </p>
+      <p className="mt-1 text-sm font-semibold">{value}</p>
+    </div>
+  );
+}
+
+function ApprovalCheck({ complete, label }: { complete: boolean; label: string }) {
+  return (
+    <div className="flex items-center gap-3 rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
+      {complete ? (
+        <CheckCircle className="h-5 w-5 shrink-0 text-green-500" />
+      ) : (
+        <Clock3 className="h-5 w-5 shrink-0 text-amber-500" />
+      )}
+      <span className="text-sm font-medium">{label}</span>
+    </div>
+  );
+}

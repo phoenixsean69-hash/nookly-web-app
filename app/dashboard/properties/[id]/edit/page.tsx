@@ -489,7 +489,7 @@ export default function EditPropertyPage() {
             <Header />
             <div className="flex h-[70vh] items-center justify-center">
               <div className="text-center">
-                <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent-500)] dark:border-gray-700" />
+                <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent-700)] dark:border-gray-700" />
                 <p className="mt-4 text-sm text-gray-500">
                   Loading property…
                 </p>
@@ -539,7 +539,7 @@ export default function EditPropertyPage() {
               >
                 <section>
                   <h2 className="mb-4 flex items-center gap-2 font-bold">
-                    <ImageIcon className="h-5 w-5 text-[var(--accent-500)]" />
+                    <ImageIcon className="h-5 w-5 text-[var(--accent-700)]" />
                     Property images
                   </h2>
 
@@ -606,7 +606,7 @@ export default function EditPropertyPage() {
                 <div className="grid gap-5 lg:grid-cols-2">
                   <section className="space-y-4">
                     <h2 className="flex items-center gap-2 font-bold">
-                      <Building2 className="h-5 w-5 text-[var(--accent-500)]" />
+                      <Building2 className="h-5 w-5 text-[var(--accent-700)]" />
                       Listing details
                     </h2>
 
@@ -621,7 +621,7 @@ export default function EditPropertyPage() {
                           onChange={(event) =>
                             updateField("propertyName", event.target.value)
                           }
-                          className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-500)] dark:border-gray-700 dark:bg-gray-950"
+                          className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-700)] dark:border-gray-700 dark:bg-gray-950"
                         />
                       </div>
                     </label>
@@ -655,7 +655,7 @@ export default function EditPropertyPage() {
                             updateField("description", event.target.value)
                           }
                           rows={5}
-                          className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-500)] dark:border-gray-700 dark:bg-gray-950"
+                          className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-700)] dark:border-gray-700 dark:bg-gray-950"
                         />
                       </div>
                     </label>
@@ -671,7 +671,7 @@ export default function EditPropertyPage() {
                           onChange={(event) =>
                             updateField("address", event.target.value)
                           }
-                          className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-500)] dark:border-gray-700 dark:bg-gray-950"
+                          className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[var(--accent-700)] dark:border-gray-700 dark:bg-gray-950"
                         />
                       </div>
                     </label>
@@ -679,7 +679,7 @@ export default function EditPropertyPage() {
 
                   <section className="space-y-4">
                     <h2 className="flex items-center gap-2 font-bold">
-                      <DollarSign className="h-5 w-5 text-[var(--accent-500)]" />
+                      <DollarSign className="h-5 w-5 text-[var(--accent-700)]" />
                       Pricing and capacity
                     </h2>
 
@@ -793,7 +793,7 @@ export default function EditPropertyPage() {
                         onChange={(event) =>
                           updateField("isAvailable", event.target.checked)
                         }
-                        className="h-5 w-5 accent-[var(--accent-500)]"
+                        className="h-5 w-5 accent-[var(--accent-700)]"
                       />
                     </label>
                   </section>
@@ -816,7 +816,7 @@ export default function EditPropertyPage() {
                           onClick={() => toggleFacility(facility)}
                           className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition ${
                             active
-                              ? "border-[var(--accent-500)] bg-[var(--accent-500)] text-white"
+                              ? "border-[var(--accent-700)] bg-[var(--accent-700)] text-white"
                               : "border-gray-200 bg-gray-50 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-950"
                           }`}
                         >
@@ -858,7 +858,7 @@ export default function EditPropertyPage() {
                   <button
                     type="submit"
                     disabled={saving}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--accent-500)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--accent-700)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
                   >
                     <Save className="h-4 w-4" />
                     {saving ? "Saving…" : "Save changes"}

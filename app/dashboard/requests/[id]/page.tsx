@@ -300,7 +300,7 @@ export default function RequestDetailsPage() {
             <Header />
             <div className="flex h-[70vh] items-center justify-center">
               <div className="text-center">
-                <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent-500)] dark:border-gray-700" />
+                <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent-700)] dark:border-gray-700" />
                 <p className="mt-4 text-sm text-gray-500">
                   Loading request…
                 </p>
@@ -409,7 +409,7 @@ export default function RequestDetailsPage() {
                   {request.message && (
                     <div>
                       <h3 className="mb-2 flex items-center gap-2 font-bold">
-                        <MessageCircle className="h-4 w-4 text-[var(--accent-500)]" />
+                        <MessageCircle className="h-4 w-4 text-[var(--accent-700)]" />
                         Message
                       </h3>
                       <p className="rounded-xl bg-gray-50 p-4 text-sm leading-6 dark:bg-gray-800">
@@ -421,7 +421,7 @@ export default function RequestDetailsPage() {
                   {request.questions && (
                     <div>
                       <h3 className="mb-2 flex items-center gap-2 font-bold">
-                        <FileText className="h-4 w-4 text-[var(--accent-500)]" />
+                        <FileText className="h-4 w-4 text-[var(--accent-700)]" />
                         Questions
                       </h3>
                       <p className="rounded-xl bg-gray-50 p-4 text-sm leading-6 dark:bg-gray-800">
@@ -445,7 +445,7 @@ export default function RequestDetailsPage() {
                 <aside className="space-y-5">
                   <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                     <h2 className="mb-4 flex items-center gap-2 font-bold">
-                      <Building2 className="h-5 w-5 text-[var(--accent-500)]" />
+                      <Building2 className="h-5 w-5 text-[var(--accent-700)]" />
                       Rental details
                     </h2>
 

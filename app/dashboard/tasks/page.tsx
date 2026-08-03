@@ -415,7 +415,7 @@ useEffect(() => {
             <main className="p-3 sm:p-4 md:p-6">
               <div className="flex items-center justify-center h-96">
                 <div className="text-center">
-                  <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-[var(--accent-500)] mx-auto" />
+                  <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-[var(--accent-700)] mx-auto" />
                   <p className={`mt-4 text-sm sm:text-base transition-colors duration-300 ${
                     resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                   }`}>
@@ -485,7 +485,7 @@ useEffect(() => {
                 </button>
                 <Link
                   href="/dashboard/tasks/new"
-                  className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition text-xs sm:text-sm shadow-sm hover:shadow-md"
+                  className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition text-xs sm:text-sm shadow-sm hover:shadow-md"
                 >
                   <PlusCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   <span className="hidden xs:inline">Add Task</span>
@@ -527,7 +527,7 @@ useEffect(() => {
                     placeholder="Search tasks..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className={`w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 rounded-lg text-sm focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                    className={`w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 rounded-lg text-sm focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-200 text-gray-900 bg-white"
@@ -538,7 +538,7 @@ useEffect(() => {
                   <select
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                    className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100" 
                         : "border border-gray-200 text-gray-900 bg-white"
@@ -552,7 +552,7 @@ useEffect(() => {
                   <select
                     value={filterPriority}
                     onChange={(e) => setFilterPriority(e.target.value)}
-                    className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                    className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
                         ? "bg-gray-700 border-gray-600 text-gray-100" 
                         : "border border-gray-200 text-gray-900 bg-white"
@@ -596,7 +596,7 @@ useEffect(() => {
                 {!searchTerm && filterStatus === "all" && filterPriority === "all" && !isOffline && (
                   <Link
                     href="/dashboard/tasks/new"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white rounded-lg transition text-sm shadow-sm hover:shadow-md"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white rounded-lg transition text-sm shadow-sm hover:shadow-md"
                   >
                     <PlusCircle className="w-4 h-4" />
                     Create Task

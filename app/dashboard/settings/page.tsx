@@ -500,12 +500,12 @@ export default function SettingsPage() {
                           }}
                           className={`w-full flex items-center gap-3 px-4 py-3 text-left transition ${
                             activeTab === tab.id
-                              ? "bg-[var(--accent-50)] dark:bg-[var(--accent-950)]/30 text-[var(--accent-600)] dark:text-[var(--accent-400)] border-r-4 border-[var(--accent-500)] dark:border-[var(--accent-400)]"
+                              ? "bg-[var(--accent-50)] dark:bg-[var(--accent-950)]/30 text-[var(--accent-600)] dark:text-[var(--accent-400)] border-r-4 border-[var(--accent-700)] dark:border-[var(--accent-400)]"
                               : `text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50`
                           }`}
                         >
                           <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${
-                            activeTab === tab.id ? "text-[var(--accent-500)] dark:text-[var(--accent-400)]" : ""
+                            activeTab === tab.id ? "text-[var(--accent-700)] dark:text-[var(--accent-400)]" : ""
                           }`} />
                           <span className="text-sm sm:text-base font-medium">{tab.label}</span>
                         </button>
@@ -543,7 +543,7 @@ export default function SettingsPage() {
                         {(() => {
                           const activeTabObj = tabs.find(t => t.id === activeTab);
                           const Icon = activeTabObj?.icon || Building2;
-                          return <Icon className="w-4 h-4 text-[var(--accent-500)] dark:text-[var(--accent-400)]" />;
+                          return <Icon className="w-4 h-4 text-[var(--accent-700)] dark:text-[var(--accent-400)]" />;
                         })()}
                         <span className="font-medium">{tabs.find(t => t.id === activeTab)?.label || "Settings"}</span>
                       </div>
@@ -573,7 +573,7 @@ export default function SettingsPage() {
                               }`}
                             >
                               <Icon className={`w-4 h-4 ${
-                                activeTab === tab.id ? "text-[var(--accent-500)] dark:text-[var(--accent-400)]" : ""
+                                activeTab === tab.id ? "text-[var(--accent-700)] dark:text-[var(--accent-400)]" : ""
                               }`} />
                               <span className="text-sm font-medium">{tab.label}</span>
                             </button>
@@ -611,7 +611,7 @@ export default function SettingsPage() {
                       <h2 className={`text-lg sm:text-xl font-bold mb-4 sm:mb-6 flex items-center gap-2 transition-colors duration-300 ${
                         resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                       }`}>
-                        <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--accent-500)] dark:text-[var(--accent-400)]" />
+                        <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--accent-700)] dark:text-[var(--accent-400)]" />
                         Organization Profile
                       </h2>
 
@@ -621,7 +621,7 @@ export default function SettingsPage() {
                             <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-4 transition-colors duration-300 flex items-center justify-center ${
                               resolvedTheme === "dark" 
                                 ? "border-[var(--accent-400)] bg-gray-700" 
-                                : "border-[var(--accent-500)] bg-gray-200"
+                                : "border-[var(--accent-700)] bg-gray-200"
                             }`}>
                               {logoPreview ? (
                                 <Image
@@ -640,8 +640,8 @@ export default function SettingsPage() {
                             <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2 sm:mt-3">
                               <label className={`px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm rounded-lg cursor-pointer transition ${
                                 resolvedTheme === "dark"
-                                  ? "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
-                                  : "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
+                                  ? "bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white"
+                                  : "bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white"
                               }`}>
                                 <input
                                   type="file"
@@ -676,7 +676,7 @@ export default function SettingsPage() {
                                 required
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                className={`w-full px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                                className={`w-full px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                                   resolvedTheme === "dark" 
                                     ? "bg-gray-700 border-gray-600 text-gray-100" 
                                     : "border border-gray-200 text-gray-900 bg-white"
@@ -702,7 +702,7 @@ export default function SettingsPage() {
                                 required
                                 value={formData.email}
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                                className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                                   resolvedTheme === "dark" 
                                     ? "bg-gray-700 border-gray-600 text-gray-100" 
                                     : "border border-gray-200 text-gray-900 bg-white"
@@ -724,7 +724,7 @@ export default function SettingsPage() {
                                 type="text"
                                 value={formData.phone}
                                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                                className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                                   resolvedTheme === "dark" 
                                     ? "bg-gray-700 border-gray-600 text-gray-100" 
                                     : "border border-gray-200 text-gray-900 bg-white"
@@ -740,8 +740,8 @@ export default function SettingsPage() {
                             disabled={loading}
                             className={`px-4 sm:px-6 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg transition disabled:opacity-50 flex items-center gap-1.5 sm:gap-2 ${
                               resolvedTheme === "dark"
-                                ? "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
-                                : "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
+                                ? "bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white"
+                                : "bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white"
                             }`}
                           >
                             {loading ? (
@@ -771,7 +771,7 @@ export default function SettingsPage() {
                       <h2 className={`text-lg sm:text-xl font-bold mb-4 sm:mb-6 flex items-center gap-2 transition-colors duration-300 ${
                         resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                       }`}>
-                        <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--accent-500)] dark:text-[var(--accent-400)]" />
+                        <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--accent-700)] dark:text-[var(--accent-400)]" />
                         Security Settings
                       </h2>
 
@@ -791,7 +791,7 @@ export default function SettingsPage() {
                               required
                               value={passwordData.currentPassword}
                               onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                              className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                              className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                                 resolvedTheme === "dark" 
                                   ? "bg-gray-700 border-gray-600 text-gray-100" 
                                   : "border border-gray-200 text-gray-900 bg-white"
@@ -816,7 +816,7 @@ export default function SettingsPage() {
                               required
                               value={passwordData.newPassword}
                               onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                              className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                              className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                                 resolvedTheme === "dark" 
                                   ? "bg-gray-700 border-gray-600 text-gray-100" 
                                   : "border border-gray-200 text-gray-900 bg-white"
@@ -841,7 +841,7 @@ export default function SettingsPage() {
                               required
                               value={passwordData.confirmPassword}
                               onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                              className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                              className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                                 resolvedTheme === "dark" 
                                   ? "bg-gray-700 border-gray-600 text-gray-100" 
                                   : "border border-gray-200 text-gray-900 bg-white"
@@ -860,8 +860,8 @@ export default function SettingsPage() {
                             disabled={loading}
                             className={`px-4 sm:px-6 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg transition disabled:opacity-50 flex items-center gap-1.5 sm:gap-2 ${
                               resolvedTheme === "dark"
-                                ? "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
-                                : "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
+                                ? "bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white"
+                                : "bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white"
                             }`}
                           >
                             {loading ? (
@@ -891,7 +891,7 @@ export default function SettingsPage() {
                       <h2 className={`text-lg sm:text-xl font-bold mb-4 sm:mb-6 flex items-center gap-2 transition-colors duration-300 ${
                         resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                       }`}>
-                        <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--accent-500)] dark:text-[var(--accent-400)]" />
+                        <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--accent-700)] dark:text-[var(--accent-400)]" />
                         Subscription & Billing
                       </h2>
 
@@ -930,8 +930,8 @@ export default function SettingsPage() {
                               key={plan.tier}
                               className={`border rounded-xl p-3 sm:p-4 transition ${
                                 formData.subscriptionTier === plan.tier
-                                  ? `border-[var(--accent-500)] dark:border-[var(--accent-400)] bg-[var(--accent-50)] dark:bg-[var(--accent-950)]/20`
-                                  : `border-gray-200 dark:border-gray-700 hover:border-[var(--accent-300)] dark:hover:border-[var(--accent-500)] ${
+                                  ? `border-[var(--accent-700)] dark:border-[var(--accent-400)] bg-[var(--accent-50)] dark:bg-[var(--accent-950)]/20`
+                                  : `border-gray-200 dark:border-gray-700 hover:border-[var(--accent-300)] dark:hover:border-[var(--accent-700)] ${
                                       resolvedTheme === "dark" ? "bg-gray-800" : "bg-white"
                                     }`
                               }`}
@@ -943,7 +943,7 @@ export default function SettingsPage() {
                               </h3>
                               <div className="mt-1 sm:mt-2">
                                 <span className={`text-xl sm:text-2xl font-bold transition-colors duration-300 ${
-                                  resolvedTheme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-500)]"
+                                  resolvedTheme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-700)]"
                                 }`}>
                                   {plan.price}
                                 </span>
@@ -1003,7 +1003,7 @@ export default function SettingsPage() {
                       <h2 className={`text-lg sm:text-xl font-bold mb-4 sm:mb-6 flex items-center gap-2 transition-colors duration-300 ${
                         resolvedTheme === "dark" ? "text-gray-100" : "text-gray-900"
                       }`}>
-                        <Palette className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--accent-500)] dark:text-[var(--accent-400)]" />
+                        <Palette className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--accent-700)] dark:text-[var(--accent-400)]" />
                         Preferences
                       </h2>
 
@@ -1020,7 +1020,7 @@ export default function SettingsPage() {
                               onClick={toggleTheme}
                               className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-lg border-2 transition ${
                                 theme !== "dark"
-                                  ? `border-[var(--accent-500)] bg-[var(--accent-50)] dark:bg-[var(--accent-950)]/20`
+                                  ? `border-[var(--accent-700)] bg-[var(--accent-50)] dark:bg-[var(--accent-950)]/20`
                                   : `border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500`
                               }`}
                             >
@@ -1059,7 +1059,7 @@ export default function SettingsPage() {
                                 onClick={() => setAccentColor(color.id as any)}
                                 className={`relative w-7 h-7 sm:w-8 sm:h-8 rounded-full ${color.class} transition-all duration-200 hover:scale-110 hover:shadow-lg ${
                                   accentColor === color.id
-                                    ? `ring-2 sm:ring-4 ring-offset-2 ring-[var(--accent-500)] dark:ring-[var(--accent-400)] scale-110`
+                                    ? `ring-2 sm:ring-4 ring-offset-2 ring-[var(--accent-700)] dark:ring-[var(--accent-400)] scale-110`
                                     : `ring-1 ring-gray-200 dark:ring-gray-600 hover:ring-gray-300 dark:hover:ring-gray-500`
                                 }`}
                                 aria-label={`Select ${color.label} accent color`}
@@ -1090,13 +1090,13 @@ export default function SettingsPage() {
                             Preview
                           </p>
                           <div className="flex flex-wrap gap-2 sm:gap-3">
-                            <button className="px-3 sm:px-4 py-1.5 sm:py-2 bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white text-xs sm:text-sm rounded-lg transition-colors">
+                            <button className="px-3 sm:px-4 py-1.5 sm:py-2 bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white text-xs sm:text-sm rounded-lg transition-colors">
                               Primary Button
                             </button>
                             <button className={`px-3 sm:px-4 py-1.5 sm:py-2 border-2 text-xs sm:text-sm rounded-lg bg-transparent transition-colors ${
                               resolvedTheme === "dark"
                                 ? "border-[var(--accent-400)] text-[var(--accent-400)] hover:bg-[var(--accent-950)]/20"
-                                : "border-[var(--accent-500)] text-[var(--accent-600)] hover:bg-[var(--accent-50)]"
+                                : "border-[var(--accent-700)] text-[var(--accent-600)] hover:bg-[var(--accent-50)]"
                             }`}>
                               Outline Button
                             </button>
@@ -1132,7 +1132,7 @@ export default function SettingsPage() {
                               >
                                 <div className="flex items-center gap-2 sm:gap-3">
                                   <Bell className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors duration-300 ${
-                                    resolvedTheme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-500)]"
+                                    resolvedTheme === "dark" ? "text-[var(--accent-400)]" : "text-[var(--accent-700)]"
                                   }`} />
                                   <span className={`text-xs sm:text-sm transition-colors duration-300 ${
                                     resolvedTheme === "dark" ? "text-gray-200" : "text-gray-800"
@@ -1144,7 +1144,7 @@ export default function SettingsPage() {
                                   <input type="checkbox" className="sr-only peer" defaultChecked={item.defaultChecked} />
                                   <div className={`w-8 h-4 sm:w-9 sm:h-5 rounded-full transition-colors duration-300 ${
                                     resolvedTheme === "dark" ? "bg-gray-600" : "bg-gray-300"
-                                  } peer peer-checked:bg-[var(--accent-500)] dark:peer-checked:bg-[var(--accent-400)] peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 sm:after:h-4 sm:after:w-4 after:transition-all`} />
+                                  } peer peer-checked:bg-[var(--accent-700)] dark:peer-checked:bg-[var(--accent-400)] peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 sm:after:h-4 sm:after:w-4 after:transition-all`} />
                                 </div>
                               </label>
                             ))}
@@ -1172,10 +1172,10 @@ export default function SettingsPage() {
             <div className={`px-6 py-4 relative overflow-hidden ${
               resolvedTheme === "dark" 
                 ? "bg-gray-700" 
-                : "bg-gradient-to-r from-blue-800 to-[var(--accent-500)]"
+                : "bg-gradient-to-r from-blue-800 to-[var(--accent-700)]"
             }`}>
               <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl ${
-                resolvedTheme === "dark" ? "bg-gray-500/20" : "bg-[var(--accent-500)]/20"
+                resolvedTheme === "dark" ? "bg-gray-500/20" : "bg-[var(--accent-700)]/20"
               }`} />
               <div className="relative text-center">
                 <div className={`inline-block p-2.5 rounded-full mb-2 ${

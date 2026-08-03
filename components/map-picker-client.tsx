@@ -325,7 +325,7 @@ export default function MapPickerClient({
         }`}
       >
         <div className="text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-[var(--accent-500)]" />
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-[var(--accent-700)]" />
           <p
             className={`mt-2 text-sm ${
               resolvedTheme === "dark"

@@ -77,7 +77,7 @@ export default function Home() {
           : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
       }`}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[var(--accent-500)] mx-auto mb-4" />
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[var(--accent-700)] mx-auto mb-4" />
           <p className={`transition-colors duration-300 ${
             resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
           }`}>
@@ -105,10 +105,10 @@ export default function Home() {
           <div className={`px-6 py-5 relative overflow-hidden ${
             resolvedTheme === "dark" 
               ? "bg-gray-700" 
-              : "bg-gradient-to-r from-blue-800 to-[var(--accent-500)]"
+              : "bg-gradient-to-r from-blue-800 to-[var(--accent-700)]"
           }`}>
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl ${
-              resolvedTheme === "dark" ? "bg-gray-500/20" : "bg-[var(--accent-500)]/20"
+              resolvedTheme === "dark" ? "bg-gray-500/20" : "bg-[var(--accent-700)]/20"
             }`} />
             <div className="relative text-center">
               <div className={`inline-block p-2 rounded-full mb-2 ${
@@ -170,7 +170,7 @@ export default function Home() {
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       placeholder="Enter your username"
-                      className={`w-full pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                      className={`w-full pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                         resolvedTheme === "dark" 
                           ? "bg-gray-700 text-gray-100 placeholder-gray-400" 
                           : "border border-gray-200 text-gray-900 bg-white"
@@ -200,7 +200,7 @@ export default function Home() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Enter your password"
-                      className={`w-full pl-10 pr-12 py-2.5 text-sm focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                      className={`w-full pl-10 pr-12 py-2.5 text-sm focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                         resolvedTheme === "dark" 
                           ? "bg-gray-700 text-gray-100 placeholder-gray-400" 
                           : "border border-gray-200 text-gray-900 bg-white"
@@ -230,8 +230,8 @@ export default function Home() {
                 disabled={isVerifying}
                 className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-md ${
                   resolvedTheme === "dark"
-                    ? "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
-                    : "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
+                    ? "bg-[var(--accent-700)]  text-white"
+                    : "bg-[var(--accent-700)]  text-white"
                 }`}
               >
                 {isVerifying ? (

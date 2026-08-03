@@ -269,7 +269,7 @@ export default function NewTaskPage() {
             <main className="p-3 sm:p-4 md:p-6">
               <div className="flex items-center justify-center h-96">
                 <div className="text-center">
-                  <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-[var(--accent-500)] mx-auto" />
+                  <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-[var(--accent-700)] mx-auto" />
                   <p className={`mt-4 text-sm sm:text-base transition-colors duration-300 ${
                     resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
                   }`}>
@@ -389,7 +389,7 @@ export default function NewTaskPage() {
                         required
                         value={formData.title}
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                        className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                           formErrors.title 
                             ? "border-red-500 dark:border-red-500" 
                             : "border-gray-200 dark:border-gray-600"
@@ -423,7 +423,7 @@ export default function NewTaskPage() {
                         rows={4}
                         value={formData.description}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 border ${
+                        className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 border ${
                           resolvedTheme === "dark" 
                             ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
                             : "bg-white border-gray-200 text-gray-900"
@@ -450,7 +450,7 @@ export default function NewTaskPage() {
                           required
                           value={formData.priority}
                           onChange={(e) => setFormData({ ...formData, priority: e.target.value as "high" | "medium" | "low" })}
-                          className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 border ${
+                          className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 border ${
                             resolvedTheme === "dark" 
                               ? "bg-gray-700 border-gray-600 text-gray-100" 
                               : "bg-white border-gray-200 text-gray-900"
@@ -478,7 +478,7 @@ export default function NewTaskPage() {
                           required
                           value={formData.status}
                           onChange={(e) => setFormData({ ...formData, status: e.target.value as "pending" | "in-progress" | "completed" })}
-                          className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 border ${
+                          className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 border ${
                             resolvedTheme === "dark" 
                               ? "bg-gray-700 border-gray-600 text-gray-100" 
                               : "bg-white border-gray-200 text-gray-900"
@@ -508,7 +508,7 @@ export default function NewTaskPage() {
                         required
                         value={formData.dueDate}
                         onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                        className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 ${
+                        className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                           formErrors.dueDate 
                             ? "border-red-500 dark:border-red-500" 
                             : "border-gray-200 dark:border-gray-600"
@@ -557,7 +557,7 @@ export default function NewTaskPage() {
                         <select
                           value={formData.propertyId || ""}
                           onChange={(e) => handlePropertyChange(e.target.value)}
-                          className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-500)] transition-colors duration-300 border ${
+                          className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 border ${
                             resolvedTheme === "dark" 
                               ? "bg-gray-700 border-gray-600 text-gray-100" 
                               : "bg-white border-gray-200 text-gray-900"
@@ -591,8 +591,8 @@ export default function NewTaskPage() {
                     disabled={isSubmitting || isOffline}
                     className={`flex-1 xs:flex-none px-6 py-2.5 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm font-medium ${
                       resolvedTheme === "dark"
-                        ? "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
-                        : "bg-[var(--accent-500)] hover:bg-[var(--accent-600)] text-white"
+                        ? "bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white"
+                        : "bg-[var(--accent-700)] hover:bg-[var(--accent-600)] text-white"
                     }`}
                   >
                     {isSubmitting ? (
