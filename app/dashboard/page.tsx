@@ -651,7 +651,7 @@ const processPropertiesData = (allProperties: Property[], tasks: Task[] = [], al
       case "medium":
         return "bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800";
       case "low":
-        return "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800";
+        return "bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800";
       default:
         return "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300";
     }
@@ -684,7 +684,7 @@ const getRelativeTime = (dateString: string) => {
   const getStatColor = (id: string) => {
     switch (id) {
       case 'totalProperties': return 'blue';
-      case 'activeListings': return 'green';
+      case 'activeListings': return 'blue';
       case 'monthlyRevenue': return 'yellow';
       case 'totalViews': return 'purple';
       case 'occupancyRate': return 'cyan';
@@ -989,7 +989,7 @@ const statCards = [
         </h3>
         {/* Status Dot */}
         <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
-          propertyStatus === "Available" ? "bg-green-500" : "bg-blue-500"
+          propertyStatus === "Available" ? "bg-blue-500" : "bg-blue-500"
         }`} />
       </div>
       
@@ -1029,7 +1029,7 @@ const statCards = [
   
   {/* Status Badge - made smaller and cleaner */}
   <span
-    className={`px-1.5 py-0.5 rounded-full text-[8px] font-medium flex items-center gap-0.5 border shrink-0 ml-2 ${propertyStatus === "Available" ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800" : "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800"}`}
+    className={`px-1.5 py-0.5 rounded-full text-[8px] font-medium flex items-center gap-0.5 border shrink-0 ml-2 ${propertyStatus === "Available" ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800" : "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800"}`}
   >
     <StatusIcon className="w-2.5 h-2.5" />
     {propertyStatus}
@@ -1327,7 +1327,7 @@ const statCards = [
                               className={`text-[9px] px-2 py-1.5 rounded-lg transition flex items-center justify-center gap-1 ${
                                 isOffline || recentProperties.length === 0
                                   ? 'bg-gray-200 dark:bg-gray-600 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
-                                  : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50'
+                                  : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50'
                               }`}
                             >
                               <FileText className="w-3 h-3" />
@@ -1397,7 +1397,7 @@ const statCards = [
                           </div>
 
                           <div className="flex flex-wrap justify-center gap-3 pt-1.5 mt-1 border-t border-gray-200 dark:border-gray-700">
-                            <span className="text-[10px] text-green-500 dark:text-green-400">● Available</span>
+                            <span className="text-[10px] text-blue-500 dark:text-blue-400">● Available</span>
                             <span className="text-[10px] text-blue-500 dark:text-blue-400">● Rented</span>
                             <span className="text-[10px] text-orange-500 dark:text-orange-400">● High Views</span>
                             <span className="text-[10px] text-yellow-500 dark:text-yellow-400">● Low Views</span>
@@ -1659,7 +1659,7 @@ const statCards = [
                         <span className="font-bold text-white">{stats.responseRate}%</span>
                       </div>
                       <div className={`w-full rounded-full h-2 overflow-hidden ${isOffline ? 'bg-gray-500/30' : 'bg-blue-500/30'}`}>
-                        <div className="bg-gradient-to-r from-green-400 to-green-500 h-2 rounded-full transition-all duration-1000" style={{ width: `${stats.responseRate}%` }} />
+                        <div className="bg-gradient-to-r from-blue-400 to-blue-500 h-2 rounded-full transition-all duration-1000" style={{ width: `${stats.responseRate}%` }} />
                       </div>
                     </div>
 
@@ -1856,7 +1856,7 @@ const statCards = [
                           const priorityColor = {
                             high: 'border-red-500 bg-red-50 dark:bg-red-900/20',
                             medium: 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20',
-                            low: 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                            low: 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                           }[topTask.priority] || 'border-gray-500';
                           
                           return (
@@ -1872,7 +1872,7 @@ const statCards = [
                               {topTask.propertyName && <p className="text-[8px] text-gray-400 dark:text-gray-500 mt-1.5 truncate">📍 {topTask.propertyName}</p>}
                               <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-600 flex justify-between items-center">
                                 <span className="text-[8px] text-gray-400 dark:text-gray-500">Priority</span>
-                                <span className={`text-[8px] font-medium capitalize ${topTask.priority === 'high' ? 'text-red-600 dark:text-red-400' : topTask.priority === 'medium' ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'}`}>{topTask.priority}</span>
+                                <span className={`text-[8px] font-medium capitalize ${topTask.priority === 'high' ? 'text-red-600 dark:text-red-400' : topTask.priority === 'medium' ? 'text-yellow-600 dark:text-yellow-400' : 'text-blue-600 dark:text-blue-400'}`}>{topTask.priority}</span>
                               </div>
                             </Link>
                           );
@@ -1924,8 +1924,8 @@ const statCards = [
                             <span className="text-xs font-bold text-yellow-600 dark:text-yellow-400">{upcomingTasks.filter(t => t.priority === 'medium').length}</span>
                           </div>
                           <div className={`p-2 rounded-lg flex justify-between items-center ${isOffline ? 'bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'}`}>
-                            <span className="text-[9px] text-gray-600 dark:text-gray-400 flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-green-500"></span> Low</span>
-                            <span className="text-xs font-bold text-green-600 dark:text-green-400">{upcomingTasks.filter(t => t.priority === 'low').length}</span>
+                            <span className="text-[9px] text-gray-600 dark:text-gray-400 flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Low</span>
+                            <span className="text-xs font-bold text-blue-600 dark:text-blue-400">{upcomingTasks.filter(t => t.priority === 'low').length}</span>
                           </div>
                           <div className={`p-2 rounded-lg flex justify-between items-center ${isOffline ? 'bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'}`}>
                             <span className="text-[9px] text-gray-600 dark:text-gray-400">Overdue</span>
@@ -1986,14 +1986,14 @@ const statCards = [
                   </div>
                   <div className="absolute inset-0 bg-white/10 translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
                 </Link>
-                <Link href="/dashboard/tenants" className={`group relative overflow-hidden rounded-xl p-4 text-white hover:shadow-xl transition-all transform hover:scale-105 border ${isOffline ? 'bg-gray-500 dark:bg-gray-600 border-gray-400/30 cursor-not-allowed' : 'bg-linear-to-r from-green-600 to-green-700 border-green-400/30'}`}>
+                <Link href="/dashboard/tenants" className={`group relative overflow-hidden rounded-xl p-4 text-white hover:shadow-xl transition-all transform hover:scale-105 border ${isOffline ? 'bg-gray-500 dark:bg-gray-600 border-gray-400/30 cursor-not-allowed' : 'bg-linear-to-r from-blue-600 to-blue-700 border-blue-400/30'}`}>
                   <div className="relative flex items-center gap-3">
                     <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform border border-white/20">
                       <Users className="w-5 h-5" />
                     </div>
                     <div>
                       <h3 className="text-sm font-semibold mb-0.5">Find Tenants</h3>
-                      <p className={`text-xs ${isOffline ? 'text-gray-300' : 'text-green-100'}`}>List & attract</p>
+                      <p className={`text-xs ${isOffline ? 'text-gray-300' : 'text-blue-100'}`}>List & attract</p>
                     </div>
                   </div>
                   <div className="absolute inset-0 bg-white/10 translate-x-full group-hover:translate-x-0 transition-transform duration-300" />

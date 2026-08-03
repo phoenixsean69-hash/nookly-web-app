@@ -518,7 +518,7 @@ export default function TenantsPage() {
                   label: "Active tenants",
                   value: activeCount,
                   icon: CheckCircle,
-                  style: "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300",
+                  style: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
                 },
                 {
                   label: "Pending requests",
@@ -646,7 +646,7 @@ export default function TenantsPage() {
                                   className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
                                     entry.status === "active" ||
                                     entry.status === "approved"
-                                      ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
+                                      ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
                                       : entry.status === "rejected"
                                         ? "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300"
                                         : "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300"
@@ -725,7 +725,7 @@ export default function TenantsPage() {
                                         void approveRequest(request)
                                       }
                                       disabled={isBusy}
-                                      className="inline-flex items-center gap-1 rounded-lg bg-green-600 px-3 py-2 text-xs font-semibold text-white disabled:opacity-50"
+                                      className="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white disabled:opacity-50"
                                     >
                                       <CheckCircle className="h-4 w-4" />
                                       Approve

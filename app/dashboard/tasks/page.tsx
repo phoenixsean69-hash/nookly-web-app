@@ -360,7 +360,7 @@ useEffect(() => {
       case "medium":
         return "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800";
       case "low":
-        return "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800";
+        return "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800";
       default:
         return "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300";
     }
@@ -369,7 +369,7 @@ useEffect(() => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "completed":
-        return { text: "Completed", icon: CheckCircle, className: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300" };
+        return { text: "Completed", icon: CheckCircle, className: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300" };
       case "in-progress":
         return { text: "In Progress", icon: Clock, className: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300" };
       default:
@@ -689,8 +689,8 @@ useEffect(() => {
       onClick={() => handleCompleteTask(task.$id)}
       className={`px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-sm rounded-lg transition flex items-center gap-1 ${
         resolvedTheme === "dark"
-          ? "bg-green-900/30 text-green-400 hover:bg-green-900/50"
-          : "bg-green-50 text-green-600 hover:bg-green-100"
+          ? "bg-blue-900/30 text-blue-400 hover:bg-blue-900/50"
+          : "bg-blue-50 text-blue-600 hover:bg-blue-100"
       }`}
     >
       <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5" />

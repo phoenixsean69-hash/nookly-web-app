@@ -631,9 +631,9 @@ export function Header() {
                   </>
                 ) : (
                   <>
-                    <Wifi className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />
-                    <span className="text-xs font-medium text-green-700 dark:text-green-400">Online</span>
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
+                    <Wifi className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                    <span className="text-xs font-medium text-blue-700 dark:text-blue-400">Online</span>
+                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
                   </>
                 )}
               </div>

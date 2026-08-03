@@ -721,8 +721,8 @@ export default function PropertyDetailsPage() {
                       disabled={approving || isOrganizationApproved}
                       className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold shadow-sm transition disabled:cursor-not-allowed ${
                         isOrganizationApproved
-                          ? "border border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-300"
-                          : "bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
+                          ? "border border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+                          : "bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
                       }`}
                     >
                       {approving ? (
@@ -785,7 +785,7 @@ export default function PropertyDetailsPage() {
                       <span
                         className={`absolute left-4 top-4 rounded-full px-3 py-1.5 text-xs font-bold ${
                           property.isAvailable !== false
-                            ? "bg-green-500 text-white"
+                            ? "bg-blue-500 text-white"
                             : "bg-gray-900/80 text-white"
                         }`}
                       >
@@ -1217,7 +1217,7 @@ export default function PropertyDetailsPage() {
                                 </p>
                               </div>
 
-                              <CheckCircle className="ml-auto h-4 w-4 text-green-500" />
+                              <CheckCircle className="ml-auto h-4 w-4 text-blue-500" />
                             </Link>
                           ))
                         )}

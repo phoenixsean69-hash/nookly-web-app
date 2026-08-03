@@ -1231,8 +1231,8 @@ export default function AnalyticsPage() {
       primaryLight: 'rgba(249,115,22,0.2)',
       secondary: '#8b5cf6',
       secondaryLight: 'rgba(139,92,246,0.2)',
-      green: '#22c55e',
-      greenLight: 'rgba(34,197,94,0.2)',
+      blue: '#22c55e',
+      blueLight: 'rgba(34,197,94,0.2)',
       blue: '#3b82f6',
       blueLight: 'rgba(59,130,246,0.2)',
       red: '#ef4444',
@@ -1302,12 +1302,12 @@ export default function AnalyticsPage() {
         {
           label: 'Revenue',
           data: revenueData,
-          borderColor: colors.green,
-          backgroundColor: colors.greenLight,
+          borderColor: colors.blue,
+          backgroundColor: colors.blueLight,
           fill: true,
           tension: 0.4,
           pointRadius: 3,
-          pointBackgroundColor: colors.green,
+          pointBackgroundColor: colors.blue,
         },
       ],
     };
@@ -1348,7 +1348,7 @@ export default function AnalyticsPage() {
           label: 'Health Score',
           data: scores,
           backgroundColor: scores.map(score => 
-            score >= 60 ? colors.green : score >= 40 ? colors.yellow : colors.red
+            score >= 60 ? colors.blue : score >= 40 ? colors.yellow : colors.red
           ),
           borderColor: scores.map(score => 
             score >= 60 ? '#22c55e' : score >= 40 ? '#eab308' : '#ef4444'
@@ -1419,7 +1419,7 @@ export default function AnalyticsPage() {
     const types = Object.entries(analytics.propertyTypes);
     const labels = types.map(([type]) => type);
     const counts = types.map(([, data]) => data.count);
-    const colorPalette = [colors.primary, colors.blue, colors.green, colors.secondary, colors.pink, colors.cyan];
+    const colorPalette = [colors.primary, colors.blue, colors.blue, colors.secondary, colors.pink, colors.cyan];
 
     return {
       labels,
@@ -1449,7 +1449,7 @@ export default function AnalyticsPage() {
           label: 'Response Time (hours)',
           data: times,
           backgroundColor: times.map(time => 
-            time < 24 ? colors.green : time < 72 ? colors.yellow : colors.red
+            time < 24 ? colors.blue : time < 72 ? colors.yellow : colors.red
           ),
           borderColor: times.map(time => 
             time < 24 ? '#22c55e' : time < 72 ? '#eab308' : '#ef4444'
@@ -1473,8 +1473,8 @@ export default function AnalyticsPage() {
         {
           label: 'Count',
           data: counts,
-          backgroundColor: [colors.primary, colors.blue, colors.green, colors.secondary],
-          borderColor: [colors.primary, colors.blue, colors.green, colors.secondary],
+          backgroundColor: [colors.primary, colors.blue, colors.blue, colors.secondary],
+          borderColor: [colors.primary, colors.blue, colors.blue, colors.secondary],
           borderWidth: 2,
           borderRadius: 4,
         },
@@ -1653,7 +1653,7 @@ export default function AnalyticsPage() {
       blue: { bg: "bg-blue-100 dark:bg-blue-900/30", text: "text-blue-600 dark:text-blue-400" },
       red: { bg: "bg-red-100 dark:bg-red-900/30", text: "text-red-600 dark:text-red-400" },
       purple: { bg: "bg-purple-100 dark:bg-purple-900/30", text: "text-purple-600 dark:text-purple-400" },
-      green: { bg: "bg-green-100 dark:bg-green-900/30", text: "text-green-600 dark:text-green-400" },
+      blue: { bg: "bg-blue-100 dark:bg-blue-900/30", text: "text-blue-600 dark:text-blue-400" },
       orange: { bg: "bg-orange-100 dark:bg-orange-900/30", text: "text-orange-600 dark:text-orange-400" },
       indigo: { bg: "bg-indigo-100 dark:bg-indigo-900/30", text: "text-indigo-600 dark:text-indigo-400" },
     };
@@ -1669,7 +1669,7 @@ export default function AnalyticsPage() {
           <div className={`p-2 sm:p-3 rounded-xl ${colors.bg}`}>
             <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${colors.text}`} />
           </div>
-          <div className={`flex items-center gap-1 text-xs sm:text-sm font-medium ${isPositive ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>
+          <div className={`flex items-center gap-1 text-xs sm:text-sm font-medium ${isPositive ? "text-blue-600 dark:text-blue-400" : "text-red-600 dark:text-red-400"}`}>
             {isPositive ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
             <span>{Math.abs(change)}%</span>
           </div>
@@ -1952,7 +1952,7 @@ export default function AnalyticsPage() {
                 value={`${analytics.occupancy.rate}%`}
                 change={analytics.occupancy.change}
                 icon={Home}
-                color="green"
+                color="blue"
                 onSeeMore={handleOccupancySeeMore}
                 seeMoreData={analytics.occupancy.perProperty}
                 seeMoreLabel="View per property"
@@ -3158,7 +3158,7 @@ export default function AnalyticsPage() {
                 revenueModalData.map((item, index) => {
                   const maxVal = Math.max(...revenueModalData.map(d => d.revenue), 1);
                   const percentage = Math.max((item.revenue / maxVal) * 100, 5);
-                  const barColor = item.status === 'Rented' ? 'bg-green-500' : 'bg-gray-400';
+                  const barColor = item.status === 'Rented' ? 'bg-blue-500' : 'bg-gray-400';
                   return (
                     <div key={index}>
                       <div className="flex justify-between text-xs mb-0.5">
@@ -3168,7 +3168,7 @@ export default function AnalyticsPage() {
                           }`}>{item.name}</span>
                           <span className={`text-[8px] px-1.5 py-0.5 rounded-full ${
                             item.status === 'Rented' 
-                              ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
+                              ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
                               : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
                           }`}>{item.status}</span>
                         </div>
@@ -3256,7 +3256,7 @@ export default function AnalyticsPage() {
                 revenueDailyModalData.map((item, index) => {
                   const maxVal = Math.max(...revenueDailyModalData.map(d => d.revenue), 1);
                   const percentage = Math.max((item.revenue / maxVal) * 100, 5);
-                  const barColor = index % 3 === 0 ? 'bg-green-500' : index % 3 === 1 ? 'bg-emerald-500' : 'bg-teal-500';
+                  const barColor = index % 3 === 0 ? 'bg-blue-500' : index % 3 === 1 ? 'bg-emerald-500' : 'bg-teal-500';
                   return (
                     <div key={index}>
                       <div className="flex justify-between text-xs mb-0.5">
@@ -3351,14 +3351,14 @@ export default function AnalyticsPage() {
                       resolvedTheme === "dark" ? "border-gray-700" : "border-gray-100"
                     }`}>
                       <div className="flex items-center gap-2">
-                        <span className={`w-2 h-2 rounded-full ${isOccupied ? 'bg-green-500' : 'bg-gray-400'}`} />
+                        <span className={`w-2 h-2 rounded-full ${isOccupied ? 'bg-blue-500' : 'bg-gray-400'}`} />
                         <span className={`text-xs transition-colors duration-300 ${
                           resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                         }`}>{item.name}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className={`text-xs font-medium ${
-                          isOccupied ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'
+                          isOccupied ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'
                         }`}>{item.status}</span>
                         <span className={`text-xs transition-colors duration-300 ${
                           resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
@@ -3448,7 +3448,7 @@ export default function AnalyticsPage() {
                           }`}>{item.type}</span>
                         </div>
                         <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                          item.occupancyRate > 70 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' :
+                          item.occupancyRate > 70 ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' :
                           item.occupancyRate > 40 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300' :
                           'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
                         }`}>
@@ -3555,7 +3555,7 @@ export default function AnalyticsPage() {
                   const percentage = Math.max(((maxVal - item.avgHours) / maxVal) * 100, 5);
                   const isFast = item.avgHours < 24;
                   const isMedium = item.avgHours >= 24 && item.avgHours < 72;
-                  const barColor = isFast ? 'bg-green-500' : isMedium ? 'bg-yellow-500' : 'bg-red-500';
+                  const barColor = isFast ? 'bg-blue-500' : isMedium ? 'bg-yellow-500' : 'bg-red-500';
                   return (
                     <div key={index}>
                       <div className="flex justify-between text-xs mb-0.5">
@@ -3563,7 +3563,7 @@ export default function AnalyticsPage() {
                           resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                         }`}>{item.name}</span>
                         <span className={`font-medium transition-colors duration-300 ${
-                          isFast ? 'text-green-600 dark:text-green-400' : 
+                          isFast ? 'text-blue-600 dark:text-blue-400' : 
                           isMedium ? 'text-yellow-600 dark:text-yellow-400' : 
                           'text-red-600 dark:text-red-400'
                         }`}>{item.avgHours}h</span>
@@ -3751,7 +3751,7 @@ export default function AnalyticsPage() {
                     <div key={index}>
                       <div className="flex justify-between text-xs mb-0.5">
                         <span className={`font-semibold transition-colors duration-300 ${
-                          isPeak ? 'text-green-600 dark:text-green-400' : 
+                          isPeak ? 'text-blue-600 dark:text-blue-400' : 
                           resolvedTheme === "dark" ? 'text-gray-300' : 'text-gray-700'
                         }`}>{item.month}</span>
                         <div className="flex items-center gap-2">
@@ -3768,7 +3768,7 @@ export default function AnalyticsPage() {
                       }`}>
                         <div
                           className={`h-2 rounded-full transition-all duration-700 ${
-                            isPeak ? 'bg-green-500' : 'bg-blue-500'
+                            isPeak ? 'bg-blue-500' : 'bg-blue-500'
                           }`}
                           style={{ width: `${percentage}%` }}
                         />
@@ -3949,12 +3949,12 @@ export default function AnalyticsPage() {
               ) : (
                 propertyHealthModalData.map((item) => {
                   const statusColors = {
-                    healthy: 'bg-green-500',
+                    healthy: 'bg-blue-500',
                     warning: 'bg-yellow-500',
                     critical: 'bg-red-500',
                   };
                   const statusTextColors = {
-                    healthy: 'text-green-600 dark:text-green-400',
+                    healthy: 'text-blue-600 dark:text-blue-400',
                     warning: 'text-yellow-600 dark:text-yellow-400',
                     critical: 'text-red-600 dark:text-red-400',
                   };
@@ -3987,7 +3987,7 @@ export default function AnalyticsPage() {
                       }`}>
                         <div
                           className={`h-2 rounded-full transition-all duration-700 ${
-                            item.score >= 60 ? 'bg-green-500' : item.score >= 40 ? 'bg-yellow-500' : 'bg-red-500'
+                            item.score >= 60 ? 'bg-blue-500' : item.score >= 40 ? 'bg-yellow-500' : 'bg-red-500'
                           }`}
                           style={{ width: `${item.score}%` }}
                         />

@@ -185,11 +185,11 @@ export default function TaskDetailsPage() {
       ? "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300"
       : task.priority === "medium"
         ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300"
-        : "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300";
+        : "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300";
 
   const statusStyle =
     task.status === "completed"
-      ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
+      ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
       : task.status === "in-progress"
         ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
         : "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300";

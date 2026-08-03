@@ -122,9 +122,9 @@ foreach ($file in $required) {
   if (-not (Test-Path -LiteralPath $file)) {
     throw "Required file is missing after installation: $file"
   }
-  Write-Host "OK  $file" -ForegroundColor Green
+  Write-Host "OK  $file" -ForegroundColor blue
 }
 
-Write-Host "`nDriver approval push integration installed." -ForegroundColor Green
+Write-Host "`nDriver approval push integration installed." -ForegroundColor blue
 Write-Host "Next run: npm run build"
 Write-Host "Then deploy deployment/nookly-push-api-v1.4.3.tar.gz to the existing push Function."

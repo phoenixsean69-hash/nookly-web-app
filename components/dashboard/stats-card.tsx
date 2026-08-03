@@ -46,7 +46,7 @@ interface CachedProperty {
   isAvailable?: boolean;
 }
 
-type CardTone = "blue" | "purple" | "green" | "orange" | "cyan";
+type CardTone = "blue" | "purple" | "blue" | "orange" | "cyan";
 
 type BadgeTone = "success" | "warning" | "danger" | "neutral";
 
@@ -74,12 +74,12 @@ const toneStyles: Record<
     progress: "bg-purple-500 dark:bg-purple-400",
     accentText: "text-purple-600 dark:text-purple-300",
   },
-  green: {
-    iconBackground: "bg-green-500/15 dark:bg-green-500/20",
-    iconBorder: "border-green-500/30 dark:border-green-400/30",
-    iconText: "text-green-600 dark:text-green-300",
-    progress: "bg-green-500 dark:bg-green-400",
-    accentText: "text-green-600 dark:text-green-300",
+  blue: {
+    iconBackground: "bg-blue-500/15 dark:bg-blue-500/20",
+    iconBorder: "border-blue-500/30 dark:border-blue-400/30",
+    iconText: "text-blue-600 dark:text-blue-300",
+    progress: "bg-blue-500 dark:bg-blue-400",
+    accentText: "text-blue-600 dark:text-blue-300",
   },
   orange: {
     iconBackground: "bg-orange-500/15 dark:bg-orange-500/20",
@@ -99,7 +99,7 @@ const toneStyles: Record<
 
 const badgeStyles: Record<BadgeTone, string> = {
   success:
-    "border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-300",
+    "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
   warning:
     "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
   danger:
@@ -126,7 +126,7 @@ function getTone(statId?: string, fallbackColor?: string): CardTone {
     case "occupiedListings":
       return "purple";
     case "totalViews":
-      return "green";
+      return "blue";
     case "occupancyRate":
       return "orange";
     case "responseRate":
@@ -135,7 +135,7 @@ function getTone(statId?: string, fallbackColor?: string): CardTone {
       return "blue";
     default:
       if (fallbackColor === "purple") return "purple";
-      if (fallbackColor === "green") return "green";
+      if (fallbackColor === "blue") return "blue";
       if (fallbackColor === "orange" || fallbackColor === "yellow") {
         return "orange";
       }
@@ -412,7 +412,7 @@ export function StatsCard({
               <span
                 className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${
                   trend.isUp
-                    ? "bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300"
+                    ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
                     : "bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300"
                 }`}
               >
@@ -425,7 +425,7 @@ export function StatsCard({
               </span>
             </div>
           ) : statId === "totalViews" ? (
-            <span className="inline-flex rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-300">
+            <span className="inline-flex rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
               Portfolio traffic
             </span>
           ) : null}

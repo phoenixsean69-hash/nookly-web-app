@@ -316,7 +316,7 @@ export default function RequestDetailsPage() {
 
   const statusStyle =
     request.status === "approved"
-      ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
+      ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
       : request.status === "rejected"
         ? "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300"
         : "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300";
@@ -528,7 +528,7 @@ export default function RequestDetailsPage() {
                           type="button"
                           onClick={() => void approve()}
                           disabled={processing || !property}
-                          className="inline-flex items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+                          className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
                         >
                           <CheckCircle className="h-4 w-4" />
                           {processing ? "Processing…" : "Approve"}

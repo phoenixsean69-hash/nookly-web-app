@@ -39,7 +39,7 @@ export function NotificationToast() {
   const getIcon = (type: string) => {
     switch (type) {
       case 'success':
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
+        return <CheckCircle className="w-5 h-5 text-blue-500" />;
       case 'error':
         return <AlertCircle className="w-5 h-5 text-red-500" />;
       case 'warning':
@@ -52,7 +52,7 @@ export function NotificationToast() {
   const getColor = (type: string) => {
     switch (type) {
       case 'success':
-        return 'bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-800';
+        return 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800';
       case 'error':
         return 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800';
       case 'warning':

@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 type Theme = "light" | "dark" | "system";
-type AccentColor = "orange" | "blue" | "green" | "purple" | "pink" | "teal" | "red" | "indigo" | "rose" | "amber";
+type AccentColor = "orange" | "blue" | "blue" | "purple" | "pink" | "teal" | "red" | "indigo" | "rose" | "amber";
 
 interface ThemeContextType {
   theme: Theme;
@@ -45,7 +45,7 @@ const accentColorMap: Record<AccentColor, Record<string, string>> = {
     "--accent-900": "#1e3a8a",
     "--accent-950": "#172554",
   },
-  green: {
+  blue: {
     "--accent-50": "#f0fdf4",
     "--accent-100": "#dcfce7",
     "--accent-200": "#bbf7d0",

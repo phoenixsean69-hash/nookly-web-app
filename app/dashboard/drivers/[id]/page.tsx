@@ -310,7 +310,7 @@ export default function DriverApplicationDetailsPage() {
                       </h1>
 
                       {approved ? (
-                        <span className="inline-flex items-center gap-1 rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-300">
+                        <span className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
                           <BadgeCheck className="h-3.5 w-3.5" />
                           Approved driver
                         </span>
@@ -354,7 +354,7 @@ export default function DriverApplicationDetailsPage() {
                     }
                     className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold shadow-sm transition disabled:cursor-not-allowed ${
                       approved
-                        ? "border border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-300"
+                        ? "border border-blue-200 bg-blue-500 text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
                         : "bg-blue-600 text-white hover:bg-blue-800 disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:bg-gray-800 dark:disabled:text-gray-500"
                     }`}
                   >
@@ -536,7 +536,7 @@ export default function DriverApplicationDetailsPage() {
                     <div
                       className={`mt-5 rounded-xl border p-4 ${
                         approved
-                          ? "border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950/30"
+                          ? "border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/30"
                           : "border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800"
                       }`}
                     >
@@ -562,7 +562,7 @@ export default function DriverApplicationDetailsPage() {
       {showApproveDialog && !approved && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-900">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
               <BadgeCheck className="h-6 w-6" />
             </div>
 
@@ -593,7 +593,7 @@ export default function DriverApplicationDetailsPage() {
                 type="button"
                 onClick={() => void approveApplication()}
                 disabled={approving}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
               >
                 {approving ? (
                   <LoaderCircle className="h-4 w-4 animate-spin" />
@@ -795,7 +795,7 @@ function ApprovalCheck({ complete, label }: { complete: boolean; label: string }
   return (
     <div className="flex items-center gap-3 rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
       {complete ? (
-        <CheckCircle className="h-5 w-5 shrink-0 text-green-500" />
+        <CheckCircle className="h-5 w-5 shrink-0 text-blue-500" />
       ) : (
         <Clock3 className="h-5 w-5 shrink-0 text-amber-500" />
       )}

@@ -504,7 +504,7 @@ export default function MessagesPage() {
                               <span
                                 className={`mt-2 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${
                                   inquiry.status === "resolved"
-                                    ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
+                                    ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
                                     : inquiry.status === "in-progress"
                                       ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
                                       : "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300"
@@ -571,7 +571,7 @@ export default function MessagesPage() {
                               void updateStatus(selectedInquiry, "resolved")
                             }
                             disabled={saving}
-                            className="rounded-lg border border-green-200 px-2.5 py-1.5 text-xs font-semibold text-green-700 dark:border-green-900 dark:text-green-300"
+                            className="rounded-lg border border-blue-200 px-2.5 py-1.5 text-xs font-semibold text-blue-700 dark:border-blue-900 dark:text-blue-300"
                           >
                             <CheckCircle className="mr-1 inline h-3.5 w-3.5" />
                             Resolved

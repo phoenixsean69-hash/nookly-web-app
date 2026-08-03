@@ -1269,14 +1269,14 @@ export default function NewPropertyPage() {
                       key={String(number)}
                       className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold ${
                         ready
-                          ? "border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-950/30 dark:text-green-300"
+                          ? "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900 dark:bg-blue-950/30 dark:text-blue-300"
                           : "border-gray-200 bg-white text-gray-500 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400"
                       }`}
                     >
                       <span
                         className={`flex h-6 w-6 items-center justify-center rounded-full ${
                           ready
-                            ? "bg-green-600 text-white"
+                            ? "bg-blue-600 text-white"
                             : "bg-gray-100 dark:bg-gray-800"
                         }`}
                       >
@@ -1631,7 +1631,7 @@ export default function NewPropertyPage() {
                   )}
 
                   {mapMessage && (
-                    <div className="mb-4 flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 p-3 text-green-700 dark:border-green-900 dark:bg-green-950/30 dark:text-green-300">
+                    <div className="mb-4 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50 p-3 text-blue-700 dark:border-blue-900 dark:bg-blue-950/30 dark:text-blue-300">
                       <CheckCircle className="mt-0.5 h-4 w-4 shrink-0" />
                       <p className="text-xs leading-5">{mapMessage}</p>
                     </div>
@@ -1726,7 +1726,7 @@ export default function NewPropertyPage() {
 
                     {form.latitude && form.longitude && (
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-3 py-1.5 text-xs font-semibold text-green-700 dark:bg-green-950 dark:text-green-300">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-700 dark:bg-blue-950 dark:text-blue-300">
                           <Navigation className="h-3.5 w-3.5" />
                           Map pin saved
                         </span>
@@ -1873,7 +1873,7 @@ export default function NewPropertyPage() {
                       <span
                         className={`inline-flex w-fit items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold ${
                           availableSlots > 0
-                            ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
+                            ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
                             : "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300"
                         }`}
                       >
@@ -1932,7 +1932,7 @@ export default function NewPropertyPage() {
                         value={form.availableSlots}
                         disabled={submitting}
                         inputClass={inputClass}
-                        accentClass="bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
+                        accentClass="bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
                         onChange={(value) =>
                           updateSlots("availableSlots", value)
                         }
@@ -1950,7 +1950,7 @@ export default function NewPropertyPage() {
                         <span>{occupancyPercentage}% occupied</span>
                       </div>
 
-                      <div className="mt-2 h-3 overflow-hidden rounded-full bg-green-200 dark:bg-green-950">
+                      <div className="mt-2 h-3 overflow-hidden rounded-full bg-blue-200 dark:bg-blue-950">
                         <div
                           className="h-full rounded-full bg-orange-500 transition-all duration-300"
                           style={{
@@ -2210,7 +2210,7 @@ export default function NewPropertyPage() {
                             </button>
                           </div>
 
-                          <div className="rounded-2xl border border-green-200 bg-green-50 p-4 text-green-700 dark:border-green-900 dark:bg-green-950/30 dark:text-green-300">
+                          <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-blue-700 dark:border-blue-900 dark:bg-blue-950/30 dark:text-blue-300">
                             <p className="text-xs font-semibold uppercase tracking-wide">
                               Room price range
                             </p>
@@ -2237,7 +2237,7 @@ export default function NewPropertyPage() {
                                   type="button"
                                   onClick={useLowestRoomPrice}
                                   disabled={submitting}
-                                  className="mt-3 rounded-xl bg-green-600 px-3 py-2 text-xs font-semibold text-white"
+                                  className="mt-3 rounded-xl bg-blue-600 px-3 py-2 text-xs font-semibold text-white"
                                 >
                                   Use lowest as listing price
                                 </button>
@@ -2381,7 +2381,7 @@ export default function NewPropertyPage() {
                         <span className="rounded-full bg-blue-100 px-3 py-1.5 font-semibold text-blue-700 dark:bg-blue-950 dark:text-blue-300">
                           {totalSlots} total slots
                         </span>
-                        <span className="rounded-full bg-green-100 px-3 py-1.5 font-semibold text-green-700 dark:bg-green-950 dark:text-green-300">
+                        <span className="rounded-full bg-blue-100 px-3 py-1.5 font-semibold text-blue-700 dark:bg-blue-950 dark:text-blue-300">
                           {availableSlots} available
                         </span>
                         {isBoarding && (

@@ -27,8 +27,8 @@ export function NotificationBanner() {
     return (
       <div className={`flex items-center justify-between gap-3 text-sm px-4 py-3 rounded-lg ${
         resolvedTheme === 'dark' 
-          ? 'bg-green-900/30 text-green-300 border border-green-800' 
-          : 'bg-green-50 text-green-700 border border-green-200'
+          ? 'bg-blue-900/30 text-blue-300 border border-blue-800' 
+          : 'bg-blue-50 text-blue-700 border border-blue-200'
       }`}>
         <div className="flex items-center gap-2">
           <Bell className="w-4 h-4" />
@@ -48,8 +48,8 @@ export function NotificationBanner() {
             }}
             className={`px-3 py-1 rounded text-xs transition ${
               resolvedTheme === 'dark'
-                ? 'bg-green-800 hover:bg-green-700 text-green-200'
-                : 'bg-green-200 hover:bg-green-300 text-green-800'
+                ? 'bg-blue-800 hover:bg-blue-700 text-blue-200'
+                : 'bg-blue-200 hover:bg-blue-300 text-blue-800'
             }`}
           >
             Test
@@ -58,8 +58,8 @@ export function NotificationBanner() {
             onClick={openSettings}
             className={`p-1 rounded transition ${
               resolvedTheme === 'dark'
-                ? 'hover:bg-green-800'
-                : 'hover:bg-green-200'
+                ? 'hover:bg-blue-800'
+                : 'hover:bg-blue-200'
             }`}
             title="Open notification settings"
           >
@@ -69,8 +69,8 @@ export function NotificationBanner() {
             onClick={() => setIsDismissed(true)}
             className={`p-1 rounded transition ${
               resolvedTheme === 'dark'
-                ? 'hover:bg-green-800'
-                : 'hover:bg-green-200'
+                ? 'hover:bg-blue-800'
+                : 'hover:bg-blue-200'
             }`}
           >
             <X className="w-4 h-4" />

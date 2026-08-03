@@ -382,10 +382,10 @@ useEffect(() => {
               }`}>
                 <div className="flex items-center gap-3">
                   <div className={`p-2 rounded-lg ${
-                    resolvedTheme === "dark" ? "bg-green-900/30" : "bg-green-50"
+                    resolvedTheme === "dark" ? "bg-blue-900/30" : "bg-blue-50"
                   }`}>
                     <CheckCircle className={`w-5 h-5 ${
-                      resolvedTheme === "dark" ? "text-green-400" : "text-green-600"
+                      resolvedTheme === "dark" ? "text-blue-400" : "text-blue-600"
                     }`} />
                   </div>
                   <div>
@@ -618,7 +618,7 @@ useEffect(() => {
                         onClick={() => setFilterStatus("available")}
                         className={`px-3 py-1.5 rounded-full text-sm transition ${
                           filterStatus === "available"
-                            ? "bg-green-500 text-white"
+                            ? "bg-blue-500 text-white"
                             : resolvedTheme === "dark"
                               ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -684,7 +684,7 @@ useEffect(() => {
                           <div className="absolute top-3 right-3 flex gap-1.5">
                             <span className={`px-2 py-0.5 rounded-full text-xs font-medium flex items-center gap-1 ${
                               isAvailable
-                                ? "bg-green-500/90 text-white"
+                                ? "bg-blue-500/90 text-white"
                                 : "bg-orange-500/90 text-white"
                             }`}>
                               <StatusIcon className="w-3 h-3" />
@@ -791,7 +791,7 @@ useEffect(() => {
                           )}
                           <span className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-medium flex items-center gap-1 ${
                             isAvailable
-                              ? "bg-green-500/90 text-white"
+                              ? "bg-blue-500/90 text-white"
                               : "bg-orange-500/90 text-white"
                           }`}>
                             <StatusIcon className="w-3 h-3" />

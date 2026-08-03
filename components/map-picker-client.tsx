@@ -549,7 +549,7 @@ export default function MapPickerClient({
                         }}
                         className={`mt-2 w-full rounded px-3 py-1.5 text-xs font-medium transition ${
                           justConfirmed
-                            ? "bg-green-600 text-white"
+                            ? "bg-blue-600 text-white"
                             : "bg-blue-500 text-white hover:bg-blue-600"
                         }`}
                       >

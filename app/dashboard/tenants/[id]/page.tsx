@@ -239,8 +239,8 @@ export default function TenantDetailsPage() {
         return { 
           text: "Active", 
           icon: CheckCircle, 
-          className: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800",
-          color: "green"
+          className: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800",
+          color: "blue"
         };
       case "pending":
         return { 
@@ -253,8 +253,8 @@ export default function TenantDetailsPage() {
         return { 
           text: "Approved", 
           icon: CheckCircle, 
-          className: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800",
-          color: "green"
+          className: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800",
+          color: "blue"
         };
       case "rejected":
         return { 
@@ -528,7 +528,7 @@ export default function TenantDetailsPage() {
                       <p className={`text-xs ${
                         resolvedTheme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}>Monthly Rent</p>
-                      <p className={`font-medium ${isFromRequests ? 'text-orange-600 dark:text-orange-400' : 'text-green-600 dark:text-green-400'}`}>
+                      <p className={`font-medium ${isFromRequests ? 'text-orange-600 dark:text-orange-400' : 'text-blue-600 dark:text-blue-400'}`}>
                         ${displayMonthlyRent.toLocaleString()}/mo
                       </p>
                     </div>

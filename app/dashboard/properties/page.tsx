@@ -360,7 +360,7 @@ export default function PropertiesPage() {
                   label: "Available",
                   value: availableCount,
                   icon: CheckCircle,
-                  className: "text-green-600 bg-green-100 dark:bg-green-950",
+                  className: "text-blue-600 bg-blue-100 dark:bg-blue-950",
                 },
                 {
                   label: "Occupied",
@@ -476,7 +476,7 @@ export default function PropertiesPage() {
                         <span
                           className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-semibold ${
                             property.isAvailable !== false
-                              ? "bg-green-500 text-white"
+                              ? "bg-blue-500 text-white"
                               : "bg-gray-900/80 text-white"
                           }`}
                         >

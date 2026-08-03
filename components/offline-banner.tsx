@@ -72,7 +72,7 @@ export function OfflineBanner() {
 
           {/* Success indicator */}
           {showSuccess && (
-            <span className="text-[10px] text-green-300">✓</span>
+            <span className="text-[10px] text-blue-300">✓</span>
           )}
 
           {/* Dismiss Button */}

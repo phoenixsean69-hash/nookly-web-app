@@ -35,7 +35,7 @@ export function analyzeSentiment(text: string): {
 export function getSentimentBadge(sentiment: 'positive' | 'negative' | 'neutral') {
   switch (sentiment) {
     case 'positive':
-      return { text: 'Positive', icon: '😊', className: 'bg-green-100 text-green-700' };
+      return { text: 'Positive', icon: '😊', className: 'bg-blue-100 text-blue-700' };
     case 'negative':
       return { text: 'Negative', icon: '😞', className: 'bg-red-100 text-red-700' };
     default:

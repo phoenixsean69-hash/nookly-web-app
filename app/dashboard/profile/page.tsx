@@ -274,15 +274,15 @@ export default function ProfilePage() {
             {success && (
               <div className={`mb-6 border-l-4 rounded-xl overflow-hidden transition-colors duration-300 ${
                 resolvedTheme === "dark" 
-                  ? "bg-green-900/30 border-green-500" 
-                  : "bg-green-50 border-green-500"
+                  ? "bg-blue-900/30 border-blue-500" 
+                  : "bg-blue-50 border-blue-500"
               }`}>
                 <div className="p-4 flex items-center gap-2">
                   <CheckCircle className={`w-5 h-5 transition-colors duration-300 ${
-                    resolvedTheme === "dark" ? "text-green-400" : "text-green-600"
+                    resolvedTheme === "dark" ? "text-blue-400" : "text-blue-600"
                   }`} />
                   <span className={`text-sm transition-colors duration-300 ${
-                    resolvedTheme === "dark" ? "text-green-300" : "text-green-800"
+                    resolvedTheme === "dark" ? "text-blue-300" : "text-blue-800"
                   }`}>
                     {success}
                   </span>

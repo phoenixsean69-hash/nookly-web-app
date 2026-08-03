@@ -100,7 +100,7 @@ function getStatus(application: DriverReviewApplication) {
     return {
       label: "Approved",
       className:
-        "border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-300",
+        "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
       icon: BadgeCheck,
     };
   }
@@ -299,7 +299,7 @@ export default function DriverApplicationsPage() {
                   icon={CheckCircle}
                   label="Approved drivers"
                   value={counts.approved}
-                  tone="green"
+                  tone="blue"
                 />
                 <SummaryCard
                   icon={Users}
@@ -472,15 +472,15 @@ interface SummaryCardProps {
   icon: typeof Clock3;
   label: string;
   value: number;
-  tone: "amber" | "green" | "blue";
+  tone: "amber" | "blue" | "blue";
 }
 
 function SummaryCard({ icon: Icon, label, value, tone }: SummaryCardProps) {
   const styles = {
     amber:
       "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-300",
-    green:
-      "border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-950/30 dark:text-green-300",
+    blue:
+      "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900 dark:bg-blue-950/30 dark:text-blue-300",
     blue: "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900 dark:bg-blue-950/30 dark:text-blue-300",
   }[tone];
 

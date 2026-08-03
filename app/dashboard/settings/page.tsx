@@ -187,7 +187,7 @@ export default function SettingsPage() {
   const accentColors = [
     { id: "orange", label: "Orange", class: "bg-orange-500" },
     { id: "blue", label: "Blue", class: "bg-blue-500" },
-    { id: "green", label: "Green", class: "bg-green-500" },
+    { id: "blue", label: "blue", class: "bg-blue-500" },
     { id: "purple", label: "Purple", class: "bg-purple-500" },
     { id: "pink", label: "Pink", class: "bg-pink-500" },
     { id: "teal", label: "Teal", class: "bg-teal-500" },
@@ -446,15 +446,15 @@ export default function SettingsPage() {
               {success && (
                 <div className={`mb-4 sm:mb-6 p-3 sm:p-4 border-l-4 rounded-xl overflow-hidden transition-colors duration-300 ${
                   resolvedTheme === "dark" 
-                    ? "bg-green-900/30 border-green-500" 
-                    : "bg-green-50 border-green-500"
+                    ? "bg-blue-900/30 border-blue-500" 
+                    : "bg-blue-50 border-blue-500"
                 }`}>
                   <div className="flex items-center gap-2">
                     <CheckCircle className={`w-4 h-4 sm:w-5 sm:h-5 transition-colors duration-300 ${
-                      resolvedTheme === "dark" ? "text-green-400" : "text-green-600"
+                      resolvedTheme === "dark" ? "text-blue-400" : "text-blue-600"
                     }`} />
                     <span className={`text-xs sm:text-sm transition-colors duration-300 ${
-                      resolvedTheme === "dark" ? "text-green-300" : "text-green-800"
+                      resolvedTheme === "dark" ? "text-blue-300" : "text-blue-800"
                     }`}>
                       {success}
                     </span>
@@ -959,7 +959,7 @@ export default function SettingsPage() {
                                     resolvedTheme === "dark" ? "text-gray-300" : "text-gray-700"
                                   }`}>
                                     <CheckCircle className={`w-3 h-3 flex-shrink-0 ${
-                                      resolvedTheme === "dark" ? "text-green-400" : "text-green-500"
+                                      resolvedTheme === "dark" ? "text-blue-400" : "text-blue-500"
                                     }`} />
                                     {feature}
                                   </li>
@@ -980,8 +980,8 @@ export default function SettingsPage() {
                               {formData.subscriptionTier === plan.tier && (
                                 <div className={`mt-3 sm:mt-4 w-full py-1.5 sm:py-2 text-xs sm:text-sm rounded-lg text-center transition-colors duration-300 ${
                                   resolvedTheme === "dark" 
-                                    ? "bg-green-900/30 text-green-400" 
-                                    : "bg-green-100 text-green-700"
+                                    ? "bg-blue-900/30 text-blue-400" 
+                                    : "bg-blue-100 text-blue-700"
                                 }`}>
                                   Current Plan
                                 </div>
