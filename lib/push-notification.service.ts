@@ -70,6 +70,22 @@ interface SendDriverApprovedPushInput {
   organizationId: string;
 }
 
+interface SendPropertyApprovedPushInput {
+  recipientUserId: string;
+  propertyId: string;
+  propertyName: string;
+  organizationId: string;
+  organizationName: string;
+}
+
+interface SendPropertyDisapprovedPushInput {
+  recipientUserId: string;
+  propertyId: string;
+  propertyName: string;
+  organizationId: string;
+  organizationName: string;
+}
+
 function parseExecutionBody<T>(execution: FunctionExecutionLike): T {
   const statusCode = Number(execution.responseStatusCode ?? 200);
   const rawBody =
@@ -145,6 +161,72 @@ export async function sendDriverApprovedPushNotification(
       source: "nookly_web_organization",
       driverId,
       organizationId,
+    },
+  });
+}
+
+
+export async function sendPropertyApprovedPushNotification(
+  input: SendPropertyApprovedPushInput,
+): Promise<PushDeliveryResult> {
+  const recipientUserId = input.recipientUserId.trim();
+  const propertyId = input.propertyId.trim();
+  const propertyName = input.propertyName.trim() || "Your property";
+  const organizationId = input.organizationId.trim();
+  const organizationName = input.organizationName.trim() || "an organization";
+
+  if (!recipientUserId) {
+    throw new Error("The property owner does not have a valid user ID.");
+  }
+
+  if (!propertyId) {
+    throw new Error("The approved property does not have a valid ID.");
+  }
+
+  return executePushRequest<PushDeliveryResult>("/send-to-user", {
+    recipientUserId,
+    title: "Property approved ✅",
+    body: `“${propertyName}” has been approved by ${organizationName}. It can now be shown to students as organization-approved.`,
+    data: {
+      type: "property_approved",
+      source: "nookly_web_organization",
+      propertyId,
+      propertyName,
+      organizationId,
+      organizationName,
+    },
+  });
+}
+
+
+export async function sendPropertyDisapprovedPushNotification(
+  input: SendPropertyDisapprovedPushInput,
+): Promise<PushDeliveryResult> {
+  const recipientUserId = input.recipientUserId.trim();
+  const propertyId = input.propertyId.trim();
+  const propertyName = input.propertyName.trim() || "Your property";
+  const organizationId = input.organizationId.trim();
+  const organizationName = input.organizationName.trim() || "an organization";
+
+  if (!recipientUserId) {
+    throw new Error("The property owner does not have a valid user ID.");
+  }
+
+  if (!propertyId) {
+    throw new Error("The disapproved property does not have a valid ID.");
+  }
+
+  return executePushRequest<PushDeliveryResult>("/send-to-user", {
+    recipientUserId,
+    title: "Property approval removed",
+    body: `“${propertyName}” is no longer approved by ${organizationName}. The organization-approved badge has been removed.`,
+    data: {
+      type: "property_disapproved",
+      source: "nookly_web_organization",
+      propertyId,
+      propertyName,
+      organizationId,
+      organizationName,
     },
   });
 }

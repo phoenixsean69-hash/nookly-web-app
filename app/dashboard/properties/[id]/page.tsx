@@ -44,6 +44,10 @@ import {
 } from "@/lib/appwrite/helpers";
 import { cacheService } from "@/lib/cache.service";
 import { CACHE_KEYS } from "@/lib/cache-keys";
+import {
+  sendPropertyApprovedPushNotification,
+  sendPropertyDisapprovedPushNotification,
+} from "@/lib/push-notification.service";
 import type { Property } from "@/types/property";
 import type { Tenant } from "@/types/tenant";
 
@@ -337,6 +341,7 @@ export default function PropertyDetailsPage() {
   const [showDelete, setShowDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [approving, setApproving] = useState(false);
+  const [disapproving, setDisapproving] = useState(false);
 
   const loadData = useCallback(async () => {
     if (!organization || !propertyId) return;
@@ -528,7 +533,44 @@ export default function PropertyDetailsPage() {
       cacheService.remove(CACHE_KEYS.PROPERTIES);
       cacheService.remove(CACHE_KEYS.PROPERTY(property.$id));
 
-      toast.success("Property approved successfully.");
+      let landlordNotified = false;
+
+      try {
+        const delivery = await sendPropertyApprovedPushNotification({
+          recipientUserId: verifiedDocument.creatorId || property.creatorId,
+          propertyId: verifiedDocument.$id || property.$id,
+          propertyName:
+            verifiedDocument.propertyName || property.propertyName,
+          organizationId: organization.$id,
+          organizationName: organization.name,
+        });
+
+        landlordNotified = delivery.accepted > 0;
+
+        if (!landlordNotified) {
+          console.warn(
+            "Property approval was saved, but no landlord push notification was accepted.",
+            delivery,
+          );
+        }
+      } catch (pushError) {
+        console.error(
+          "Property approval was saved, but landlord notification failed:",
+          pushError,
+        );
+      }
+
+      toast.success(
+        landlordNotified
+          ? "Property approved and landlord notified."
+          : "Property approved successfully.",
+      );
+
+      if (!landlordNotified) {
+        toast.error(
+          "The property was approved, but the landlord push notification was not delivered.",
+        );
+      }
     } catch (error) {
       console.error("Unable to approve property:", error);
 
@@ -549,6 +591,132 @@ export default function PropertyDetailsPage() {
       );
     } finally {
       setApproving(false);
+    }
+  };
+
+  const disapproveProperty = async () => {
+    const currentlyApproved = property?.organizationApproved === true;
+
+    if (!organization || !property || isOwner || !currentlyApproved) {
+      return;
+    }
+
+    if (!navigator.onLine) {
+      toast.error("Connect to the internet before disapproving this property.");
+      return;
+    }
+
+    if (!isWithinUsProperty(property, organization.city || "")) {
+      toast.error(
+        "This property is not eligible for review by your organization.",
+      );
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Disapprove "${property.propertyName}"? This will remove the organization-approved badge for students.`,
+    );
+
+    if (!confirmed) return;
+
+    setDisapproving(true);
+
+    try {
+      await databases.updateDocument(
+        databaseId,
+        propertiesCollectionId,
+        property.$id,
+        {
+          organizationApproved: false,
+        },
+      );
+
+      const verifiedDocument = (await databases.getDocument(
+        databaseId,
+        propertiesCollectionId,
+        property.$id,
+      )) as unknown as Property;
+
+      const disapprovedInDatabase =
+        verifiedDocument.organizationApproved === false;
+
+      setProperty((current) =>
+        current
+          ? {
+              ...current,
+              organizationApproved: disapprovedInDatabase ? false : true,
+              $updatedAt: verifiedDocument.$updatedAt || current.$updatedAt,
+            }
+          : current,
+      );
+
+      if (!disapprovedInDatabase) {
+        throw new Error(
+          "Appwrite did not save the disapproval. The property is still approved.",
+        );
+      }
+
+      cacheService.remove(CACHE_KEYS.PROPERTIES);
+      cacheService.remove(CACHE_KEYS.PROPERTY(property.$id));
+
+      let landlordNotified = false;
+
+      try {
+        const delivery = await sendPropertyDisapprovedPushNotification({
+          recipientUserId: verifiedDocument.creatorId || property.creatorId,
+          propertyId: verifiedDocument.$id || property.$id,
+          propertyName:
+            verifiedDocument.propertyName || property.propertyName,
+          organizationId: organization.$id,
+          organizationName: organization.name,
+        });
+
+        landlordNotified = delivery.accepted > 0;
+
+        if (!landlordNotified) {
+          console.warn(
+            "Property disapproval was saved, but no landlord push notification was accepted.",
+            delivery,
+          );
+        }
+      } catch (pushError) {
+        console.error(
+          "Property disapproval was saved, but landlord notification failed:",
+          pushError,
+        );
+      }
+
+      toast.success(
+        landlordNotified
+          ? "Property disapproved and landlord notified."
+          : "Property disapproved successfully.",
+      );
+
+      if (!landlordNotified) {
+        toast.error(
+          "The property was disapproved, but the landlord push notification was not delivered.",
+        );
+      }
+    } catch (error) {
+      console.error("Unable to disapprove property:", error);
+
+      const errorCode =
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        typeof (error as { code?: unknown }).code === "number"
+          ? (error as { code: number }).code
+          : null;
+
+      toast.error(
+        errorCode === 401 || errorCode === 403
+          ? "Your Appwrite permissions do not allow this organization to disapprove the property."
+          : error instanceof Error
+            ? error.message
+            : "Failed to disapprove the property.",
+      );
+    } finally {
+      setDisapproving(false);
     }
   };
 
@@ -718,7 +886,7 @@ export default function PropertyDetailsPage() {
                     <button
                       type="button"
                       onClick={() => void approveProperty()}
-                      disabled={approving || isOrganizationApproved}
+                      disabled={approving || disapproving || isOrganizationApproved}
                       className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold shadow-sm transition disabled:cursor-not-allowed ${
                         isOrganizationApproved
                           ? "border border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
@@ -736,6 +904,24 @@ export default function PropertyDetailsPage() {
                           ? "Organization approved"
                           : "Approve property"}
                     </button>
+
+                    {isOrganizationApproved && (
+                      <button
+                        type="button"
+                        onClick={() => void disapproveProperty()}
+                        disabled={approving || disapproving}
+                        className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {disapproving ? (
+                          <LoaderCircle className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <X className="h-4 w-4" />
+                        )}
+                        {disapproving
+                          ? "Disapproving…"
+                          : "Disapprove property"}
+                      </button>
+                    )}
 
                     <div className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-600 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
                       <Eye className="h-4 w-4" />
@@ -755,8 +941,9 @@ export default function PropertyDetailsPage() {
                     <p className="mt-1 text-sm leading-6 text-blue-700 dark:text-blue-300">
                       This property is visible through Within Us because it is
                       located in your organization&apos;s city. You can review
-                      the complete listing information and approve the property
-                      for students. Edit and delete controls remain with the
+                      the complete listing information and approve or
+                      disapprove the property for students. Edit and delete
+                      controls remain with the
                       organization that owns it.
                     </p>
                   </div>
