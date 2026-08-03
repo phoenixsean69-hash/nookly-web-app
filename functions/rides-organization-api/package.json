@@ -1,9 +1,0 @@
-{
-  "name": "nookly-rides-organization-api",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "node-appwrite": "^26.2.0"
-  }
-}
