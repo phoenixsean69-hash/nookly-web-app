@@ -119,6 +119,18 @@ export function Sidebar() {
 
   const dark = resolvedTheme === "dark";
 
+  const visibleNavigationItems = useMemo(
+    () =>
+      navigationItems.filter((item) => {
+        const isSchoolOnlyItem =
+          item.href === "/dashboard/drivers" ||
+          item.href === "/dashboard/within-us";
+
+        return !isSchoolOnlyItem || organization?.type_of === "school";
+      }),
+    [organization?.type_of],
+  );
+
   useEffect(() => {
     const updateDeviceMode = () => {
       const mobile = window.innerWidth < 768;
@@ -317,7 +329,7 @@ export function Sidebar() {
         )}
 
         <nav className="flex-1 space-y-1 overflow-y-auto px-2 py-4">
-          {navigationItems.map((item) => {
+          {visibleNavigationItems.map((item) => {
             const Icon = item.icon;
             const active =
               pathname === item.href ||
@@ -420,7 +432,7 @@ export function Sidebar() {
                 disabled={isLoggingOut}
                 className="flex-1 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
               >
-                {isLoggingOut ? "Signing out…" : "Sign out"}
+                {isLoggingOut ? "Signing outâ€¦" : "Sign out"}
               </button>
             </div>
           </div>
