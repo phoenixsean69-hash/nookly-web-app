@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   AlertTriangle,
@@ -36,7 +36,6 @@ import {
   getDriverStoredFileUrl,
   isDriverApplicationApproved,
 } from "@/lib/driver-review.service";
-import { sendDriverApprovedPushNotification } from "@/lib/push-notification.service";
 import type {
   DriverReviewApplication,
   DriverReviewVehicle,
@@ -198,38 +197,7 @@ export default function DriverApplicationDetailsPage() {
       );
       setApplication(result);
       setShowApproveDialog(false);
-
-      try {
-        const pushResult = await sendDriverApprovedPushNotification({
-          recipientUserId: result.profile.userId,
-          driverId: result.profile.$id,
-          organizationId: result.institution.organizationId,
-        });
-
-        if (pushResult.accepted > 0) {
-          toast.success(
-            `${result.profile.name} is approved and has been notified.`,
-          );
-        } else {
-          toast.success(`${result.profile.name} is now an approved driver.`);
-          toast.error(
-            pushResult.message ||
-              "The driver has no active device token, so no push was delivered.",
-          );
-        }
-      } catch (pushError) {
-        console.error(
-          "Driver approval succeeded, but push notification failed:",
-          pushError,
-        );
-        toast.success(`${result.profile.name} is now an approved driver.`);
-        toast.error(
-          pushError instanceof Error
-            ? `Approval succeeded, but notification failed: ${pushError.message}`
-            : "Approval succeeded, but the driver notification could not be sent.",
-        );
-      }
-
+      toast.success(`${result.profile.name} is now an approved driver.`);
       window.dispatchEvent(new CustomEvent("driverApplicationsUpdated"));
     } catch (error) {
       console.error("Unable to approve driver:", error);
@@ -256,7 +224,7 @@ export default function DriverApplicationDetailsPage() {
               <div className="text-center">
                 <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent-500)] dark:border-gray-700" />
                 <p className="mt-4 text-sm text-gray-500">
-                  Loading driver applicationâ€¦
+                  Loading driver application…
                 </p>
               </div>
             </div>
@@ -575,7 +543,7 @@ export default function DriverApplicationDetailsPage() {
               <p className="font-semibold">{profile.name}</p>
               <p className="mt-1 text-gray-500 dark:text-gray-400">
                 {primaryVehicle
-                  ? `${primaryVehicle.make} ${primaryVehicle.model} Â· ${primaryVehicle.registrationNumber}`
+                  ? `${primaryVehicle.make} ${primaryVehicle.model} · ${primaryVehicle.registrationNumber}`
                   : "No vehicle submitted"}
               </p>
             </div>
@@ -600,7 +568,7 @@ export default function DriverApplicationDetailsPage() {
                 ) : (
                   <CheckCircle className="h-4 w-4" />
                 )}
-                {approving ? "Approvingâ€¦" : "Confirm approval"}
+                {approving ? "Approving…" : "Confirm approval"}
               </button>
             </div>
           </div>
@@ -699,7 +667,7 @@ function VehicleSection({ vehicle }: { vehicle: DriverReviewVehicle | null }) {
             Vehicle review
           </h2>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            {vehicle.make} {vehicle.model} Â· {vehicle.registrationNumber}
+            {vehicle.make} {vehicle.model} · {vehicle.registrationNumber}
           </p>
         </div>
 
@@ -803,4 +771,3 @@ function ApprovalCheck({ complete, label }: { complete: boolean; label: string }
     </div>
   );
 }
-
