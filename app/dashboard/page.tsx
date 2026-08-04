@@ -455,8 +455,12 @@ const processPropertiesData = (
   // A request has been responded to only after it is approved or rejected.
   const totalRequestCount = allRequests.length;
   const respondedRequestCount = allRequests.filter((request) => {
-    const status = String(request.status ?? "pending").toLowerCase();
-    return status === "approved" || status === "rejected";
+    const status = String(request?.status ?? "").trim().toLowerCase();
+    return (
+      status === "accepted" ||
+      status === "approved" ||
+      status === "rejected"
+    );
   }).length;
 
   const responseRate =
@@ -794,7 +798,22 @@ const getRelativeTime = (dateString: string) => {
     }
   };
 
-  // 🔥 STAT CARDS - Now using requestsByProperty state
+  const dashboardRequests = Object.values(requestsByProperty).flat();
+const dashboardRespondedRequests = dashboardRequests.filter((request) => {
+  const status = String(request?.status ?? "").trim().toLowerCase();
+  return (
+    status === "accepted" ||
+    status === "approved" ||
+    status === "rejected"
+  );
+}).length;
+
+const responseRateDescription =
+  dashboardRequests.length > 0
+    ? `${dashboardRespondedRequests} of ${dashboardRequests.length} ${dashboardRequests.length === 1 ? "enquiry" : "enquiries"} responded`
+    : "No rental enquiries yet";
+
+// 🔥 STAT CARDS - Now using requestsByProperty state
 const statCards = [
   {
     id: "totalProperties",
@@ -885,7 +904,7 @@ const statCards = [
     icon: MessageCircle,
     color: "teal",
     trend: getTrend("responseRate"),
-    description: "Answered rental requests",
+    description: responseRateDescription,
     properties: allProperties.map((p: Property) => {
       const requestCount = requestsByProperty[p.$id]?.length || 0;
       return {

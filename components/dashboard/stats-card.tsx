@@ -501,6 +501,9 @@ export function StatsCard({
               >
                 {responseBadge.label}
               </span>
+              <p className="mt-2 text-sm leading-5 text-slate-600 dark:text-slate-300">
+                {resolvedDescription}
+              </p>
             </div>
           ) : trend ? (
             <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
