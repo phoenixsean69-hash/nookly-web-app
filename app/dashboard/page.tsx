@@ -1,6 +1,10 @@
 "use client";
 
-import { updateOrganizationPropertyCount } from "@/lib/appwrite/helpers";
+import {
+  listOrganizationProperties,
+  listOrganizationRequests,
+  updateOrganizationPropertyCount,
+} from "@/lib/appwrite/helpers";
 import { cacheService } from "@/lib/cache.service";
 import { useRouter } from "next/navigation";
 import { CACHE_KEYS } from "@/lib/cache-keys";
@@ -65,6 +69,8 @@ interface DashboardStats {
   occupiedListings: number; 
   activeListings: number;
   totalTenants: number;
+  totalSlots: number;
+  occupiedSlots: number;
   monthlyRevenue: number;
   totalViews: number;
   occupancyRate: number;
@@ -99,8 +105,69 @@ interface Task {
   propertyName?: string;
 }
 
-// Cache key for historical stats
-const HISTORICAL_STATS_KEY = 'dashboard_historical_stats';
+interface DashboardRequest {
+  $id: string;
+  $createdAt: string;
+  $updatedAt?: string;
+  propertyId: string;
+  propertyName?: string;
+  status?: "pending" | "approved" | "rejected" | string;
+}
+
+interface PropertySlotSnapshot {
+  total: number;
+  occupied: number;
+  available: number;
+}
+
+function toNonNegativeInteger(value: unknown, fallback = 0): number {
+  const parsed = Math.floor(Number(value));
+  return Number.isFinite(parsed) ? Math.max(0, parsed) : fallback;
+}
+
+function getPropertySlotSnapshot(property: Property): PropertySlotSnapshot {
+  const legacyCapacity = Math.max(
+    1,
+    toNonNegativeInteger(property.roomFor, 1),
+  );
+
+  const total = Math.max(
+    1,
+    toNonNegativeInteger(property.totalSlots, legacyCapacity),
+  );
+
+  let occupied: number;
+
+  if (property.occupiedSlots !== undefined && property.occupiedSlots !== null) {
+    occupied = Math.min(
+      total,
+      toNonNegativeInteger(property.occupiedSlots),
+    );
+  } else if (
+    property.availableSlots !== undefined &&
+    property.availableSlots !== null
+  ) {
+    const available = Math.min(
+      total,
+      toNonNegativeInteger(property.availableSlots),
+    );
+    occupied = total - available;
+  } else {
+    occupied = property.isAvailable === false ? total : 0;
+  }
+
+  return {
+    total,
+    occupied,
+    available: Math.max(0, total - occupied),
+  };
+}
+
+function getHistoricalStatsKey(organizationId?: string): string | null {
+  return organizationId
+    ? `dashboard_historical_stats_${organizationId}`
+    : null;
+}
 
 export default function DashboardPage() {
   const { organization, isOffline } = useAuth();
@@ -110,6 +177,8 @@ export default function DashboardPage() {
   activeListings: 0,
   occupiedListings: 0, 
   totalTenants: 0,
+  totalSlots: 0,
+  occupiedSlots: 0,
   monthlyRevenue: 0,
   totalViews: 0,
   occupancyRate: 0,
@@ -117,7 +186,9 @@ export default function DashboardPage() {
   satisfactionScore: 0,
 });
   const [allProperties, setAllProperties] = useState<Property[]>([]);
-  const [requestsByProperty, setRequestsByProperty] = useState<{ [key: string]: any[] }>({});
+  const [requestsByProperty, setRequestsByProperty] = useState<
+    Record<string, DashboardRequest[]>
+  >({});
   const [trends, setTrends] = useState<Record<string, StatTrend>>({});
   const [recentProperties, setRecentProperties] = useState<Property[]>([]);
   const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([]);
@@ -284,37 +355,45 @@ export default function DashboardPage() {
   };
 
   // Save current stats as historical data
-const saveHistoricalStats = (currentStats: DashboardStats) => {
-  const historicalData: HistoricalStats = {
-    date: new Date().toISOString(),
-    totalProperties: currentStats.totalProperties,
-    activeListings: currentStats.activeListings,
-    occupiedListings: currentStats.occupiedListings, // ← ADD THIS
-    totalViews: currentStats.totalViews,
-    monthlyRevenue: currentStats.monthlyRevenue,
-    occupancyRate: currentStats.occupancyRate,
-    responseRate: currentStats.responseRate, // ← ADD THIS
-    satisfactionScore: currentStats.satisfactionScore, // ← ADD THIS
+  const saveHistoricalStats = (currentStats: DashboardStats) => {
+    const key = getHistoricalStatsKey(organization?.$id);
+    if (!key) return;
+
+    const historicalData: HistoricalStats = {
+      date: new Date().toISOString(),
+      totalProperties: currentStats.totalProperties,
+      activeListings: currentStats.activeListings,
+      occupiedListings: currentStats.occupiedListings,
+      totalViews: currentStats.totalViews,
+      monthlyRevenue: currentStats.monthlyRevenue,
+      occupancyRate: currentStats.occupancyRate,
+      responseRate: currentStats.responseRate,
+      satisfactionScore: currentStats.satisfactionScore,
+    };
+
+    cacheService.set(key, historicalData, 30 * 24 * 60 * 60 * 1000);
+    setHistoricalStats(historicalData);
   };
-  
-  cacheService.set(HISTORICAL_STATS_KEY, historicalData, 30 * 24 * 60 * 60 * 1000);
-  setHistoricalStats(historicalData);
-};
 
   // Load historical stats from cache
   const loadHistoricalStats = (): HistoricalStats | null => {
-    return cacheService.get<HistoricalStats>(HISTORICAL_STATS_KEY) || null;
+    const key = getHistoricalStatsKey(organization?.$id);
+    return key ? cacheService.get<HistoricalStats>(key) : null;
   };
 
   // Function to process and set dashboard data from properties
 
-const processPropertiesData = (allProperties: Property[], tasks: Task[] = [], allRequests: any[] = []) => {
+const processPropertiesData = (
+  allProperties: Property[],
+  tasks: Task[] = [],
+  allRequests: DashboardRequest[] = [],
+) => {
   setAllProperties(allProperties);
   
   const properties = allProperties.slice(0, 5);
   setRecentProperties(properties);
 
-  const requestsByProperty: { [key: string]: any[] } = {};
+  const requestsByProperty: Record<string, DashboardRequest[]> = {};
   allRequests.forEach((req) => {
     const propertyId = req.propertyId;
     if (!requestsByProperty[propertyId]) {
@@ -332,62 +411,59 @@ const processPropertiesData = (allProperties: Property[], tasks: Task[] = [], al
   setUpcomingTasks(pendingTasks);
 
   const total = allProperties.length;
-  const active = allProperties.filter((p: Property) => p.isAvailable === true).length;
-  const occupied = total - active;
-  const totalViews = allProperties.reduce((sum, p) => sum + (p.views || 0), 0);
-  const occupancyRate = total > 0 ? Math.round((occupied / total) * 100) : 0;
-  const totalTenants = allProperties.reduce((sum, p) => sum + (p.roomFor || 0), 0);
-  
-  // 🔥 FIX: Revenue only from occupied properties
-  const monthlyRevenue = allProperties
-    .filter((p: Property) => p.isAvailable === false)
-    .reduce((sum, p) => sum + (p.price || 0), 0);
-  
-  // -------- CALCULATE RESPONSE RATE --------
-  let responseRate = 100;
-  let totalWeightedScore = 0;
-  let totalRequestCount = 0;
-  
-  allProperties.forEach((p: Property) => {
-    const propertyRequests = requestsByProperty[p.$id] || [];
-    const requestCount = propertyRequests.length;
-    
-    if (requestCount > 0) {
-      const earliestRequest = propertyRequests.reduce((earliest, current) => {
-        const currentDate = new Date(current.$createdAt);
-        return currentDate < earliest ? currentDate : earliest;
-      }, new Date(propertyRequests[0].$createdAt));
-      
-      const createdAt = new Date(p.$createdAt);
-      const timeDiffMs = earliestRequest.getTime() - createdAt.getTime();
-      const timeDiffDays = timeDiffMs / (1000 * 60 * 60 * 24);
-      
-      let score = 0;
-      if (timeDiffDays <= 1) {
-        score = 100;
-      } else if (timeDiffDays <= 3) {
-        score = 90;
-      } else if (timeDiffDays <= 7) {
-        score = 80;
-      } else if (timeDiffDays <= 14) {
-        score = 70;
-      } else if (timeDiffDays <= 30) {
-        score = 60;
-      } else if (timeDiffDays <= 60) {
-        score = 40;
-      } else {
-        score = 20;
-      }
-      
-      totalWeightedScore += score * requestCount;
-      totalRequestCount += requestCount;
-    }
-  });
-  
-  if (totalRequestCount > 0) {
-    responseRate = Math.round(totalWeightedScore / totalRequestCount);
-  }
-  
+  const slotSnapshots = allProperties.map(getPropertySlotSnapshot);
+
+  const totalSlots = slotSnapshots.reduce(
+    (sum, snapshot) => sum + snapshot.total,
+    0,
+  );
+  const occupiedSlots = slotSnapshots.reduce(
+    (sum, snapshot) => sum + snapshot.occupied,
+    0,
+  );
+
+  // Available listings can still accept at least one tenant.
+  const active = slotSnapshots.filter(
+    (snapshot) => snapshot.available > 0,
+  ).length;
+
+  // Occupied listings are completely full and cannot accept another tenant.
+  const occupied = slotSnapshots.filter(
+    (snapshot) => snapshot.available === 0,
+  ).length;
+
+  const totalViews = allProperties.reduce(
+    (sum, property) => sum + toNonNegativeInteger(property.views),
+    0,
+  );
+
+  const occupancyRate =
+    totalSlots > 0
+      ? Math.round((occupiedSlots / totalSlots) * 100)
+      : 0;
+
+  // This represents people/slots currently occupied, not property capacity.
+  const totalTenants = occupiedSlots;
+
+  // Count rent once for each property that currently has at least one occupant.
+  const monthlyRevenue = allProperties.reduce((sum, property, index) => {
+    if (slotSnapshots[index].occupied <= 0) return sum;
+    const price = Number(property.price);
+    return sum + (Number.isFinite(price) ? Math.max(0, price) : 0);
+  }, 0);
+
+  // A request has been responded to only after it is approved or rejected.
+  const totalRequestCount = allRequests.length;
+  const respondedRequestCount = allRequests.filter((request) => {
+    const status = String(request.status ?? "pending").toLowerCase();
+    return status === "approved" || status === "rejected";
+  }).length;
+
+  const responseRate =
+    totalRequestCount > 0
+      ? Math.round((respondedRequestCount / totalRequestCount) * 100)
+      : 0;
+
   // -------- CALCULATE SATISFACTION SCORE --------
   let satisfactionScore = 4.5;
   let totalScore = 0;
@@ -430,6 +506,8 @@ const processPropertiesData = (allProperties: Property[], tasks: Task[] = [], al
     activeListings: active,
     occupiedListings: occupied,
     totalTenants: totalTenants,
+    totalSlots: totalSlots,
+    occupiedSlots: occupiedSlots,
     monthlyRevenue: monthlyRevenue,
     totalViews: totalViews,
     occupancyRate: occupancyRate,
@@ -515,82 +593,89 @@ const processPropertiesData = (allProperties: Property[], tasks: Task[] = [], al
 
   // Function to fetch fresh data from server
   const fetchDashboardData = async () => {
+    if (!organization?.userId || !organization.$id) {
+      setIsLoading(false);
+      return;
+    }
+
+    const propertyCacheKey = CACHE_KEYS.organizationProperties(organization.$id);
+    const taskCacheKey = CACHE_KEYS.organizationTasks(organization.$id);
+    const requestCacheKey = CACHE_KEYS.organizationRequests(organization.$id);
+
     if (!navigator.onLine) {
-      console.log('📴 Offline - using cached dashboard data');
-      const cachedProperties = cacheService.get<Property[]>(CACHE_KEYS.PROPERTIES);
-      const cachedTasks = cacheService.get<Task[]>(CACHE_KEYS.TASKS);
-      const cachedRequests = cacheService.get<any[]>(CACHE_KEYS.REQUESTS);
-      
+      console.log("📴 Offline - using cached dashboard data");
+
+      const cachedProperties =
+        cacheService.get<Property[]>(propertyCacheKey);
+      const cachedTasks = cacheService.get<Task[]>(taskCacheKey);
+      const cachedRequests =
+        cacheService.get<DashboardRequest[]>(requestCacheKey);
+
       if (cachedProperties) {
-        processPropertiesData(cachedProperties, cachedTasks || [], cachedRequests || []);
+        processPropertiesData(
+          cachedProperties,
+          cachedTasks || [],
+          cachedRequests || [],
+        );
       }
+
       setIsLoading(false);
       return;
     }
 
     try {
-      if (!organization?.userId) {
-        setIsLoading(false);
-        return;
-      }
-
-      const propertiesResponse = await databases.listDocuments(
-        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-        process.env.NEXT_PUBLIC_APPWRITE_PROPERTIES_COLLECTION_ID!,
-        [
-          Query.equal("creatorId", organization.userId),
-          Query.orderDesc("$createdAt"),
-        ],
-      );
-
-      const tasksResponse = await databases.listDocuments(
-        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-        process.env.NEXT_PUBLIC_APPWRITE_TASKS_COLLECTION_ID!,
-        [
-          Query.equal("organizationId", organization.$id),
-          Query.orderAsc("dueDate"),
-          Query.limit(20),
-        ],
-      );
-
-      const propertyIds = propertiesResponse.documents.map((p: any) => p.$id);
-      let allRequests: any[] = [];
-      
-      if (propertyIds.length > 0) {
-        try {
-          const requestsResponse = await databases.listDocuments(
+      const [propertyDocuments, tasksResponse, requestDocuments] =
+        await Promise.all([
+          listOrganizationProperties(organization.userId, [
+            Query.orderDesc("$createdAt"),
+          ]),
+          databases.listDocuments(
             process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-            process.env.NEXT_PUBLIC_APPWRITE_REQUESTS_COLLECTION_ID!,
+            process.env.NEXT_PUBLIC_APPWRITE_TASKS_COLLECTION_ID!,
             [
-              Query.equal("propertyId", propertyIds),
-              Query.orderDesc("$createdAt"),
-            ]
-          );
-          allRequests = requestsResponse.documents || [];
-        } catch (error) {
-          console.error("Error fetching requests:", error);
-          allRequests = [];
-        }
-      }
+              Query.equal("organizationId", organization.$id),
+              Query.orderAsc("dueDate"),
+              Query.limit(1000),
+            ],
+          ),
+          listOrganizationRequests(organization.userId),
+        ]);
 
-      const allProperties = propertiesResponse.documents as unknown as Property[];
+      const allProperties =
+        propertyDocuments as unknown as Property[];
       const tasks = tasksResponse.documents as unknown as Task[];
-      
-      cacheService.set(CACHE_KEYS.PROPERTIES, allProperties, 5 * 60 * 1000);
-      cacheService.set(CACHE_KEYS.TASKS, tasks, 5 * 60 * 1000);
-      cacheService.set(CACHE_KEYS.REQUESTS, allRequests, 5 * 60 * 1000);
-      
+      const allRequests =
+        requestDocuments as unknown as DashboardRequest[];
+
+      cacheService.set(
+        propertyCacheKey,
+        allProperties,
+        5 * 60 * 1000,
+      );
+      cacheService.set(taskCacheKey, tasks, 5 * 60 * 1000);
+      cacheService.set(
+        requestCacheKey,
+        allRequests,
+        5 * 60 * 1000,
+      );
+
       processPropertiesData(allProperties, tasks, allRequests);
-      
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
-      const cachedProperties = cacheService.get<Property[]>(CACHE_KEYS.PROPERTIES);
-      const cachedTasks = cacheService.get<Task[]>(CACHE_KEYS.TASKS);
-      const cachedRequests = cacheService.get<any[]>(CACHE_KEYS.REQUESTS);
-      
+
+      const cachedProperties =
+        cacheService.get<Property[]>(propertyCacheKey);
+      const cachedTasks = cacheService.get<Task[]>(taskCacheKey);
+      const cachedRequests =
+        cacheService.get<DashboardRequest[]>(requestCacheKey);
+
       if (cachedProperties) {
-        processPropertiesData(cachedProperties, cachedTasks || [], cachedRequests || []);
-        console.log('📦 Using cached dashboard data due to error');
+        processPropertiesData(
+          cachedProperties,
+          cachedTasks || [],
+          cachedRequests || [],
+        );
+        console.log("📦 Using cached dashboard data due to error");
       }
     } finally {
       setIsLoading(false);
@@ -603,39 +688,55 @@ const processPropertiesData = (allProperties: Property[], tasks: Task[] = [], al
     let isMounted = true;
 
     const loadData = async () => {
+      if (!organization?.$id) {
+        if (isMounted) setIsLoading(false);
+        return;
+      }
+
       const prevStats = loadHistoricalStats();
       if (prevStats) {
         setHistoricalStats(prevStats);
       }
 
-      const cachedProperties = cacheService.get<Property[]>(CACHE_KEYS.PROPERTIES);
-      const cachedTasks = cacheService.get<Task[]>(CACHE_KEYS.TASKS);
-      
-      if (cachedProperties && cachedProperties.length > 0) {
-        console.log('📦 Loading dashboard data from cache');
-        processPropertiesData(cachedProperties, cachedTasks || []);
+      const propertyCacheKey =
+        CACHE_KEYS.organizationProperties(organization.$id);
+      const taskCacheKey =
+        CACHE_KEYS.organizationTasks(organization.$id);
+      const requestCacheKey =
+        CACHE_KEYS.organizationRequests(organization.$id);
+
+      const cachedProperties =
+        cacheService.get<Property[]>(propertyCacheKey);
+      const cachedTasks = cacheService.get<Task[]>(taskCacheKey);
+      const cachedRequests =
+        cacheService.get<DashboardRequest[]>(requestCacheKey);
+
+      if (cachedProperties) {
+        console.log("📦 Loading dashboard data from cache");
+        processPropertiesData(
+          cachedProperties,
+          cachedTasks || [],
+          cachedRequests || [],
+        );
+
         if (isMounted) {
           setIsLoading(false);
         }
       }
-      
-      if (navigator.onLine && organization?.userId) {
-        console.log('🔄 Refreshing dashboard data from server');
+
+      if (navigator.onLine && organization.userId) {
+        console.log("🔄 Refreshing dashboard data from server");
         await fetchDashboardData();
       } else if (!navigator.onLine && cachedProperties) {
-        console.log('📴 Offline mode - using cached dashboard data');
-        if (isMounted) {
-          setIsLoading(false);
-        }
+        console.log("📴 Offline mode - using cached dashboard data");
+        if (isMounted) setIsLoading(false);
       } else if (!navigator.onLine && !cachedProperties) {
-        console.log('📴 Offline mode - no cached data available');
-        if (isMounted) {
-          setIsLoading(false);
-        }
+        console.log("📴 Offline mode - no cached data available");
+        if (isMounted) setIsLoading(false);
       }
     };
 
-    loadData();
+    void loadData();
 
     return () => {
       isMounted = false;
@@ -710,6 +811,9 @@ const statCards = [
       likes: p.likes || 0,
       requests: p.requests || 0,
       isAvailable: p.isAvailable,
+      totalSlots: p.totalSlots,
+      occupiedSlots: p.occupiedSlots,
+      availableSlots: p.availableSlots,
     })),
   },
   {
@@ -719,7 +823,7 @@ const statCards = [
     icon: Home,
     color: "purple",
     trend: getTrend("occupiedListings"),
-    description: `${stats.occupiedListings || 0} properties currently rented`,
+    description: `${stats.occupiedListings || 0} fully occupied properties`,
     properties: allProperties
       .filter((p: Property) => p.isAvailable === false)
       .map((p: Property) => ({
@@ -729,6 +833,9 @@ const statCards = [
         likes: p.likes || 0,
         requests: p.requests || 0,
         isAvailable: p.isAvailable,
+      totalSlots: p.totalSlots,
+      occupiedSlots: p.occupiedSlots,
+      availableSlots: p.availableSlots,
       })),
   },
   {
@@ -757,7 +864,7 @@ const statCards = [
     icon: Target,
     color: "cyan",
     trend: getTrend("occupancyRate"),
-    description: `${stats.occupiedListings || 0} of ${stats.totalProperties} occupied`,
+    description: `${stats.occupiedSlots} of ${stats.totalSlots} slots occupied`,
     properties: allProperties.map((p: Property) => ({
       $id: p.$id,
       propertyName: p.propertyName,
@@ -765,6 +872,9 @@ const statCards = [
       likes: p.likes || 0,
       requests: p.requests || 0,
       isAvailable: p.isAvailable,
+      totalSlots: p.totalSlots,
+      occupiedSlots: p.occupiedSlots,
+      availableSlots: p.availableSlots,
       status: p.isAvailable ? 'Available' : 'Occupied',
     })),
   },
@@ -775,7 +885,7 @@ const statCards = [
     icon: MessageCircle,
     color: "teal",
     trend: getTrend("responseRate"),
-    description: "Inquiry response rate",
+    description: "Answered rental requests",
     properties: allProperties.map((p: Property) => {
       const requestCount = requestsByProperty[p.$id]?.length || 0;
       return {
@@ -892,6 +1002,7 @@ const statCards = [
                       color={stat.color}
                       statId={stat.id}
                       properties={stat.properties}
+                      description={stat.description}
                     />
                   );
                 })}

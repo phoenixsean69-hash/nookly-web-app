@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useId, useMemo, useState } from "react";
+import { useId, useMemo } from "react";
 import type { ReactNode } from "react";
 
-import { CACHE_KEYS } from "@/lib/cache-keys";
-import { cacheService } from "@/lib/cache.service";
 
 interface StatsProperty {
   $id?: string;
@@ -17,6 +15,9 @@ interface StatsProperty {
   status?: string;
   responseRate?: number;
   isAvailable?: boolean;
+  totalSlots?: number;
+  occupiedSlots?: number;
+  availableSlots?: number;
 }
 
 interface StatsCardProps {
@@ -34,10 +35,6 @@ interface StatsCardProps {
   actions?: ReactNode;
 }
 
-interface CachedProperty {
-  $id?: string;
-  isAvailable?: boolean;
-}
 
 type CardTone = "blue" | "purple" | "orange" | "cyan";
 type BadgeTone = "success" | "warning" | "danger" | "neutral";
@@ -120,6 +117,47 @@ function clampPercentage(value: number): number {
   return Math.min(100, Math.max(0, value));
 }
 
+function toNonNegativeInteger(value: unknown, fallback = 0): number {
+  const parsed = Math.floor(Number(value));
+  return Number.isFinite(parsed) ? Math.max(0, parsed) : fallback;
+}
+
+function getPropertySlots(property: StatsProperty) {
+  const legacyCapacity = Math.max(
+    1,
+    toNonNegativeInteger(property.totalSlots, 1),
+  );
+  const total = Math.max(
+    1,
+    toNonNegativeInteger(property.totalSlots, legacyCapacity),
+  );
+
+  let occupied: number;
+
+  if (property.occupiedSlots !== undefined && property.occupiedSlots !== null) {
+    occupied = Math.min(
+      total,
+      toNonNegativeInteger(property.occupiedSlots),
+    );
+  } else if (
+    property.availableSlots !== undefined &&
+    property.availableSlots !== null
+  ) {
+    occupied = total - Math.min(
+      total,
+      toNonNegativeInteger(property.availableSlots),
+    );
+  } else {
+    occupied = property.isAvailable === false ? total : 0;
+  }
+
+  return {
+    total,
+    occupied,
+    available: Math.max(0, total - occupied),
+  };
+}
+
 function getTone(statId?: string, fallbackColor?: string): CardTone {
   switch (statId) {
     case "occupiedListings":
@@ -153,7 +191,7 @@ function getResponseBadge(rate: number): {
   if (rate >= 70) return { label: "Good", tone: "success" };
   if (rate >= 50) return { label: "Moderate", tone: "warning" };
   if (rate > 0) return { label: "Low", tone: "danger" };
-  return { label: "No enquiries yet", tone: "neutral" };
+  return { label: "No responses yet", tone: "neutral" };
 }
 
 function CardArtwork({
@@ -345,15 +383,7 @@ export function StatsCard({
   const tone = getTone(statId, color);
   const styles = toneStyles[tone];
 
-  const [cachedProperties, setCachedProperties] = useState<CachedProperty[]>([]);
-
-  useEffect(() => {
-    const cached = cacheService.get<CachedProperty[]>(CACHE_KEYS.PROPERTIES);
-    setCachedProperties(Array.isArray(cached) ? cached : []);
-  }, [properties, value]);
-
-  const portfolioProperties =
-    cachedProperties.length > 0 ? cachedProperties : properties;
+  const portfolioProperties = properties;
 
   const portfolioTotal = useMemo(() => {
     if (statId === "totalProperties") {
@@ -369,11 +399,17 @@ export function StatsCard({
     }
 
     return portfolioProperties.filter(
-      (property) => property.isAvailable === false,
+      (property) => getPropertySlots(property).available === 0,
     ).length;
   }, [numericValue, portfolioProperties, statId]);
 
-  const availableTotal = Math.max(portfolioTotal - occupiedTotal, 0);
+  const availableTotal = useMemo(
+    () =>
+      portfolioProperties.filter(
+        (property) => getPropertySlots(property).available > 0,
+      ).length,
+    [portfolioProperties],
+  );
 
   const occupancyPercentage =
     portfolioTotal > 0
