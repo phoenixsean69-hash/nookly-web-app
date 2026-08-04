@@ -456,7 +456,7 @@ export default function PropertiesPage() {
                     >
                       <Link
                         href={`/dashboard/properties/${property.$id}`}
-                        className="relative block h-52 bg-gray-100 dark:bg-gray-800"
+                        className="relative block h-52 bg-gray-100 dark:bg-gray-900"
                       >
                         {property.image1 ? (
                           <Image
@@ -502,7 +502,7 @@ export default function PropertiesPage() {
                           </p>
                         </div>
 
-                        <div className="mt-4 grid grid-cols-3 gap-2 rounded-xl bg-gray-50 p-3 text-center dark:bg-gray-800">
+                        <div className="mt-4 grid grid-cols-3 gap-2 rounded-xl bg-gray-50 p-3 text-center dark:bg-gray-900">
                           <div>
                             <Bed className="mx-auto h-4 w-4 text-gray-500" />
                             <p className="mt-1 text-xs">
@@ -532,7 +532,7 @@ export default function PropertiesPage() {
                             <Heart className="h-3.5 w-3.5" />
                             {property.likes || 0}
                           </span>
-                          <span className="ml-auto rounded-full bg-gray-100 px-2 py-1 dark:bg-gray-800">
+                          <span className="ml-auto rounded-full bg-gray-100 px-2 py-1 dark:bg-gray-900">
                             {property.type}
                           </span>
                         </div>

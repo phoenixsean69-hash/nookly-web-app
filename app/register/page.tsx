@@ -341,7 +341,7 @@ if (
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
-                        ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
+                        ? "bg-gray-700 border-gray-700 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
                     placeholder="Enter your organization name"
@@ -371,7 +371,7 @@ if (
     }
     className={`w-full px-4 py-2.5 rounded-lg border transition-colors duration-300 ${
       resolvedTheme === "dark"
-        ? "bg-gray-700 border-gray-600 text-white"
+        ? "bg-gray-700 border-gray-700 text-white"
         : "bg-white border-gray-300 text-gray-900"
     }`}
     required
@@ -424,7 +424,7 @@ if (
       }
       className={`w-full px-4 py-2.5 rounded-lg border transition-colors duration-300 ${
         resolvedTheme === "dark"
-          ? "bg-gray-700 border-gray-600 text-white"
+          ? "bg-gray-700 border-gray-700 text-white"
           : "bg-white border-gray-300 text-gray-900"
       }`}
     />
@@ -460,7 +460,7 @@ if (
       }
       className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
         resolvedTheme === "dark"
-          ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400"
+          ? "bg-gray-700 border-gray-700 text-gray-100 placeholder-gray-400"
           : "border border-gray-300 text-gray-900 bg-white"
       }`}
       placeholder="e.g. Harare"
@@ -487,7 +487,7 @@ if (
                     onChange={(e) => setFormData({ ...formData, username: e.target.value.toLowerCase().replace(/\s/g, '') })}
                     className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
-                        ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
+                        ? "bg-gray-700 border-gray-700 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
                     placeholder="Choose a unique username"
@@ -519,7 +519,7 @@ if (
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
-                        ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
+                        ? "bg-gray-700 border-gray-700 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
                     placeholder="you@example.com"
@@ -545,7 +545,7 @@ if (
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
-                        ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
+                        ? "bg-gray-700 border-gray-700 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
                     placeholder="+1 234 567 8900"
@@ -571,7 +571,7 @@ if (
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     className={`w-full pl-10 pr-12 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
-                        ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
+                        ? "bg-gray-700 border-gray-700 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
                     placeholder="Create a password (min. 8 characters)"
@@ -604,7 +604,7 @@ if (
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                     className={`w-full pl-10 pr-12 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
-                        ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
+                        ? "bg-gray-700 border-gray-700 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
                     placeholder="Confirm your password"

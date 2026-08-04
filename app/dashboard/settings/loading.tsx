@@ -10,9 +10,9 @@ export default function SettingsLoading() {
             </div>
 
             <div className="flex flex-col gap-6 md:flex-row">
-              <div className="h-64 w-full animate-pulse rounded-2xl bg-gray-200 dark:bg-gray-800 md:w-64" />
+              <div className="h-64 w-full animate-pulse rounded-2xl bg-gray-200 dark:bg-gray-900 md:w-64" />
 
-              <div className="min-h-[420px] flex-1 animate-pulse rounded-2xl bg-gray-200 dark:bg-gray-800" />
+              <div className="min-h-[420px] flex-1 animate-pulse rounded-2xl bg-gray-200 dark:bg-gray-900" />
             </div>
           </div>
         </main>

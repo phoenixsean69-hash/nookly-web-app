@@ -477,7 +477,7 @@ useEffect(() => {
                   className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg transition text-xs sm:text-sm ${
                     isOffline 
                       ? "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
-                      : `bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600`
+                      : `bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-700`
                   }`}
                 >
                   <RefreshCw className={`w-3 h-3 sm:w-4 sm:h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
@@ -529,7 +529,7 @@ useEffect(() => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className={`w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 rounded-lg text-sm focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
-                        ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
+                        ? "bg-gray-700 border-gray-700 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-200 text-gray-900 bg-white"
                     }`}
                   />
@@ -540,7 +540,7 @@ useEffect(() => {
                     onChange={(e) => setFilterStatus(e.target.value)}
                     className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
-                        ? "bg-gray-700 border-gray-600 text-gray-100" 
+                        ? "bg-gray-700 border-gray-700 text-gray-100" 
                         : "border border-gray-200 text-gray-900 bg-white"
                     }`}
                   >
@@ -554,7 +554,7 @@ useEffect(() => {
                     onChange={(e) => setFilterPriority(e.target.value)}
                     className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
-                        ? "bg-gray-700 border-gray-600 text-gray-100" 
+                        ? "bg-gray-700 border-gray-700 text-gray-100" 
                         : "border border-gray-200 text-gray-900 bg-white"
                     }`}
                   >

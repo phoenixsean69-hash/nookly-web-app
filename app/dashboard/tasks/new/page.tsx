@@ -392,7 +392,7 @@ export default function NewTaskPage() {
                         className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                           formErrors.title 
                             ? "border-red-500 dark:border-red-500" 
-                            : "border-gray-200 dark:border-gray-600"
+                            : "border-gray-200 dark:border-gray-700"
                         } ${
                           resolvedTheme === "dark" 
                             ? "bg-gray-700 text-gray-100 placeholder-gray-400" 
@@ -425,7 +425,7 @@ export default function NewTaskPage() {
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                         className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 border ${
                           resolvedTheme === "dark" 
-                            ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
+                            ? "bg-gray-700 border-gray-700 text-gray-100 placeholder-gray-400" 
                             : "bg-white border-gray-200 text-gray-900"
                         }`}
                         placeholder="Enter task description (optional)"
@@ -452,7 +452,7 @@ export default function NewTaskPage() {
                           onChange={(e) => setFormData({ ...formData, priority: e.target.value as "high" | "medium" | "low" })}
                           className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 border ${
                             resolvedTheme === "dark" 
-                              ? "bg-gray-700 border-gray-600 text-gray-100" 
+                              ? "bg-gray-700 border-gray-700 text-gray-100" 
                               : "bg-white border-gray-200 text-gray-900"
                           }`}
                         >
@@ -480,7 +480,7 @@ export default function NewTaskPage() {
                           onChange={(e) => setFormData({ ...formData, status: e.target.value as "pending" | "in-progress" | "completed" })}
                           className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 border ${
                             resolvedTheme === "dark" 
-                              ? "bg-gray-700 border-gray-600 text-gray-100" 
+                              ? "bg-gray-700 border-gray-700 text-gray-100" 
                               : "bg-white border-gray-200 text-gray-900"
                           }`}
                         >
@@ -511,7 +511,7 @@ export default function NewTaskPage() {
                         className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                           formErrors.dueDate 
                             ? "border-red-500 dark:border-red-500" 
-                            : "border-gray-200 dark:border-gray-600"
+                            : "border-gray-200 dark:border-gray-700"
                         } ${
                           resolvedTheme === "dark" 
                             ? "bg-gray-700 text-gray-100" 
@@ -540,7 +540,7 @@ export default function NewTaskPage() {
                       {isLoadingProperties ? (
                         <div className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg border ${
                           resolvedTheme === "dark" 
-                            ? "bg-gray-700 border-gray-600 text-gray-400" 
+                            ? "bg-gray-700 border-gray-700 text-gray-400" 
                             : "bg-gray-50 border-gray-200 text-gray-400"
                         }`}>
                           <span>Loading properties...</span>
@@ -559,7 +559,7 @@ export default function NewTaskPage() {
                           onChange={(e) => handlePropertyChange(e.target.value)}
                           className={`w-full pl-10 pr-4 py-2.5 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 border ${
                             resolvedTheme === "dark" 
-                              ? "bg-gray-700 border-gray-600 text-gray-100" 
+                              ? "bg-gray-700 border-gray-700 text-gray-100" 
                               : "bg-white border-gray-200 text-gray-900"
                           }`}
                         >

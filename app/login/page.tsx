@@ -129,7 +129,7 @@ export default function LoginPage() {
                     onChange={(e) => setUsername(e.target.value)}
                     className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
-                        ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
+                        ? "bg-gray-700 border-gray-700 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
                     placeholder="Enter your username"
@@ -155,7 +155,7 @@ export default function LoginPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
-                        ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
+                        ? "bg-gray-700 border-gray-700 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
                     placeholder="you@example.com"
@@ -181,7 +181,7 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     className={`w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] focus:border-[var(--accent-700)] transition-colors duration-300 ${
                       resolvedTheme === "dark" 
-                        ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
+                        ? "bg-gray-700 border-gray-700 text-gray-100 placeholder-gray-400" 
                         : "border border-gray-300 text-gray-900 bg-white"
                     }`}
                     placeholder="Enter your password"

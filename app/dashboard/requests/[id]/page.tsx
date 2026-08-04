@@ -365,7 +365,7 @@ export default function RequestDetailsPage() {
               <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
                 <section className="space-y-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                   <div className="flex items-center gap-4">
-                    <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                    <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-gray-900">
                       {request.tenantAvatar ? (
                         <Image
                           src={request.tenantAvatar}
@@ -390,14 +390,14 @@ export default function RequestDetailsPage() {
                   </div>
 
                   <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
+                    <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-900">
                       <p className="text-xs uppercase text-gray-400">Email</p>
                       <p className="mt-1 flex items-center gap-2 text-sm font-semibold">
                         <Mail className="h-4 w-4 text-gray-400" />
                         {request.tenantEmail || "Not provided"}
                       </p>
                     </div>
-                    <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
+                    <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-900">
                       <p className="text-xs uppercase text-gray-400">Phone</p>
                       <p className="mt-1 flex items-center gap-2 text-sm font-semibold">
                         <Phone className="h-4 w-4 text-gray-400" />
@@ -412,7 +412,7 @@ export default function RequestDetailsPage() {
                         <MessageCircle className="h-4 w-4 text-[var(--accent-700)]" />
                         Message
                       </h3>
-                      <p className="rounded-xl bg-gray-50 p-4 text-sm leading-6 dark:bg-gray-800">
+                      <p className="rounded-xl bg-gray-50 p-4 text-sm leading-6 dark:bg-gray-900">
                         {request.message}
                       </p>
                     </div>
@@ -424,7 +424,7 @@ export default function RequestDetailsPage() {
                         <FileText className="h-4 w-4 text-[var(--accent-700)]" />
                         Questions
                       </h3>
-                      <p className="rounded-xl bg-gray-50 p-4 text-sm leading-6 dark:bg-gray-800">
+                      <p className="rounded-xl bg-gray-50 p-4 text-sm leading-6 dark:bg-gray-900">
                         {request.questions}
                       </p>
                     </div>

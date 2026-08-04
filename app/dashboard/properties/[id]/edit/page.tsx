@@ -547,7 +547,7 @@ export default function EditPropertyPage() {
                     {(Object.keys(images) as ImageKey[]).map((key, index) => (
                       <div
                         key={key}
-                        className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-dashed border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-800"
+                        className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-dashed border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"
                       >
                         {images[key] ? (
                           <>

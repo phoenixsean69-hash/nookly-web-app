@@ -933,7 +933,7 @@ const statCards = [
       <ProtectedRoute>
         <div className={`min-h-screen transition-colors duration-500 ${
           isOffline 
-            ? 'bg-gray-100 dark:bg-gray-800' 
+            ? 'bg-gray-100 dark:bg-gray-900' 
             : resolvedTheme === 'dark'
             ? 'bg-gray-900'
             : 'bg-linear-to-br from-blue-50 via-white to-orange-50'
@@ -959,7 +959,7 @@ const statCards = [
     <ProtectedRoute>
       <div className={`min-h-screen transition-colors duration-500 ${
         isOffline 
-          ? 'bg-gray-100 dark:bg-gray-800' 
+          ? 'bg-gray-100 dark:bg-gray-900' 
           : resolvedTheme === 'dark'
           ? 'bg-gray-900'
           : 'bg-orange-50'
@@ -998,7 +998,7 @@ const statCards = [
                     }
                   }}
                   disabled={isOffline}
-                  className={`flex items-center gap-1 text-xs px-3 py-1 bg-white dark:bg-gray-700 rounded-lg shadow-sm hover:shadow border border-gray-200 dark:border-gray-600 transition ${
+                  className={`flex items-center gap-1 text-xs px-3 py-1 bg-white dark:bg-gray-700 rounded-lg shadow-sm hover:shadow border border-gray-200 dark:border-gray-700 transition ${
                     isOffline 
                       ? "text-gray-400 dark:text-gray-500 cursor-not-allowed" 
                       : "text-gray-500 dark:text-gray-300 hover:text-[var(--accent-700)] dark:hover:text-[var(--accent-400)]"
@@ -1034,8 +1034,8 @@ const statCards = [
                 {/* Recent Properties - Column 1 */}
                 <div className={`rounded-2xl shadow-lg hover:shadow-xl transition-shadow border flex flex-col ${
                   isOffline 
-                    ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600' 
-                    : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700'
+                    ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-700' 
+                    : 'bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-700'
                 }`}>
                   <div className="p-5 flex-1 flex flex-col">
                     <div className="flex justify-between items-center mb-4">
@@ -1058,7 +1058,7 @@ const statCards = [
 
                     <div className="flex-1">
                       {recentProperties.length === 0 ? (
-                        <div className="text-center py-12 border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-xl h-full flex flex-col items-center justify-center">
+                        <div className="text-center py-12 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl h-full flex flex-col items-center justify-center">
                           <div className="w-12 h-12 bg-gray-100 dark:bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-2">
                             <Home className="w-6 h-6 text-gray-400 dark:text-gray-500" />
                           </div>
@@ -1088,10 +1088,10 @@ const statCards = [
 <Link
   key={property.$id}
   href={`/dashboard/properties/${property.$id}`}
-  className={`flex items-center justify-between p-2.5 rounded-lg transition-all duration-300 group border border-transparent hover:border-[var(--accent-200)] dark:hover:border-[var(--accent-800)] flex-1 ${
+  className={`flex items-center justify-between p-2.5 rounded-lg transition-all duration-300 group border border-transparent hover:border-[var(--accent-300)] dark:hover:border-[var(--accent-100)] flex-1 ${
     isOffline 
-      ? 'bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500' 
-      : 'bg-gray-50 dark:bg-gray-700/50 hover:bg-[var(--accent-50)] dark:hover:bg-[var(--accent-950)]/20'
+      ? 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-500' 
+      : 'bg-gray-50 dark:bg-gray-800 hover:bg-gray-800 dark:hover:hover:bg-blue-950'
   }`}
 >
   <div className="flex items-center gap-2.5 min-w-0 flex-1">
@@ -1177,8 +1177,8 @@ const statCards = [
                 {/* Performance Charts - Column 2 */}
                 <div className={`rounded-2xl shadow-lg hover:shadow-xl transition-shadow border flex flex-col ${
                   isOffline 
-                    ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600' 
-                    : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700'
+                    ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-700' 
+                    : 'bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-700'
                 }`}>
                   <div className="p-5 flex-1 flex flex-col">
                     <div className="flex justify-between items-center mb-3">
@@ -1537,7 +1537,7 @@ const statCards = [
                           </div>
                         </div>
                       ) : (
-                        <div className="text-center py-8 border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-xl h-full flex flex-col items-center justify-center">
+                        <div className="text-center py-8 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl h-full flex flex-col items-center justify-center">
                           <BarChart3 className="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-1.5" />
                           <p className="text-xs text-gray-500 dark:text-gray-400">No data available</p>
                         </div>
@@ -1553,8 +1553,8 @@ const statCards = [
               {/* Recent Activity Card */}
               <div className={`rounded-2xl shadow-lg hover:shadow-xl transition-shadow border flex flex-col ${
                 isOffline 
-                  ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600' 
-                  : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700'
+                  ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-700' 
+                  : 'bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-700'
               }`}>
                 <div className="p-5 flex-1 flex flex-col">
                   <div className="flex items-center justify-between mb-4">
@@ -1634,7 +1634,7 @@ const statCards = [
 
                   <div className="flex-1">
                     {recentActivities.length === 0 ? (
-                      <div className="text-center py-12 border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-xl h-full flex flex-col items-center justify-center">
+                      <div className="text-center py-12 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl h-full flex flex-col items-center justify-center">
                         <Activity className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
                         <p className="text-xs text-gray-500 dark:text-gray-400">No recent activity</p>
                         <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1">Activity will appear here</p>
@@ -1737,14 +1737,14 @@ const statCards = [
                 isOffline 
                   ? 'bg-gray-600 dark:bg-gray-700 border-gray-400/30' 
                   : resolvedTheme === 'dark'
-                  ? 'bg-gray-800 border-gray-600'
+                  ? 'bg-gray-900 border-gray-700'
                   : 'bg-indigo-900 border-blue-400/30'
               }`}>
                 <div className="p-5 flex-1 flex flex-col">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
                       <Zap className={`w-5 h-5 animate-pulse ${
-                        isOffline ? 'text-gray-300' : 'text-yellow-400'
+                        isOffline ? 'text-gray-300' : 'text-orange-500'
                       }`} />
                       <h3 className="font-semibold text-white">Quick Stats</h3>
                     </div>
@@ -1881,8 +1881,8 @@ const statCards = [
             <section className="mb-8">
               <div className={`rounded-2xl shadow-lg hover:shadow-xl transition-shadow border ${
                 isOffline 
-                  ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600' 
-                  : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700'
+                  ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-700' 
+                  : 'bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-700'
               }`}>
                 <div className="p-5">
                   <div className="flex items-center justify-between mb-4">
@@ -1927,7 +1927,7 @@ const statCards = [
                         className={`text-[10px] px-3 py-1.5 rounded-lg transition flex items-center gap-1 ${
                           isOffline || upcomingTasks.length === 0
                             ? 'bg-gray-200 dark:bg-gray-600 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
-                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-700'
                         }`}
                         title="Export tasks as CSV"
                       >
@@ -1938,7 +1938,7 @@ const statCards = [
                   </div>
                   
                   {upcomingTasks.length === 0 ? (
-                    <div className="text-center py-10 border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-xl">
+                    <div className="text-center py-10 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl">
                       <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-3">
                         <Calendar className="w-8 h-8 text-gray-400 dark:text-gray-500" />
                       </div>
@@ -1978,7 +1978,7 @@ const statCards = [
                           const topTask = highPriorityTasks[0] || mediumPriorityTasks[0] || lowPriorityTasks[0];
                           
                           if (!topTask) {
-                            return <div className="text-center py-6 border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-lg"><p className="text-[8px] text-gray-400 dark:text-gray-500">No tasks available</p></div>;
+                            return <div className="text-center py-6 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg"><p className="text-[8px] text-gray-400 dark:text-gray-500">No tasks available</p></div>;
                           }
                           
                           const overdue = isOverdue(topTask.dueDate);
@@ -1990,7 +1990,7 @@ const statCards = [
                           }[topTask.priority] || 'border-gray-500';
                           
                           return (
-                            <Link href={`/dashboard/tasks/${topTask.$id}`} className={`block p-3 rounded-lg transition-all duration-300 group cursor-pointer border-l-4 ${priorityColor} ${isOffline ? 'bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 border-gray-200 dark:border-gray-600' : 'bg-white dark:bg-gray-800 hover:shadow-md border-gray-200 dark:border-gray-600'}`}>
+                            <Link href={`/dashboard/tasks/${topTask.$id}`} className={`block p-3 rounded-lg transition-all duration-300 group cursor-pointer border-l-4 ${priorityColor} ${isOffline ? 'bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 border-gray-200 dark:border-gray-700' : 'bg-white dark:bg-gray-900 hover:shadow-md border-gray-200 dark:border-gray-700'}`}>
                               <p className={`text-xs font-semibold group-hover:text-[var(--accent-700)] dark:group-hover:text-[var(--accent-400)] transition-colors line-clamp-2 flex-1 ${isOffline ? 'text-gray-700 dark:text-gray-300' : 'text-gray-800 dark:text-gray-200'}`}>{topTask.title}</p>
                               <div className="flex flex-wrap items-center gap-1.5 mt-2">
                                 <span className={`text-[8px] px-1.5 py-0.5 rounded-full font-medium ${getPriorityColor(topTask.priority)}`}>{topTask.priority}</span>
@@ -2000,7 +2000,7 @@ const statCards = [
                                 </span>
                               </div>
                               {topTask.propertyName && <p className="text-[8px] text-gray-400 dark:text-gray-500 mt-1.5 truncate">📍 {topTask.propertyName}</p>}
-                              <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-600 flex justify-between items-center">
+                              <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
                                 <span className="text-[8px] text-gray-400 dark:text-gray-500">Priority</span>
                                 <span className={`text-[8px] font-medium capitalize ${topTask.priority === 'high' ? 'text-red-600 dark:text-red-400' : topTask.priority === 'medium' ? 'text-yellow-600 dark:text-yellow-400' : 'text-blue-600 dark:text-blue-400'}`}>{topTask.priority}</span>
                               </div>
@@ -2018,9 +2018,9 @@ const statCards = [
                         {upcomingTasks.length > 0 ? (
                           <div className="space-y-2">
                             {upcomingTasks.slice(0, 3).map((task) => (
-                              <div key={task.$id} className={`flex items-center gap-2 p-2 rounded-lg border ${isOffline ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-500' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600'}`}>
+                              <div key={task.$id} className={`flex items-center gap-2 p-2 rounded-lg border ${isOffline ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-500' : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700'}`}>
                                 <p className="text-[9px] font-medium text-gray-700 dark:text-gray-300 truncate flex-1">{task.title}</p>
-                                <select defaultValue={task.priority} className={`text-[8px] px-1.5 py-0.5 rounded border ${isOffline ? 'bg-gray-200 dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-400 dark:text-gray-500 cursor-not-allowed' : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300'}`} disabled={isOffline}>
+                                <select defaultValue={task.priority} className={`text-[8px] px-1.5 py-0.5 rounded border ${isOffline ? 'bg-gray-200 dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-400 dark:text-gray-500 cursor-not-allowed' : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300'}`} disabled={isOffline}>
                                   <option value="high">High</option>
                                   <option value="medium">Medium</option>
                                   <option value="low">Low</option>
@@ -2030,7 +2030,7 @@ const statCards = [
                             {upcomingTasks.length > 3 && <Link href="/dashboard/tasks" className="text-[8px] text-[var(--accent-700)] dark:text-[var(--accent-400)] hover:underline block text-center">Manage all tasks →</Link>}
                           </div>
                         ) : (
-                          <div className="text-center py-6 border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-lg"><p className="text-[8px] text-gray-400 dark:text-gray-500">No tasks to prioritize</p></div>
+                          <div className="text-center py-6 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg"><p className="text-[8px] text-gray-400 dark:text-gray-500">No tasks to prioritize</p></div>
                         )}
                       </div>
 
@@ -2041,23 +2041,23 @@ const statCards = [
                           <h3 className="text-[10px] font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Summary</h3>
                         </div>
                         <div className="space-y-2">
-                          <div className={`p-2 rounded-lg flex justify-between items-center ${isOffline ? 'bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'}`}>
+                          <div className={`p-2 rounded-lg flex justify-between items-center ${isOffline ? 'bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-900'}`}>
                             <span className="text-[9px] text-gray-600 dark:text-gray-400">Total Tasks</span>
                             <span className="text-xs font-bold text-gray-900 dark:text-gray-100">{upcomingTasks.length}</span>
                           </div>
-                          <div className={`p-2 rounded-lg flex justify-between items-center ${isOffline ? 'bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'}`}>
+                          <div className={`p-2 rounded-lg flex justify-between items-center ${isOffline ? 'bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-900'}`}>
                             <span className="text-[9px] text-gray-600 dark:text-gray-400 flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-red-500"></span> High</span>
                             <span className="text-xs font-bold text-red-600 dark:text-red-400">{upcomingTasks.filter(t => t.priority === 'high').length}</span>
                           </div>
-                          <div className={`p-2 rounded-lg flex justify-between items-center ${isOffline ? 'bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'}`}>
+                          <div className={`p-2 rounded-lg flex justify-between items-center ${isOffline ? 'bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-900'}`}>
                             <span className="text-[9px] text-gray-600 dark:text-gray-400 flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Medium</span>
                             <span className="text-xs font-bold text-yellow-600 dark:text-yellow-400">{upcomingTasks.filter(t => t.priority === 'medium').length}</span>
                           </div>
-                          <div className={`p-2 rounded-lg flex justify-between items-center ${isOffline ? 'bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'}`}>
+                          <div className={`p-2 rounded-lg flex justify-between items-center ${isOffline ? 'bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-900'}`}>
                             <span className="text-[9px] text-gray-600 dark:text-gray-400 flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Low</span>
                             <span className="text-xs font-bold text-blue-600 dark:text-blue-400">{upcomingTasks.filter(t => t.priority === 'low').length}</span>
                           </div>
-                          <div className={`p-2 rounded-lg flex justify-between items-center ${isOffline ? 'bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'}`}>
+                          <div className={`p-2 rounded-lg flex justify-between items-center ${isOffline ? 'bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-900'}`}>
                             <span className="text-[9px] text-gray-600 dark:text-gray-400">Overdue</span>
                             <span className="text-xs font-bold text-red-600 dark:text-red-400">{upcomingTasks.filter(t => isOverdue(t.dueDate)).length}</span>
                           </div>
@@ -2071,16 +2071,16 @@ const statCards = [
                           <h3 className="text-[10px] font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Quick Actions</h3>
                         </div>
                         <div className="space-y-2">
-                          <Link href="/dashboard/tasks/new" className={`block p-3 rounded-lg text-center transition-all duration-300 border-2 border-dashed ${isOffline ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-500 text-gray-400 dark:text-gray-500 cursor-not-allowed' : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-[var(--accent-700)] dark:hover:border-[var(--accent-400)] hover:bg-[var(--accent-50)] dark:hover:bg-[var(--accent-950)]/20'}`}>
+                          <Link href="/dashboard/tasks/new" className={`block p-3 rounded-lg text-center transition-all duration-300 border-2 border-dashed ${isOffline ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-500 text-gray-400 dark:text-gray-500 cursor-not-allowed' : 'bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 hover:border-[var(--accent-700)] dark:hover:border-[var(--accent-400)] hover:bg-[var(--accent-50)] dark:hover:bg-[var(--accent-950)]/20'}`}>
                             <PlusCircle className={`w-5 h-5 mx-auto mb-1 ${isOffline ? 'text-gray-400 dark:text-gray-500' : 'text-[var(--accent-700)] dark:text-[var(--accent-400)]'}`} />
                             <p className={`text-[10px] font-medium ${isOffline ? 'text-gray-400 dark:text-gray-500' : 'text-gray-700 dark:text-gray-300'}`}>Create New Task</p>
                           </Link>
-                          <Link href="/dashboard/tasks" className={`block p-3 rounded-lg text-center transition-all duration-300 border ${isOffline ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-500 text-gray-400 dark:text-gray-500 cursor-not-allowed' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:border-[var(--accent-700)] dark:hover:border-[var(--accent-400)] hover:bg-[var(--accent-50)] dark:hover:bg-[var(--accent-950)]/20'}`}>
+                          <Link href="/dashboard/tasks" className={`block p-3 rounded-lg text-center transition-all duration-300 border ${isOffline ? 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-500 text-gray-400 dark:text-gray-500 cursor-not-allowed' : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 hover:border-[var(--accent-700)] dark:hover:border-[var(--accent-400)] hover:bg-[var(--accent-50)] dark:hover:bg-[var(--accent-950)]/20'}`}>
                             <p className={`text-[10px] font-medium ${isOffline ? 'text-gray-400 dark:text-gray-500' : 'text-gray-700 dark:text-gray-300'}`}>View All Tasks</p>
                             <p className="text-[8px] text-gray-400 dark:text-gray-500">{upcomingTasks.length} pending</p>
                           </Link>
                           {!isOffline && (
-                            <button onClick={() => { fetchDashboardData(); const btn = document.activeElement; if (btn) { const originalText = btn.innerHTML; btn.innerHTML = '✓ Refreshed'; setTimeout(() => { btn.innerHTML = originalText; }, 2000); } }} className="w-full p-2.5 rounded-lg text-center transition-all duration-300 border border-gray-200 dark:border-gray-600 hover:border-[var(--accent-700)] dark:hover:border-[var(--accent-400)] hover:bg-[var(--accent-50)] dark:hover:bg-[var(--accent-950)]/20 bg-white dark:bg-gray-800">
+                            <button onClick={() => { fetchDashboardData(); const btn = document.activeElement; if (btn) { const originalText = btn.innerHTML; btn.innerHTML = '✓ Refreshed'; setTimeout(() => { btn.innerHTML = originalText; }, 2000); } }} className="w-full p-2.5 rounded-lg text-center transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:border-[var(--accent-700)] dark:hover:border-[var(--accent-400)] hover:bg-[var(--accent-50)] dark:hover:bg-[var(--accent-950)]/20 bg-white dark:bg-gray-900">
                               <div className="flex items-center justify-center gap-1.5">
                                 <RefreshCw className="w-3 h-3 text-gray-500 dark:text-gray-400" />
                                 <span className="text-[10px] text-gray-600 dark:text-gray-300">Refresh Tasks</span>

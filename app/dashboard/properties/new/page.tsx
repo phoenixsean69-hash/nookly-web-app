@@ -1277,7 +1277,7 @@ export default function NewPropertyPage() {
                         className={`flex h-6 w-6 items-center justify-center rounded-full ${
                           ready
                             ? "bg-blue-600 text-white"
-                            : "bg-gray-100 dark:bg-gray-800"
+                            : "bg-gray-100 dark:bg-gray-900"
                         }`}
                       >
                         {ready ? (
@@ -2285,7 +2285,7 @@ export default function NewPropertyPage() {
                               active
                                 ? "border-[var(--accent-700)] bg-[var(--accent-700)] text-white"
                                 : dark
-                                  ? "border-gray-700 bg-gray-950 hover:border-gray-600"
+                                  ? "border-gray-700 bg-gray-950 hover:border-gray-700"
                                   : "border-gray-200 bg-gray-50 hover:border-gray-300"
                             }`}
                           >
@@ -2374,7 +2374,7 @@ export default function NewPropertyPage() {
                         Review and create the listing
                       </p>
                       <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                        <span className="rounded-full bg-gray-100 px-3 py-1.5 font-semibold dark:bg-gray-800">
+                        <span className="rounded-full bg-gray-100 px-3 py-1.5 font-semibold dark:bg-gray-900">
                           {selectedUploadCount} image
                           {selectedUploadCount === 1 ? "" : "s"}
                         </span>

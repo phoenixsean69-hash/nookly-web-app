@@ -289,7 +289,7 @@ export default function TaskDetailsPage() {
                 </div>
 
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
+                  <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-900">
                     <p className="text-xs uppercase text-gray-400">Due date</p>
                     <p className="mt-2 flex items-center gap-2 font-semibold">
                       <Calendar className="h-4 w-4 text-[var(--accent-700)]" />
@@ -297,7 +297,7 @@ export default function TaskDetailsPage() {
                     </p>
                   </div>
 
-                  <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
+                  <div className="rounded-xl bg-gray-50 p-4 dark:bg-gray-900">
                     <p className="text-xs uppercase text-gray-400">Property</p>
                     <p className="mt-2 flex items-center gap-2 font-semibold">
                       <Building2 className="h-4 w-4 text-[var(--accent-700)]" />
@@ -313,7 +313,7 @@ export default function TaskDetailsPage() {
                     <FileText className="h-5 w-5 text-[var(--accent-700)]" />
                     Description
                   </h2>
-                  <p className="mt-3 whitespace-pre-line rounded-xl bg-gray-50 p-4 text-sm leading-6 text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                  <p className="mt-3 whitespace-pre-line rounded-xl bg-gray-50 p-4 text-sm leading-6 text-gray-600 dark:bg-gray-900 dark:text-gray-300">
                     {task.description || "No description was added."}
                   </p>
                 </div>

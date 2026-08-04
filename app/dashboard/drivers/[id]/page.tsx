@@ -425,7 +425,7 @@ export default function DriverApplicationDetailsPage() {
                 <div className="space-y-5">
                   <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                      <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800">
+                      <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-900">
                         {profile.avatar ? (
                           <Image
                             src={profile.avatar}
@@ -578,7 +578,7 @@ export default function DriverApplicationDetailsPage() {
                           ? "border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950/30"
                           : approved
                             ? "border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/30"
-                          : "border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800"
+                          : "border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"
                       }`}
                     >
                       <p className="font-semibold">
@@ -616,7 +616,7 @@ export default function DriverApplicationDetailsPage() {
               This will verify {profile.name}, approve the organization relationship and activate the reviewed vehicle.
             </p>
 
-            <div className="mt-5 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-800">
+            <div className="mt-5 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900">
               <p className="font-semibold">{profile.name}</p>
               <p className="mt-1 text-gray-500 dark:text-gray-400">
                 {primaryVehicle
@@ -663,7 +663,7 @@ interface DetailRowProps {
 
 function DetailRow({ icon: Icon, label, value }: DetailRowProps) {
   return (
-    <div className="flex items-start gap-3 rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
+    <div className="flex items-start gap-3 rounded-xl bg-gray-50 p-3 dark:bg-gray-900">
       <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent-500)]" />
       <div className="min-w-0">
         <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">
@@ -748,7 +748,7 @@ function VehicleSection({ vehicle }: { vehicle: DriverReviewVehicle | null }) {
           </p>
         </div>
 
-        <span className="rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs font-semibold capitalize dark:border-gray-700 dark:bg-gray-800">
+        <span className="rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs font-semibold capitalize dark:border-gray-700 dark:bg-gray-900">
           {formatStatus(vehicle.status)}
         </span>
       </div>
@@ -759,7 +759,7 @@ function VehicleSection({ vehicle }: { vehicle: DriverReviewVehicle | null }) {
 
           return (
             <div key={image.label}>
-              <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-900">
                 {url ? (
                   <a href={url} target="_blank" rel="noreferrer">
                     <Image
@@ -827,7 +827,7 @@ function VehicleSection({ vehicle }: { vehicle: DriverReviewVehicle | null }) {
 
 function VehicleDetail({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
+    <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-900">
       <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">
         {label}
       </p>
@@ -838,7 +838,7 @@ function VehicleDetail({ label, value }: { label: string; value: string }) {
 
 function ApprovalCheck({ complete, label }: { complete: boolean; label: string }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
+    <div className="flex items-center gap-3 rounded-xl bg-gray-50 p-3 dark:bg-gray-900">
       {complete ? (
         <CheckCircle className="h-5 w-5 shrink-0 text-blue-500" />
       ) : (

@@ -471,7 +471,7 @@ export default function MessagesPage() {
                           }`}
                         >
                           <div className="flex items-start gap-3">
-                            <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-gray-900">
                               {inquiry.avatar ? (
                                 <Image
                                   src={inquiry.avatar}
@@ -581,7 +581,7 @@ export default function MessagesPage() {
                     </header>
 
                     <div className="flex-1 space-y-5 overflow-y-auto p-4 sm:p-6">
-                      <div className="max-w-3xl rounded-2xl rounded-tl-sm bg-gray-100 p-4 text-sm leading-6 dark:bg-gray-800">
+                      <div className="max-w-3xl rounded-2xl rounded-tl-sm bg-gray-100 p-4 text-sm leading-6 dark:bg-gray-900">
                         {selectedInquiry.body}
                       </div>
 

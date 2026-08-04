@@ -299,7 +299,7 @@ export default function NewTenantPage() {
               >
                 <div className="mb-6 flex flex-col items-center">
                   <label className="relative cursor-pointer">
-                    <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-4 border-[var(--accent-700)] bg-gray-100 dark:bg-gray-800">
+                    <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-4 border-[var(--accent-700)] bg-gray-100 dark:bg-gray-900">
                       {avatarPreview ? (
                         <Image
                           src={avatarPreview}

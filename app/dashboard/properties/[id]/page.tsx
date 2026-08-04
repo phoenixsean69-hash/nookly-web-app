@@ -953,7 +953,7 @@ export default function PropertyDetailsPage() {
               <div className="grid gap-5 lg:grid-cols-[1.3fr_0.7fr]">
                 <section className="space-y-5">
                   <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                    <div className="relative aspect-[16/9] bg-gray-100 dark:bg-gray-800">
+                    <div className="relative aspect-[16/9] bg-gray-100 dark:bg-gray-900">
                       {selectedImage ? (
                         <Image
                           src={selectedImage}
@@ -1026,7 +1026,7 @@ export default function PropertyDetailsPage() {
                         </h2>
                       </div>
 
-                      <div className="rounded-xl bg-gray-50 px-4 py-3 text-sm dark:bg-gray-800">
+                      <div className="rounded-xl bg-gray-50 px-4 py-3 text-sm dark:bg-gray-900">
                         <p className="text-xs uppercase text-gray-400">
                           Lowest acceptable
                         </p>
@@ -1070,7 +1070,7 @@ export default function PropertyDetailsPage() {
                         return (
                           <div
                             key={item.label}
-                            className="rounded-xl bg-gray-50 p-3 text-center dark:bg-gray-800"
+                            className="rounded-xl bg-gray-50 p-3 text-center dark:bg-gray-900"
                           >
                             <Icon className="mx-auto h-5 w-5 text-[var(--accent-700)]" />
                             <p className="mt-2 font-bold">{item.value}</p>
@@ -1099,7 +1099,7 @@ export default function PropertyDetailsPage() {
                           {facilities.map((facility) => (
                             <span
                               key={facility}
-                              className="rounded-full bg-gray-100 px-3 py-1.5 text-xs font-semibold dark:bg-gray-800"
+                              className="rounded-full bg-gray-100 px-3 py-1.5 text-xs font-semibold dark:bg-gray-900"
                             >
                               {facility}
                             </span>
@@ -1278,7 +1278,7 @@ export default function PropertyDetailsPage() {
                             })}
                           </div>
                         ) : (
-                          <p className="mt-4 rounded-xl bg-gray-50 p-4 text-sm text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+                          <p className="mt-4 rounded-xl bg-gray-50 p-4 text-sm text-gray-500 dark:bg-gray-900 dark:text-gray-400">
                             No written reviews are available for this property.
                           </p>
                         )}
@@ -1326,7 +1326,7 @@ export default function PropertyDetailsPage() {
                         </span>
                       </div>
 
-                      <div className="mt-3 h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                      <div className="mt-3 h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-900">
                         <div
                           className="h-full rounded-full bg-[var(--accent-700)]"
                           style={{ width: `${occupancy}%` }}
@@ -1334,14 +1334,14 @@ export default function PropertyDetailsPage() {
                       </div>
 
                       <div className="mt-4 grid grid-cols-2 gap-3">
-                        <div className="rounded-xl bg-gray-50 p-3 text-center dark:bg-gray-800">
+                        <div className="rounded-xl bg-gray-50 p-3 text-center dark:bg-gray-900">
                           <p className="text-xl font-bold">{occupiedSlots}</p>
                           <p className="mt-1 text-[10px] uppercase text-gray-400">
                             Occupied
                           </p>
                         </div>
 
-                        <div className="rounded-xl bg-gray-50 p-3 text-center dark:bg-gray-800">
+                        <div className="rounded-xl bg-gray-50 p-3 text-center dark:bg-gray-900">
                           <p className="text-xl font-bold">{availableSlots}</p>
                           <p className="mt-1 text-[10px] uppercase text-gray-400">
                             Available
@@ -1367,7 +1367,7 @@ export default function PropertyDetailsPage() {
 
                       <div className="mt-4 space-y-3">
                         {propertyTenants.length === 0 ? (
-                          <p className="rounded-xl bg-gray-50 p-4 text-center text-sm text-gray-500 dark:bg-gray-800">
+                          <p className="rounded-xl bg-gray-50 p-4 text-center text-sm text-gray-500 dark:bg-gray-900">
                             No active tenants.
                           </p>
                         ) : (
@@ -1377,7 +1377,7 @@ export default function PropertyDetailsPage() {
                               href={`/dashboard/tenants/${tenant.$id}/edit`}
                               className="flex items-center gap-3 rounded-xl border border-gray-100 p-3 transition hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800"
                             >
-                              <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-gray-900">
                                 {tenant.avatar ? (
                                   <Image
                                     src={tenant.avatar}
@@ -1417,7 +1417,7 @@ export default function PropertyDetailsPage() {
                         Access level
                       </h2>
 
-                      <div className="mt-4 rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
+                      <div className="mt-4 rounded-xl bg-gray-50 p-4 dark:bg-gray-900">
                         <p className="font-semibold">Full property visibility</p>
                         <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400">
                           Your organization can inspect the full listing,
@@ -1491,7 +1491,7 @@ interface DetailRowProps {
 
 function DetailRow({ icon: Icon, label, value }: DetailRowProps) {
   return (
-    <div className="flex items-start gap-3 rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
+    <div className="flex items-start gap-3 rounded-xl bg-gray-50 p-3 dark:bg-gray-900">
       <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent-700)]" />
 
       <div className="min-w-0">
@@ -1512,7 +1512,7 @@ interface MetricBoxProps {
 
 function MetricBox({ icon: Icon, value, label }: MetricBoxProps) {
   return (
-    <div className="rounded-xl bg-gray-50 p-3 text-center dark:bg-gray-800">
+    <div className="rounded-xl bg-gray-50 p-3 text-center dark:bg-gray-900">
       <Icon className="mx-auto h-4 w-4 text-gray-400" />
       <p className="mt-1 font-bold">{value}</p>
       <p className="text-[10px] uppercase text-gray-400">{label}</p>

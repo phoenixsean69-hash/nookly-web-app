@@ -613,7 +613,7 @@ export default function TenantsPage() {
                       >
                         <div className="flex flex-col gap-4 xl:flex-row xl:items-center">
                           <div className="flex min-w-0 flex-1 items-center gap-3">
-                            <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-gray-900">
                               {entry.avatar ? (
                                 <Image
                                   src={entry.avatar}
@@ -674,7 +674,7 @@ export default function TenantsPage() {
                           </div>
 
                           <div className="grid gap-2 text-sm sm:grid-cols-3 xl:w-[470px]">
-                            <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
+                            <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-900">
                               <p className="text-[10px] uppercase text-gray-400">
                                 Property
                               </p>
@@ -683,7 +683,7 @@ export default function TenantsPage() {
                                 {entry.propertyName}
                               </p>
                             </div>
-                            <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
+                            <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-900">
                               <p className="text-[10px] uppercase text-gray-400">
                                 Monthly amount
                               </p>
@@ -692,7 +692,7 @@ export default function TenantsPage() {
                                 {entry.amount.toLocaleString()}
                               </p>
                             </div>
-                            <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
+                            <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-900">
                               <p className="text-[10px] uppercase text-gray-400">
                                 {entry.kind === "request"
                                   ? "Move-in date"

@@ -1662,7 +1662,7 @@ export default function AnalyticsPage() {
     return (
       <div className={`rounded-2xl p-4 sm:p-6 shadow-sm border transition-all duration-300 cursor-pointer hover:shadow-md ${
         resolvedTheme === "dark" 
-          ? "bg-gray-800/80 border-gray-700 hover:border-gray-600" 
+          ? "bg-gray-800/80 border-gray-700 hover:border-gray-700" 
           : "bg-white/80 border-gray-100 hover:border-[var(--accent-200)] backdrop-blur-sm"
       }`}>
         <div className="flex items-center justify-between mb-3 sm:mb-4">

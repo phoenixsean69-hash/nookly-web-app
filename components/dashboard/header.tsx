@@ -144,7 +144,7 @@ export function Header() {
   // Show toast notification for mobile
   const showMobileToast = (action: string) => {
     toast.custom((t) => (
-      <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white dark:bg-gray-800 shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}>
+      <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white dark:bg-gray-900 shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}>
         <div className="flex-1 w-0 p-4">
           <div className="flex items-start">
             <div className="flex-shrink-0 pt-0.5">
@@ -493,7 +493,7 @@ export function Header() {
     const dropdownContent = (
       <div
         ref={notificationRef}
-        className="fixed bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden z-[9999] transition-all duration-200 ease-in-out"
+        className="fixed bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden z-[9999] transition-all duration-200 ease-in-out"
         style={{
           top: dropdownPosition.top,
           right: dropdownPosition.right,
@@ -502,7 +502,7 @@ export function Header() {
           maxHeight: '80vh',
         }}
       >
-        <div className="p-3 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center sticky top-0 bg-white dark:bg-gray-800 z-10">
+        <div className="p-3 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center sticky top-0 bg-white dark:bg-gray-900 z-10">
           <h3 className="font-semibold text-gray-800 dark:text-gray-200 text-sm">
             Notifications ({unreadCount} unread)
           </h3>
@@ -590,7 +590,7 @@ export function Header() {
             ))
           )}
         </div>
-        <div className="p-2 border-t border-gray-100 dark:border-gray-700 text-center sticky bottom-0 bg-white dark:bg-gray-800">
+        <div className="p-2 border-t border-gray-100 dark:border-gray-700 text-center sticky bottom-0 bg-white dark:bg-gray-900">
           <Link
             href="/dashboard/notifications"
             className="text-xs text-[var(--accent-700)] hover:text-[var(--accent-600)] dark:text-[var(--accent-400)] dark:hover:text-[var(--accent-300)]"
@@ -617,7 +617,7 @@ export function Header() {
           <div className="px-4 md:px-6 py-2 md:py-3 flex items-center justify-between">
             {/* Left Section */}
             <div className="flex items-center gap-3 md:gap-4">
-              <div className="flex items-center gap-2 px-2.5 md:px-3 py-1 md:py-1.5 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+              <div className="flex items-center gap-2 px-2.5 md:px-3 py-1 md:py-1.5 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 transition-colors duration-300">
                 {isOffline ? (
                   <>
                     <div className="relative">
@@ -797,7 +797,7 @@ export function Header() {
   return (
     <>
       <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm sticky top-0 z-30 transition-colors duration-300">
-        <div className="px-3 py-2 flex items-center justify-between">
+        <div className="flex min-h-14 items-center justify-between py-2 pl-16 pr-3">
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <h1 className="text-sm font-bold text-blue-950 dark:text-blue-300 truncate transition-colors duration-300">
               {orgName}
@@ -845,7 +845,7 @@ export function Header() {
             <button
               onClick={() => {
                 toast.custom((t) => (
-                  <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white dark:bg-gray-800 shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}>
+                  <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white dark:bg-gray-900 shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}>
                     <div className="flex-1 w-0 p-4">
                       <div className="flex items-start">
                         <div className="flex-shrink-0 pt-0.5">

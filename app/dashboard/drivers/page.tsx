@@ -133,7 +133,7 @@ function getStatus(application: DriverReviewApplication) {
       : "Incomplete",
     className: application.requirements.readyForApproval
       ? "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
-      : "border-gray-200 bg-gray-100 text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300",
+      : "border-gray-200 bg-gray-100 text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300",
     icon: application.requirements.readyForApproval ? Clock3 : FileWarning,
   };
 }
@@ -332,7 +332,7 @@ export default function DriverApplicationsPage() {
                         className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition ${
                           activeTab === tab.id
                             ? "bg-[var(--accent-500)] text-white"
-                            : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                            : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-700"
                         }`}
                       >
                         {tab.label}
@@ -374,7 +374,7 @@ export default function DriverApplicationsPage() {
                 ) : filteredApplications.length === 0 ? (
                   <div className="flex min-h-80 items-center justify-center p-8 text-center">
                     <div className="max-w-sm">
-                      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800">
+                      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-900">
                         <UserRound className="h-7 w-7 text-gray-400" />
                       </div>
                       <h2 className="mt-4 text-lg font-bold">
@@ -398,7 +398,7 @@ export default function DriverApplicationsPage() {
                           className="rounded-2xl border border-gray-200 p-4 transition hover:border-gray-300 hover:shadow-sm dark:border-gray-800 dark:hover:border-gray-700"
                         >
                           <div className="flex items-start gap-4">
-                            <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800">
+                            <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-900">
                               {application.profile.avatar ? (
                                 <Image
                                   src={application.profile.avatar}
@@ -514,7 +514,7 @@ interface InfoBoxProps {
 
 function InfoBox({ icon: Icon, label, value }: InfoBoxProps) {
   return (
-    <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
+    <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-900">
       <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-400">
         <Icon className="h-3.5 w-3.5" />
         {label}

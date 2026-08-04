@@ -678,7 +678,7 @@ export default function SettingsPage() {
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 className={`w-full px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                                   resolvedTheme === "dark" 
-                                    ? "bg-gray-700 border-gray-600 text-gray-100" 
+                                    ? "bg-gray-700 border-gray-700 text-gray-100" 
                                     : "border border-gray-200 text-gray-900 bg-white"
                                 }`}
                               />
@@ -704,7 +704,7 @@ export default function SettingsPage() {
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                                   resolvedTheme === "dark" 
-                                    ? "bg-gray-700 border-gray-600 text-gray-100" 
+                                    ? "bg-gray-700 border-gray-700 text-gray-100" 
                                     : "border border-gray-200 text-gray-900 bg-white"
                                 }`}
                               />
@@ -726,7 +726,7 @@ export default function SettingsPage() {
                                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                 className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                                   resolvedTheme === "dark" 
-                                    ? "bg-gray-700 border-gray-600 text-gray-100" 
+                                    ? "bg-gray-700 border-gray-700 text-gray-100" 
                                     : "border border-gray-200 text-gray-900 bg-white"
                                 }`}
                               />
@@ -793,7 +793,7 @@ export default function SettingsPage() {
                               onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
                               className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                                 resolvedTheme === "dark" 
-                                  ? "bg-gray-700 border-gray-600 text-gray-100" 
+                                  ? "bg-gray-700 border-gray-700 text-gray-100" 
                                   : "border border-gray-200 text-gray-900 bg-white"
                               }`}
                               placeholder="Enter current password"
@@ -818,7 +818,7 @@ export default function SettingsPage() {
                               onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
                               className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                                 resolvedTheme === "dark" 
-                                  ? "bg-gray-700 border-gray-600 text-gray-100" 
+                                  ? "bg-gray-700 border-gray-700 text-gray-100" 
                                   : "border border-gray-200 text-gray-900 bg-white"
                               }`}
                               placeholder="Enter new password"
@@ -843,7 +843,7 @@ export default function SettingsPage() {
                               onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
                               className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg focus:ring-2 focus:ring-[var(--accent-700)] transition-colors duration-300 ${
                                 resolvedTheme === "dark" 
-                                  ? "bg-gray-700 border-gray-600 text-gray-100" 
+                                  ? "bg-gray-700 border-gray-700 text-gray-100" 
                                   : "border border-gray-200 text-gray-900 bg-white"
                               }`}
                               placeholder="Confirm new password"
@@ -1021,7 +1021,7 @@ export default function SettingsPage() {
                               className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-lg border-2 transition ${
                                 theme !== "dark"
                                   ? `border-[var(--accent-700)] bg-[var(--accent-50)] dark:bg-[var(--accent-950)]/20`
-                                  : `border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500`
+                                  : `border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500`
                               }`}
                             >
                               <Sun className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${
@@ -1034,7 +1034,7 @@ export default function SettingsPage() {
                               className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-lg border-2 transition ${
                                 resolvedTheme === "dark"
                                   ? `border-[var(--accent-400)] bg-[var(--accent-950)]/20`
-                                  : `border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500`
+                                  : `border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500`
                               }`}
                             >
                               <Moon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${

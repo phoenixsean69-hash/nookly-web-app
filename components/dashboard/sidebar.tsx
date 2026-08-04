@@ -273,11 +273,11 @@ export function Sidebar() {
 
   return (
     <>
-      {isMobile && (
+      {isMobile && !isMobileOpen && (
         <button
           type="button"
           onClick={toggleMobileSidebar}
-          className="fixed left-4 top-4 z-[60] rounded-xl bg-[var(--accent-500)] p-2.5 text-white shadow-lg md:hidden"
+          className="fixed left-3 top-2.5 z-[60] flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--accent-500)] text-white shadow-lg md:hidden"
           aria-label="Toggle navigation"
         >
           {isMobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -314,6 +314,17 @@ export function Sidebar() {
                 Organization Portal
               </p>
             </div>
+          )}
+
+          {isMobile && (
+            <button
+              type="button"
+              onClick={toggleMobileSidebar}
+              className="ml-auto flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-blue-100 transition hover:bg-white/10 hover:text-white"
+              aria-label="Close navigation"
+            >
+              <X className="h-5 w-5" />
+            </button>
           )}
         </div>
 

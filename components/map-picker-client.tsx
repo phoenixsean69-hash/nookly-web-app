@@ -358,7 +358,7 @@ export default function MapPickerClient({
         <div
           className={`flex items-center gap-2 rounded-lg border-2 px-3 py-2 transition-colors ${
             resolvedTheme === "dark"
-              ? "border-gray-600 bg-gray-700"
+              ? "border-gray-700 bg-gray-700"
               : "border-gray-300 bg-white"
           }`}
         >
@@ -410,7 +410,7 @@ export default function MapPickerClient({
           <div
             className={`absolute z-[1000] mt-1 max-h-56 w-full overflow-y-auto rounded-lg border shadow-lg ${
               resolvedTheme === "dark"
-                ? "border-gray-600 bg-gray-800"
+                ? "border-gray-700 bg-gray-800"
                 : "border-gray-200 bg-white"
             }`}
           >
@@ -437,7 +437,7 @@ export default function MapPickerClient({
         <div
           className={`inline-flex overflow-hidden rounded-lg border ${
             resolvedTheme === "dark"
-              ? "border-gray-600"
+              ? "border-gray-700"
               : "border-gray-300"
           }`}
         >
@@ -471,7 +471,7 @@ export default function MapPickerClient({
         </div>
       </div>
 
-      <div className="h-96 overflow-hidden rounded-lg border-2 border-gray-300 dark:border-gray-600">
+      <div className="h-96 overflow-hidden rounded-lg border-2 border-gray-300 dark:border-gray-700">
         <MapContainer
           center={[
             position?.lat ?? defaultLat,
