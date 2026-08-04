@@ -153,6 +153,30 @@ const accentColorMap: Record<AccentColor, Record<string, string>> = {
 
 const defaultAccentColor: AccentColor = "orange";
 
+function getSystemTheme(): "light" | "dark" {
+  if (typeof window === "undefined") return "light";
+
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}
+
+function applyThemeToDocument(nextTheme: "light" | "dark") {
+  if (typeof document === "undefined") return;
+
+  const root = document.documentElement;
+
+  root.classList.add("theme-switching");
+  root.classList.toggle("dark", nextTheme === "dark");
+  root.style.colorScheme = nextTheme;
+
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
+      root.classList.remove("theme-switching");
+    });
+  });
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>("system");
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
@@ -189,7 +213,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     
     const handleThemeChange = (e: MediaQueryListEvent) => {
       if (followDeviceTheme) {
-        setResolvedTheme(e.matches ? "dark" : "light");
+        const nextTheme = e.matches ? "dark" : "light";
+        applyThemeToDocument(nextTheme);
+        setResolvedTheme(nextTheme);
       }
     };
 
@@ -211,11 +237,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const root = document.documentElement;
     const currentTheme = followDeviceTheme ? resolvedTheme : theme;
     
-   if (currentTheme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
+   applyThemeToDocument(currentTheme);
     
     localStorage.setItem("theme", theme);
     localStorage.setItem("followDeviceTheme", String(followDeviceTheme));
@@ -247,32 +269,43 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, [accentColor, isLoaded]);
 
   const toggleTheme = () => {
-    if (followDeviceTheme) {
-      // If following device, switch to manual mode with opposite of current
-      const newTheme = resolvedTheme === "light" ? "dark" : "light";
-      setTheme(newTheme);
-      setFollowDeviceTheme(false);
-    } else {
-      // Cycle through: light -> dark -> system
-      if (theme === "light") {
-        setTheme("dark");
-      } else if (theme === "dark") {
-        setTheme("system");
-        setFollowDeviceTheme(true);
-      }
-    }
+    const nextTheme = resolvedTheme === "dark" ? "light" : "dark";
+
+    applyThemeToDocument(nextTheme);
+    setResolvedTheme(nextTheme);
+    setTheme(nextTheme);
+    setFollowDeviceTheme(false);
+
+    localStorage.setItem("theme", nextTheme);
+    localStorage.setItem("followDeviceTheme", "false");
   };
 
   const handleSetTheme = (newTheme: Theme) => {
+    const nextResolvedTheme =
+      newTheme === "system" ? getSystemTheme() : newTheme;
+
+    applyThemeToDocument(nextResolvedTheme);
+    setResolvedTheme(nextResolvedTheme);
     setTheme(newTheme);
     setFollowDeviceTheme(newTheme === "system");
+
+    localStorage.setItem("theme", newTheme);
+    localStorage.setItem(
+      "followDeviceTheme",
+      String(newTheme === "system"),
+    );
   };
 
   const handleSetFollowDeviceTheme = (follow: boolean) => {
+    const nextTheme = follow ? getSystemTheme() : resolvedTheme;
+
+    applyThemeToDocument(nextTheme);
+    setResolvedTheme(nextTheme);
     setFollowDeviceTheme(follow);
-    if (follow) {
-      setTheme("system");
-    }
+    setTheme(follow ? "system" : nextTheme);
+
+    localStorage.setItem("theme", follow ? "system" : nextTheme);
+    localStorage.setItem("followDeviceTheme", String(follow));
   };
 
   const handleSetAccentColor = (color: AccentColor) => {
