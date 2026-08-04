@@ -68,25 +68,26 @@ export default function Home() {
     router.push("/register");
   };
 
-  // If still loading, show loading spinner
-  if (loading) {
-    return (
-      <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
-        resolvedTheme === "dark" 
-          ? "bg-gray-900" 
-          : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
-      }`}>
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[var(--accent-700)] mx-auto mb-4" />
-          <p className={`transition-colors duration-300 ${
-            resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
-          }`}>
-            Loading Nookly...
-          </p>
-        </div>
+// If still loading, show loading spinner
+if (loading) {
+  return (
+    <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
+      resolvedTheme === "dark" 
+        ? "bg-gray-900" 
+        : "bg-gradient-to-br from-blue-50 via-white to-orange-50"
+    }`}>
+      <div className="text-center">
+        {/* CHANGED HERE: Added border-t, border-l, border-r with opacity-20 */}
+        <div className="animate-spin rounded-full h-16 w-16 border-4 border-[var(--accent-700)] border-t-transparent border-l-transparent border-r-transparent mx-auto mb-4" />
+        <p className={`transition-colors duration-300 ${
+          resolvedTheme === "dark" ? "text-gray-400" : "text-gray-600"
+        }`}>
+          Loading Nookly...
+        </p>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   // If user is logged in and we're showing the verification prompt (online only)
   if (showPasswordPrompt) {
