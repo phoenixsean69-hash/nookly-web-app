@@ -1,14 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import {
-  Building2,
-  Eye,
-  Home,
-  MessageCircle,
-  Target,
-} from "lucide-react";
 
 import { CACHE_KEYS } from "@/lib/cache-keys";
 import { cacheService } from "@/lib/cache.service";
@@ -46,66 +39,72 @@ interface CachedProperty {
   isAvailable?: boolean;
 }
 
-type CardTone = "blue" | "purple" | "blue" | "orange" | "cyan";
-
+type CardTone = "blue" | "purple" | "orange" | "cyan";
 type BadgeTone = "success" | "warning" | "danger" | "neutral";
 
-const toneStyles: Record<
-  CardTone,
-  {
-    iconBackground: string;
-    iconBorder: string;
-    iconText: string;
-    progress: string;
-    accentText: string;
-  }
-> = {
+interface ToneStyle {
+  title: string;
+  accentText: string;
+  progress: string;
+  progressTrack: string;
+  glow: string;
+  artPrimary: string;
+  artSecondary: string;
+  artTertiary: string;
+}
+
+const toneStyles: Record<CardTone, ToneStyle> = {
   blue: {
-    iconBackground: "bg-blue-500/15 dark:bg-blue-500/20",
-    iconBorder: "border-blue-500/30 dark:border-blue-400/30",
-    iconText: "text-blue-600 dark:text-blue-300",
-    progress: "bg-blue-500 dark:bg-blue-400",
-    accentText: "text-blue-600 dark:text-blue-300",
+    title: "text-blue-700 dark:text-blue-300",
+    accentText: "text-blue-700 dark:text-blue-300",
+    progress: "bg-blue-600 dark:bg-blue-400",
+    progressTrack: "bg-blue-100/90 dark:bg-blue-950/80",
+    glow: "bg-blue-500/12 dark:bg-blue-500/18",
+    artPrimary: "text-blue-500/85 dark:text-blue-400/85",
+    artSecondary: "text-sky-400/60 dark:text-sky-300/60",
+    artTertiary: "text-indigo-400/45 dark:text-indigo-300/45",
   },
   purple: {
-    iconBackground: "bg-purple-500/15 dark:bg-purple-500/20",
-    iconBorder: "border-purple-500/30 dark:border-purple-400/30",
-    iconText: "text-purple-600 dark:text-purple-300",
-    progress: "bg-purple-500 dark:bg-purple-400",
-    accentText: "text-purple-600 dark:text-purple-300",
-  },
-  blue: {
-    iconBackground: "bg-blue-500/15 dark:bg-blue-500/20",
-    iconBorder: "border-blue-500/30 dark:border-blue-400/30",
-    iconText: "text-blue-600 dark:text-blue-300",
-    progress: "bg-blue-500 dark:bg-blue-400",
-    accentText: "text-blue-600 dark:text-blue-300",
+    title: "text-violet-700 dark:text-violet-300",
+    accentText: "text-violet-700 dark:text-violet-300",
+    progress: "bg-violet-600 dark:bg-violet-400",
+    progressTrack: "bg-violet-100/90 dark:bg-violet-950/80",
+    glow: "bg-violet-500/12 dark:bg-violet-500/18",
+    artPrimary: "text-violet-500/85 dark:text-violet-400/85",
+    artSecondary: "text-fuchsia-400/60 dark:text-fuchsia-300/60",
+    artTertiary: "text-blue-400/45 dark:text-blue-300/45",
   },
   orange: {
-    iconBackground: "bg-orange-500/15 dark:bg-orange-500/20",
-    iconBorder: "border-orange-500/30 dark:border-orange-400/30",
-    iconText: "text-orange-600 dark:text-orange-300",
+    title: "text-orange-700 dark:text-orange-300",
+    accentText: "text-orange-700 dark:text-orange-300",
     progress: "bg-orange-500 dark:bg-orange-400",
-    accentText: "text-orange-600 dark:text-orange-300",
+    progressTrack: "bg-orange-100/90 dark:bg-orange-950/80",
+    glow: "bg-orange-500/12 dark:bg-orange-500/18",
+    artPrimary: "text-orange-500/85 dark:text-orange-400/85",
+    artSecondary: "text-amber-400/60 dark:text-amber-300/60",
+    artTertiary: "text-red-400/45 dark:text-red-300/45",
   },
   cyan: {
-    iconBackground: "bg-cyan-500/15 dark:bg-cyan-500/20",
-    iconBorder: "border-cyan-500/30 dark:border-cyan-400/30",
-    iconText: "text-cyan-600 dark:text-cyan-300",
-    progress: "bg-cyan-500 dark:bg-cyan-400",
-    accentText: "text-cyan-600 dark:text-cyan-300",
+    title: "text-cyan-700 dark:text-cyan-300",
+    accentText: "text-cyan-700 dark:text-cyan-300",
+    progress: "bg-cyan-600 dark:bg-cyan-400",
+    progressTrack: "bg-cyan-100/90 dark:bg-cyan-950/80",
+    glow: "bg-cyan-500/12 dark:bg-cyan-500/18",
+    artPrimary: "text-cyan-500/85 dark:text-cyan-400/85",
+    artSecondary: "text-sky-400/60 dark:text-sky-300/60",
+    artTertiary: "text-blue-400/45 dark:text-blue-300/45",
   },
 };
 
 const badgeStyles: Record<BadgeTone, string> = {
   success:
-    "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
+    "border-blue-200/80 bg-blue-50/85 text-blue-700 dark:border-blue-700/50 dark:bg-blue-500/10 dark:text-blue-300",
   warning:
-    "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
+    "border-amber-200/80 bg-amber-50/85 text-amber-700 dark:border-amber-700/50 dark:bg-amber-500/10 dark:text-amber-300",
   danger:
-    "border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300",
+    "border-red-200/80 bg-red-50/85 text-red-700 dark:border-red-700/50 dark:bg-red-500/10 dark:text-red-300",
   neutral:
-    "border-gray-200 bg-gray-100 text-gray-700 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300",
+    "border-slate-200 bg-slate-100/85 text-slate-700 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-300",
 };
 
 function toNumber(value: number | string): number {
@@ -124,9 +123,8 @@ function clampPercentage(value: number): number {
 function getTone(statId?: string, fallbackColor?: string): CardTone {
   switch (statId) {
     case "occupiedListings":
-      return "purple";
     case "totalViews":
-      return "blue";
+      return "purple";
     case "occupancyRate":
       return "orange";
     case "responseRate":
@@ -134,8 +132,9 @@ function getTone(statId?: string, fallbackColor?: string): CardTone {
     case "totalProperties":
       return "blue";
     default:
-      if (fallbackColor === "purple") return "purple";
-      if (fallbackColor === "blue") return "blue";
+      if (fallbackColor === "purple" || fallbackColor === "violet") {
+        return "purple";
+      }
       if (fallbackColor === "orange" || fallbackColor === "yellow") {
         return "orange";
       }
@@ -146,50 +145,196 @@ function getTone(statId?: string, fallbackColor?: string): CardTone {
   }
 }
 
-function getDefaultIcon(statId?: string): ReactNode {
-  switch (statId) {
-    case "occupiedListings":
-      return <Home className="h-5 w-5" />;
-    case "totalViews":
-      return <Eye className="h-5 w-5" />;
-    case "occupancyRate":
-      return <Target className="h-5 w-5" />;
-    case "responseRate":
-      return <MessageCircle className="h-5 w-5" />;
-    case "totalProperties":
-    default:
-      return <Building2 className="h-5 w-5" />;
-  }
-}
-
 function getResponseBadge(rate: number): {
   label: string;
   tone: BadgeTone;
 } {
-  if (rate >= 80) {
-    return { label: "Excellent", tone: "success" };
-  }
-
-  if (rate >= 70) {
-    return { label: "Good", tone: "success" };
-  }
-
-  if (rate >= 50) {
-    return { label: "Moderate", tone: "warning" };
-  }
-
-  if (rate > 0) {
-    return { label: "Low", tone: "danger" };
-  }
-
+  if (rate >= 80) return { label: "Excellent", tone: "success" };
+  if (rate >= 70) return { label: "Good", tone: "success" };
+  if (rate >= 50) return { label: "Moderate", tone: "warning" };
+  if (rate > 0) return { label: "Low", tone: "danger" };
   return { label: "No enquiries yet", tone: "neutral" };
+}
+
+function CardArtwork({
+  statId,
+  styles,
+}: {
+  statId?: string;
+  styles: ToneStyle;
+}) {
+  const rawId = useId();
+  const id = rawId.replace(/[^a-zA-Z0-9_-]/g, "");
+  const gradientPrimary = `nookly-primary-${id}`;
+  const gradientSoft = `nookly-soft-${id}`;
+
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+    >
+      <div
+        className={`absolute -right-12 bottom-8 h-40 w-40 rounded-full blur-3xl ${styles.glow}`}
+      />
+      <div
+        className={`absolute right-16 top-16 h-24 w-24 rounded-full blur-3xl ${styles.glow} opacity-60`}
+      />
+
+      {statId === "totalProperties" && (
+        <svg
+          viewBox="0 0 420 220"
+          className="absolute inset-x-0 bottom-0 h-[70%] w-full"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id={gradientPrimary} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="currentColor" stopOpacity="0.04" />
+              <stop offset="100%" stopColor="currentColor" stopOpacity="0.22" />
+            </linearGradient>
+          </defs>
+
+          <g className={styles.artTertiary}>
+            <path d="M0 180C52 165 99 201 153 186c51-14 92-72 152-72 50 0 77 26 115 36V220H0Z" fill="currentColor" />
+          </g>
+
+<g className={styles.artPrimary}>
+  <path d="M240 186V86l34-24 29 21 26-19 35 25v97H240Z" fill={`url(#${gradientPrimary})`} />
+  <path d="M274 186v-62h19v62h-19Zm35 0v-52h17v52h-17Zm-51 0v-42h11v42h-11Zm76 0v-72h13v72h-13Z" fill="currentColor" opacity="0.32" />
+</g>
+
+<g className={styles.artSecondary}>
+  <path d="M20 174c61 12 96-18 145-10 45 8 89 40 143 30 37-7 71-29 112-17" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.55" />
+  <path d="M128 186V118l27-19 23 18v69h-50Z" fill="currentColor" opacity="0.15" />
+</g>
+        </svg>
+      )}
+
+      {statId === "occupiedListings" && (
+        <svg
+          viewBox="0 0 420 220"
+          className="absolute inset-x-0 bottom-0 h-[72%] w-full"
+          preserveAspectRatio="none"
+        >
+          <g className={styles.artPrimary}>
+            <rect x="236" y="72" width="112" height="108" rx="18" fill="currentColor" opacity="0.12" />
+            <rect x="263" y="98" width="22" height="22" rx="5" fill="currentColor" opacity="0.45" />
+            <rect x="294" y="98" width="22" height="22" rx="5" fill="currentColor" opacity="0.2" />
+            <rect x="263" y="129" width="22" height="22" rx="5" fill="currentColor" opacity="0.45" />
+            <rect x="294" y="129" width="22" height="22" rx="5" fill="currentColor" opacity="0.45" />
+            <rect x="325" y="129" width="22" height="22" rx="5" fill="currentColor" opacity="0.2" />
+          </g>
+
+          <g className={styles.artSecondary}>
+            <path d="M24 176c38-7 69-30 112-28 63 4 79 45 137 44 43-1 84-16 147-6V220H0v-30c8-6 16-10 24-14Z" fill="currentColor" opacity="0.12" />
+            <path d="M228 176h120" stroke="currentColor" strokeWidth="4" strokeLinecap="round" opacity="0.45" />
+            <path d="M252 164v12" stroke="currentColor" strokeWidth="4" strokeLinecap="round" opacity="0.45" />
+            <path d="M324 164v12" stroke="currentColor" strokeWidth="4" strokeLinecap="round" opacity="0.45" />
+          </g>
+
+          <g className={styles.artTertiary}>
+            <path d="M42 170c33-12 66-8 94 4 24 10 47 23 79 22 27 0 44-9 59-16 25-12 58-21 98-12" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.5" />
+          </g>
+        </svg>
+      )}
+
+      {statId === "totalViews" && (
+        <svg
+          viewBox="0 0 420 220"
+          className="absolute inset-x-0 bottom-0 h-[74%] w-full"
+          preserveAspectRatio="none"
+        >
+          <g className={styles.artSecondary}>
+            <ellipse cx="300" cy="138" rx="104" ry="48" fill="none" stroke="currentColor" strokeWidth="8" opacity="0.25" />
+            <ellipse cx="300" cy="138" rx="72" ry="33" fill="none" stroke="currentColor" strokeWidth="5" opacity="0.28" />
+          </g>
+          <g className={styles.artPrimary}>
+            <circle cx="300" cy="138" r="24" fill="currentColor" opacity="0.24" />
+            <circle cx="300" cy="138" r="12" fill="currentColor" opacity="0.55" />
+          </g>
+          <g className={styles.artTertiary}>
+            <path d="M188 174c25-8 48-30 72-38 16-5 31-6 48-1 18 5 31 16 45 23 17 8 36 12 67 8" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.5" />
+            <path d="M206 86c19 9 29 20 41 37" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.34" />
+          </g>
+        </svg>
+      )}
+
+      {statId === "occupancyRate" && (
+        <svg
+          viewBox="0 0 420 220"
+          className="absolute inset-x-0 bottom-0 h-[72%] w-full"
+          preserveAspectRatio="none"
+        >
+          <g className={styles.artPrimary}>
+            {[0, 1, 2, 3].map((row) =>
+              [0, 1, 2, 3, 4].map((col) => {
+                const x = 216 + col * 28;
+                const y = 86 + row * 24;
+                const active = row * 5 + col < 12;
+                return (
+                  <rect
+                    key={`${row}-${col}`}
+                    x={x}
+                    y={y}
+                    width="18"
+                    height="14"
+                    rx="4"
+                    fill="currentColor"
+                    opacity={active ? 0.45 : 0.14}
+                  />
+                );
+              }),
+            )}
+          </g>
+          <g className={styles.artSecondary}>
+            <path d="M36 182c46-26 84-20 126-6 29 10 57 24 94 23 35-1 53-12 75-18 27-8 53-6 89 3V220H0v-26c12-5 24-9 36-12Z" fill="currentColor" opacity="0.12" />
+            <path d="M214 172h142" stroke="currentColor" strokeWidth="8" strokeLinecap="round" opacity="0.18" />
+            <path d="M214 172h93" stroke="currentColor" strokeWidth="8" strokeLinecap="round" opacity="0.48" />
+          </g>
+          <g className={styles.artTertiary}>
+            <path d="M62 160c23 0 40 8 54 18 16 11 29 23 53 25" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.45" />
+          </g>
+        </svg>
+      )}
+
+      {statId === "responseRate" && (
+        <svg
+          viewBox="0 0 420 220"
+          className="absolute inset-x-0 bottom-0 h-[74%] w-full"
+          preserveAspectRatio="none"
+        >
+          <g className={styles.artPrimary}>
+            <path d="M232 92h86a18 18 0 0 1 18 18v30a18 18 0 0 1-18 18h-39l-23 18 4-18h-28a18 18 0 0 1-18-18v-30a18 18 0 0 1 18-18Z" fill="currentColor" opacity="0.16" />
+            <path d="M282 76h76a16 16 0 0 1 16 16v25a16 16 0 0 1-16 16h-22l-13 12 2-12h-43a16 16 0 0 1-16-16V92a16 16 0 0 1 16-16Z" fill="currentColor" opacity="0.12" />
+          </g>
+          <g className={styles.artSecondary}>
+            <path d="M247 116h54" stroke="currentColor" strokeWidth="5" strokeLinecap="round" opacity="0.45" />
+            <path d="M247 130h41" stroke="currentColor" strokeWidth="5" strokeLinecap="round" opacity="0.3" />
+            <path d="M286 98h48" stroke="currentColor" strokeWidth="5" strokeLinecap="round" opacity="0.42" />
+          </g>
+          <g className={styles.artTertiary}>
+            <path d="M42 178c43-17 83-9 124 6 24 9 52 18 86 14 15-2 27-5 39-9" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.5" />
+          </g>
+        </svg>
+      )}
+
+      {!statId && (
+        <div className={`absolute inset-x-0 bottom-0 h-[56%] ${styles.artPrimary}`}>
+          <svg viewBox="0 0 420 160" className="h-full w-full" preserveAspectRatio="none">
+            <path d="M0 135c63-24 91 23 154 8 45-11 68-46 114-43 48 3 72 28 152 7V160H0Z" fill="currentColor" opacity="0.1" />
+            <path d="M8 129c68-19 96 24 160 11 51-11 71-56 129-46 42 7 63 33 123 6" fill="none" stroke="currentColor" strokeWidth="12" strokeLinecap="round" opacity="0.16" />
+          </svg>
+        </div>
+      )}
+
+      <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-950/[0.10] via-transparent to-transparent dark:from-black/15" />
+    </div>
+  );
 }
 
 export function StatsCard({
   title,
   value,
   color,
-  icon,
   properties = [],
   statId,
   description,
@@ -238,9 +383,7 @@ export function StatsCard({
   const responseBadge = getResponseBadge(numericValue);
 
   const resolvedDescription = (() => {
-    if (description) {
-      return description;
-    }
+    if (description) return description;
 
     switch (statId) {
       case "occupiedListings":
@@ -252,7 +395,7 @@ export function StatsCard({
           ? `Across ${portfolioTotal} ${portfolioTotal === 1 ? "listing" : "listings"}`
           : "Across your property listings";
       case "occupancyRate":
-        return `${occupiedTotal} of ${portfolioTotal} properties`;
+        return `${occupiedTotal} of ${portfolioTotal} occupied`;
       case "responseRate":
         return "Based on recent enquiries";
       default:
@@ -260,24 +403,8 @@ export function StatsCard({
     }
   })();
 
-  const footer = (() => {
-    switch (statId) {
-      case "occupiedListings":
-        return "Currently occupied";
-      case "totalViews":
-        return "Property views";
-      case "occupancyRate":
-        return "Current occupancy";
-      case "responseRate":
-        return "Your responsiveness";
-      case "totalProperties":
-      default:
-        return "All your properties";
-    }
-  })();
-
   const progress = (() => {
-    if (statId === "occupiedListings") {
+    if (statId === "totalProperties" || statId === "occupiedListings") {
       return occupancyPercentage;
     }
 
@@ -292,49 +419,6 @@ export function StatsCard({
     <>
       {statId === "totalProperties" && (
         <style>{`
-          section:has(article[data-nookly-stat-card="true"]) > div:first-child {
-            margin-bottom: 1.25rem;
-            align-items: center;
-          }
-
-          section:has(article[data-nookly-stat-card="true"]) > div:first-child > div:first-child {
-            align-items: center;
-            gap: 0.75rem;
-          }
-
-          section:has(article[data-nookly-stat-card="true"]) > div:first-child > div:first-child > div:first-child {
-            width: 2.75rem;
-            height: 2.75rem;
-            border-radius: 0.75rem;
-          }
-
-          section:has(article[data-nookly-stat-card="true"]) > div:first-child h2 {
-            font-size: 1.25rem;
-            line-height: 1.55rem;
-          }
-
-          section:has(article[data-nookly-stat-card="true"]) > div:first-child h2::after {
-            content: "Overview of your property portfolio";
-            display: block;
-            margin-top: 0.2rem;
-            color: rgb(107 114 128);
-            font-size: 0.875rem;
-            font-weight: 400;
-            line-height: 1.25rem;
-          }
-
-          .dark section:has(article[data-nookly-stat-card="true"]) > div:first-child h2::after {
-            color: rgb(156 163 175);
-          }
-
-          section:has(article[data-nookly-stat-card="true"]) > div:first-child > button {
-            gap: 0.5rem;
-            border-radius: 0.75rem;
-            padding: 0.625rem 1rem;
-            font-size: 0.875rem;
-            line-height: 1.25rem;
-          }
-
           @media (min-width: 1280px) {
             section:has(article[data-nookly-stat-card="true"]) > div.grid {
               grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
@@ -345,46 +429,70 @@ export function StatsCard({
 
       <article
         data-nookly-stat-card="true"
-        className="flex min-h-[250px] h-full flex-col rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-[border-color,box-shadow] duration-200 hover:border-gray-300 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:border-gray-600"
+        className="group relative flex h-full min-h-[250px] flex-col overflow-hidden rounded-[1.7rem] border border-slate-200/90 bg-white/95 p-5 shadow-[0_14px_36px_-24px_rgba(15,23,42,0.42)] transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_20px_44px_-24px_rgba(15,23,42,0.5)] dark:border-slate-700/80 dark:bg-[#07111f] dark:shadow-[0_18px_48px_-28px_rgba(0,0,0,0.9)] dark:hover:border-slate-600"
       >
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-3">
-            <div
-              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${styles.iconBackground} ${styles.iconBorder} ${styles.iconText}`}
-            >
-              {icon ?? getDefaultIcon(statId)}
-            </div>
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(150deg,rgba(255,255,255,0.97)_0%,rgba(248,250,252,0.88)_50%,rgba(239,246,255,0.76)_100%)] dark:bg-[linear-gradient(145deg,rgba(15,23,42,0.96)_0%,rgba(7,17,31,0.98)_55%,rgba(3,12,25,1)_100%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/90 to-transparent dark:via-white/20" />
 
-            <h3 className="truncate text-sm font-semibold text-gray-800 dark:text-gray-100">
-              {title}
-            </h3>
-          </div>
+        <CardArtwork statId={statId} styles={styles} />
+
+        <div className="relative z-10 flex items-start justify-between gap-3">
+          <h3
+            className={`min-w-0 truncate text-[0.72rem] font-bold uppercase tracking-[0.14em] ${styles.title}`}
+          >
+            {title}
+          </h3>
 
           {actions && <div className="shrink-0">{actions}</div>}
         </div>
 
-        <div className="mt-6">
-          <p className="text-4xl font-bold tracking-tight text-gray-950 dark:text-white">
+        <div className="relative z-10 mt-6">
+          <p className="text-[2.55rem] font-semibold leading-none tracking-[-0.045em] text-slate-950 dark:text-white">
             {value}
           </p>
 
           {statId === "totalProperties" ? (
-            <p className="mt-2 min-h-5 text-sm leading-5 text-gray-500 dark:text-gray-400">
-              <span className={styles.accentText}>{occupiedTotal} occupied</span>
+            <p className="mt-3 min-h-5 text-sm leading-5 text-slate-600 dark:text-slate-300">
+              <span className={`font-semibold ${styles.accentText}`}>
+                {occupiedTotal} occupied
+              </span>
               <span> · {availableTotal} available</span>
             </p>
+          ) : statId === "responseRate" ? (
+            <div className="mt-3">
+              <span
+                className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold backdrop-blur-sm ${badgeStyles[responseBadge.tone]}`}
+              >
+                {responseBadge.label}
+              </span>
+            </div>
+          ) : trend ? (
+            <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+              <span
+                className={`font-semibold ${
+                  trend.isUp
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : "text-red-600 dark:text-red-400"
+                }`}
+              >
+                {trend.isUp ? "↗" : "↘"} {trend.value}
+              </span>
+              <span className="text-slate-500 dark:text-slate-400">
+                this month
+              </span>
+            </div>
           ) : (
-            <p className="mt-2 min-h-5 text-sm leading-5 text-gray-500 dark:text-gray-400">
+            <p className="mt-3 min-h-5 text-sm leading-5 text-slate-600 dark:text-slate-300">
               {resolvedDescription}
             </p>
           )}
         </div>
 
-        <div className="mt-5 min-h-11">
+        <div className="relative z-10 mt-auto pt-8">
           {progress !== null ? (
             <div className="flex items-center gap-3">
               <div
-                className="h-2 flex-1 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-700"
+                className={`h-1.5 flex-1 overflow-hidden rounded-full ${styles.progressTrack}`}
                 role="progressbar"
                 aria-label={`${title} progress`}
                 aria-valuemin={0}
@@ -392,47 +500,24 @@ export function StatsCard({
                 aria-valuenow={Math.round(progress)}
               >
                 <div
-                  className={`h-full rounded-full ${styles.progress}`}
+                  className={`h-full rounded-full shadow-sm transition-[width] duration-700 ${styles.progress}`}
                   style={{ width: `${progress}%` }}
                 />
               </div>
 
-              <span className="shrink-0 text-sm font-semibold text-gray-700 dark:text-gray-200">
+              <span className="shrink-0 text-xs font-semibold text-slate-600 dark:text-slate-300">
                 {Math.round(progress)}%
               </span>
             </div>
-          ) : statId === "responseRate" ? (
-            <span
-              className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${badgeStyles[responseBadge.tone]}`}
-            >
-              {responseBadge.label}
-            </span>
-          ) : trend ? (
-            <div className="flex flex-wrap items-center gap-3">
-              <span
-                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${
-                  trend.isUp
-                    ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-                    : "bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300"
-                }`}
-              >
-                <span aria-hidden="true">{trend.isUp ? "▲" : "▼"}</span>
-                {trend.value}
-              </span>
-
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                vs last 30 days
-              </span>
-            </div>
           ) : statId === "totalViews" ? (
-            <span className="inline-flex rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+            <span className="inline-flex rounded-full border border-violet-200/80 bg-white/50 px-2.5 py-1 text-xs font-semibold text-violet-700 backdrop-blur-sm dark:border-violet-700/50 dark:bg-violet-500/10 dark:text-violet-300">
               Portfolio traffic
             </span>
+          ) : statId === "responseRate" ? (
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              Your responsiveness
+            </p>
           ) : null}
-        </div>
-
-        <div className="mt-auto border-t border-gray-100 pt-4 dark:border-gray-700">
-          <p className="text-sm text-gray-500 dark:text-gray-400">{footer}</p>
         </div>
       </article>
     </>
