@@ -21,18 +21,6 @@ interface InspectRidesMapProps {
   ride: RideInspectionDetails;
 }
 
-const ESRI_IMAGERY_URL =
-  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
-
-const ESRI_IMAGERY_HD_URL =
-  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?blankTile=false";
-
-const ESRI_LABELS_URL =
-  "https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}?blankTile=false";
-
-const TRANSPARENT_TILE =
-  "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
-
 function isCoordinatePair(
   latitude: number | null | undefined,
   longitude: number | null | undefined,
@@ -165,7 +153,6 @@ export function InspectRidesMap({ ride }: InspectRidesMapProps) {
         zoom={14}
         scrollWheelZoom
         maxZoom={19}
-        fadeAnimation={false}
         className="h-full w-full"
       >
         {mapStyle === "street" ? (
@@ -177,56 +164,22 @@ export function InspectRidesMap({ ride }: InspectRidesMapProps) {
           />
         ) : (
           <>
-            {/*
-              Safety layer:
-              This keeps the map covered where Esri has no tile at a close
-              zoom level. It is deliberately placed underneath the HD layer.
-            */}
             <TileLayer
               attribution="Tiles &copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community"
-              url={ESRI_IMAGERY_URL}
+              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
               maxNativeZoom={14}
               maxZoom={19}
-              keepBuffer={5}
+              keepBuffer={4}
               updateWhenZooming={false}
-              updateWhenIdle
-              zIndex={1}
             />
-
-            {/*
-              HD layer:
-              Requests the genuine tile for the current zoom instead of
-              enlarging a zoom-14 image. blankTile=false makes missing tiles
-              fail cleanly, allowing the safety layer underneath to remain
-              visible only where high-detail imagery is unavailable.
-            */}
-            <TileLayer
-              attribution="Tiles &copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community"
-              url={ESRI_IMAGERY_HD_URL}
-              errorTileUrl={TRANSPARENT_TILE}
-              maxNativeZoom={19}
-              maxZoom={19}
-              keepBuffer={5}
-              updateWhenZooming={false}
-              updateWhenIdle
-              zIndex={2}
-            />
-
-            {/*
-              Labels are requested at their real zoom too. Missing labels are
-              transparent rather than covering the satellite imagery.
-            */}
             <TileLayer
               attribution="Labels &copy; Esri"
-              url={ESRI_LABELS_URL}
-              errorTileUrl={TRANSPARENT_TILE}
-              maxNativeZoom={19}
+              url="https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
+              maxNativeZoom={14}
               maxZoom={19}
-              keepBuffer={5}
+              keepBuffer={4}
               updateWhenZooming={false}
-              updateWhenIdle
               opacity={0.95}
-              zIndex={3}
             />
           </>
         )}
