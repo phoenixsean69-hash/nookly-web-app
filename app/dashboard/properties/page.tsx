@@ -598,7 +598,7 @@ export default function PropertiesPage() {
 
                   const approvalClasses =
                     property.organizationApproved === true
-                      ? "bg-emerald-500/95 text-white"
+                      ? "bg-blue-500/95 text-white"
                       : property.organizationApproved === false
                         ? "bg-red-500/95 text-white"
                         : "bg-amber-400/95 text-gray-950";
@@ -799,7 +799,7 @@ export default function PropertiesPage() {
 
                         <div className="mt-4">
                           <div className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-emerald-500" />
+                            <CheckCircle className="h-4 w-4 text-blue-500" />
                             <p className="text-xs font-bold uppercase tracking-wide text-gray-500">
                               Facilities
                             </p>

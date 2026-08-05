@@ -3256,7 +3256,7 @@ export default function AnalyticsPage() {
                 revenueDailyModalData.map((item, index) => {
                   const maxVal = Math.max(...revenueDailyModalData.map(d => d.revenue), 1);
                   const percentage = Math.max((item.revenue / maxVal) * 100, 5);
-                  const barColor = index % 3 === 0 ? 'bg-blue-500' : index % 3 === 1 ? 'bg-emerald-500' : 'bg-teal-500';
+                  const barColor = index % 3 === 0 ? 'bg-blue-500' : index % 3 === 1 ? 'bg-blue-500' : 'bg-teal-500';
                   return (
                     <div key={index}>
                       <div className="flex justify-between text-xs mb-0.5">

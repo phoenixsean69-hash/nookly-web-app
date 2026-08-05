@@ -1513,7 +1513,7 @@ export default function PropertyDetailsPage() {
 
   const approvalClasses =
     property.organizationApproved === true
-      ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-300"
+      ? "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900 dark:bg-blue-950/30 dark:text-blue-300"
       : property.organizationApproved === false
         ? "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-red-300"
         : "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-300";
@@ -1711,7 +1711,7 @@ export default function PropertyDetailsPage() {
                       }
                       className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold shadow-sm transition disabled:cursor-not-allowed ${
                         isOrganizationApproved
-                          ? "border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-300"
+                          ? "border border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900 dark:bg-blue-950/30 dark:text-blue-300"
                           : "bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
                       }`}
                     >
@@ -2406,7 +2406,7 @@ export default function PropertyDetailsPage() {
                                   </p>
                                 </div>
 
-                                <CheckCircle className="h-4 w-4 shrink-0 text-emerald-500" />
+                                <CheckCircle className="h-4 w-4 shrink-0 text-blue-500" />
                               </div>
 
                               <div className="mt-4 grid gap-2 text-xs text-gray-500 dark:text-gray-400">

@@ -17,7 +17,6 @@ import {
   PlusCircle,
   Radius,
   Settings,
-  Siren,
   Users,
   WifiOff,
   X,
@@ -75,12 +74,6 @@ const navigationItems: NavigationItem[] = [
     offlineEnabled: false,
   },
   {
-    name: "SOS Calls",
-    href: "/dashboard/sos",
-    icon: Siren,
-    offlineEnabled: false,
-  },
-  {
     name: "Messages",
     href: "/dashboard/messages",
     icon: MessageSquare,
@@ -131,7 +124,6 @@ export function Sidebar() {
       navigationItems.filter((item) => {
         const isSchoolOnlyItem =
           item.href === "/dashboard/drivers" ||
-          item.href === "/dashboard/sos" ||
           item.href === "/dashboard/within-us";
 
         return !isSchoolOnlyItem || organization?.type_of === "school";
