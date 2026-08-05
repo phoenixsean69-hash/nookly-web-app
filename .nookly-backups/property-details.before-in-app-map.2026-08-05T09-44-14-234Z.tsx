@@ -11,6 +11,7 @@ import {
   Clock3,
   DollarSign,
   Edit,
+  ExternalLink,
   Eye,
   Heart,
   Home,
@@ -44,7 +45,6 @@ import toast from "react-hot-toast";
 import { Header } from "@/components/dashboard/header";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { ProtectedRoute } from "@/components/protected-route";
-import { PropertyLocationMapModal } from "@/components/property-location-map";
 import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
 import { databases, storage } from "@/lib/appwrite/config";
@@ -992,7 +992,6 @@ export default function PropertyDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
-  const [showLocationMap, setShowLocationMap] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [approving, setApproving] = useState(false);
   const [disapproving, setDisapproving] = useState(false);
@@ -2605,14 +2604,15 @@ export default function PropertyDetailsPage() {
                     </div>
 
                     {mapUrl && (
-                      <button
-                        type="button"
-                        onClick={() => setShowLocationMap(true)}
+                      <a
+                        href={mapUrl}
+                        target="_blank"
+                        rel="noreferrer"
                         className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-bold transition hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
                       >
-                        <MapPinned className="h-4 w-4" />
-                        View in Nookly map
-                      </button>
+                        <ExternalLink className="h-4 w-4" />
+                        Open on map
+                      </a>
                     )}
                   </article>
 
@@ -2673,21 +2673,6 @@ export default function PropertyDetailsPage() {
           </main>
         </div>
       </div>
-
-      {showLocationMap && mapUrl && (
-        <PropertyLocationMapModal
-          isOpen={showLocationMap}
-          onClose={() => setShowLocationMap(false)}
-          latitude={Number(property.latitude)}
-          longitude={Number(property.longitude)}
-          title={property.propertyName}
-          address={
-            property.location ||
-            property.address ||
-            "Property location"
-          }
-        />
-      )}
 
       {isOwner && showDelete && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
