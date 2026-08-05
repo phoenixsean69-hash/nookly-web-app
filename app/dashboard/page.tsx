@@ -1738,7 +1738,7 @@ const statCards = [
                   ? 'bg-gray-600 dark:bg-gray-700 border-gray-400/30' 
                   : resolvedTheme === 'dark'
                   ? 'bg-gray-900 border-gray-700'
-                  : 'bg-indigo-900 border-blue-400/30'
+                  : 'bg-blue-900 border-blue-400/30'
               }`}>
                 <div className="p-5 flex-1 flex flex-col">
                   <div className="flex items-center justify-between mb-4">

@@ -1,0 +1,16 @@
+﻿{
+  "$id": "6a72521cbe8322481ef5",
+  "$createdAt": "2026-08-04T20:57:00.950+00:00",
+  "$updatedAt": "2026-08-04T20:57:10.876+00:00",
+  "type": "cli",
+  "resourceId": "rides-driver-api",
+  "resourceType": "functions",
+  "entrypoint": "src/main.js",
+  "sourceSize": 29290,
+  "buildSize": 1880064,
+  "totalSize": 1909354,
+  "activate": false,
+  "status": "ready",
+  "buildLogs": "\u001b[90m[20:57:04] \u001b[31m[\u001b[0mopen-runtimes\u001b[31m]\u001b[97m Build cache hit. \u001b[0m\n\u001b[90m[20:57:04] \u001b[31m[\u001b[0mopen-runtimes\u001b[31m]\u001b[97m Environment preparation started. \u001b[0m\n\u001b[90m[20:57:04] \u001b[31m[\u001b[0mopen-runtimes\u001b[31m]\u001b[97m Environment preparation finished. \u001b[0m\n\u001b[90m[20:57:04] \u001b[31m[\u001b[0mopen-runtimes\u001b[31m]\u001b[97m Build command execution started. \u001b[0m\nadded 4 packages, and audited 5 packages in 2s\nfound 0 vulnerabilities\n\u001b[90m[20:57:06] \u001b[31m[\u001b[0mopen-runtimes\u001b[31m]\u001b[97m Build command execution finished. \u001b[0m\n\u001b[90m[20:57:06] \u001b[31m[\u001b[0mopen-runtimes\u001b[31m]\u001b[97m Build packaging started. \u001b[0m\n\u001b[90m[20:57:06] \u001b[31m[\u001b[0mopen-runtimes\u001b[31m]\u001b[97m Build packaging finished. \u001b[0m\n\u001b[90m[20:57:06] \u001b[31m[\u001b[0mopen-runtimes\u001b[31m]\u001b[97m Build cache saved. (1310720 bytes -> 1310720 bytes) \u001b[0m\n\u001b[90m[20:57:06] \u001b[31m[\u001b[0mopen-runtimes\u001b[31m]\u001b[32m Build finished. \u001b[0m\n\u001b[90m[20:57:10] \u001b[90m[\u001b[0mappwrite\u001b[90m]\u001b[32m Deployment finished. \u001b[0m\n",
+  "buildDuration": 5
+}

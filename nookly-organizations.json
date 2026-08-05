@@ -1,0 +1,43 @@
+﻿{
+  "total": 2,
+  "rows": [
+    {
+      "name": "BUSE Off-Res",
+      "email": "buse55@gmail.com",
+      "avatar": "https://fra.cloud.appwrite.io/v1/storage/buckets/69a20709002844cb4f69/files/6a2d2b91000ae11d4d91/view?project=69904bec001b4d14cce2",
+      "properties": 6,
+      "userId": "6a2d2c1700251cac03c1",
+      "phone": "0997665442",
+      "isActive": true,
+      "subscriptionTier": "free",
+      "avatarFileId": "6a2d2b91000ae11d4d91",
+      "username": "offress55",
+      "type_of": "school",
+      "city": "Bindura",
+      "$id": "6a2d2c180029266967e4",
+      "$sequence": "8",
+      "$createdAt": "2026-06-13T10:08:25.993+00:00",
+      "$updatedAt": "2026-07-27T20:19:52.275+00:00",
+      "$databaseId": "6990ba1f00247b886338",
+      "$tableId": "6a2c1643001faac686e9"
+    },
+    {
+      "name": "Monomotapa Tourism",
+      "email": "monomotapa@gmail.com",
+      "avatar": "https://fra.cloud.appwrite.io/v1/storage/buckets/69a20709002844cb4f69/files/6a320037000c9673070b/view?project=69904bec001b4d14cce2",
+      "properties": 0,
+      "userId": "6a320092000fa22cea61",
+      "phone": "0441669875",
+      "isActive": true,
+      "subscriptionTier": "free",
+      "avatarFileId": "6a320037000c9673070b",
+      "username": "monoH263",
+      "$id": "6a3200930025b4f0bf40",
+      "$sequence": "9",
+      "$createdAt": "2026-06-17T02:04:03.726+00:00",
+      "$updatedAt": "2026-06-17T02:04:03.726+00:00",
+      "$databaseId": "6990ba1f00247b886338",
+      "$tableId": "6a2c1643001faac686e9"
+    }
+  ]
+}

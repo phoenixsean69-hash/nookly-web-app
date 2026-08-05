@@ -1,0 +1,15 @@
+﻿{
+  "$id": "6a72521cbe8322481ef5",
+  "$createdAt": "2026-08-04T20:57:00.950+00:00",
+  "$updatedAt": "2026-08-04T20:57:00.969+00:00",
+  "type": "cli",
+  "resourceId": "rides-driver-api",
+  "resourceType": "functions",
+  "entrypoint": "src/main.js",
+  "sourceSize": 29290,
+  "buildSize": 0,
+  "totalSize": 29290,
+  "activate": false,
+  "status": "waiting",
+  "buildDuration": 0
+}

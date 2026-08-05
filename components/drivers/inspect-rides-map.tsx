@@ -1,0 +1,329 @@
+"use client";
+
+import "leaflet/dist/leaflet.css";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  CircleMarker,
+  MapContainer,
+  Polyline,
+  Popup,
+  TileLayer,
+  useMap,
+} from "react-leaflet";
+
+import type { RideInspectionDetails } from "@/lib/ride-inspection.service";
+
+type LatLngTuple = [number, number];
+type MapStyle = "street" | "hybrid";
+
+interface InspectRidesMapProps {
+  ride: RideInspectionDetails;
+}
+
+function isCoordinatePair(
+  latitude: number | null | undefined,
+  longitude: number | null | undefined,
+): latitude is number {
+  return (
+    typeof latitude === "number" &&
+    Number.isFinite(latitude) &&
+    typeof longitude === "number" &&
+    Number.isFinite(longitude)
+  );
+}
+
+function FitInspectionBounds({
+  rideId,
+  points,
+}: {
+  rideId: string;
+  points: LatLngTuple[];
+}) {
+  const map = useMap();
+  const fittedRideIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (points.length === 0) return;
+    if (fittedRideIdRef.current === rideId) return;
+
+    fittedRideIdRef.current = rideId;
+
+    if (points.length === 1) {
+      map.setView(points[0], 14, { animate: false });
+      return;
+    }
+
+    map.fitBounds(points, {
+      padding: [36, 36],
+      maxZoom: 14,
+      animate: false,
+    });
+  }, [map, points, rideId]);
+
+  return null;
+}
+
+export function InspectRidesMap({ ride }: InspectRidesMapProps) {
+  const [mapStyle, setMapStyle] = useState<MapStyle>("street");
+
+  const expectedRoute = useMemo<LatLngTuple[]>(
+    () =>
+      ride.expectedRoute
+        .filter((point) =>
+          isCoordinatePair(point.latitude, point.longitude),
+        )
+        .map((point) => [point.latitude as number, point.longitude as number]),
+    [ride.expectedRoute],
+  );
+
+  const travelledPath = useMemo<LatLngTuple[]>(
+    () =>
+      ride.travelledPath
+        .filter((point) =>
+          isCoordinatePair(point.latitude, point.longitude),
+        )
+        .map((point) => [point.latitude as number, point.longitude as number]),
+    [ride.travelledPath],
+  );
+
+  const pickup = isCoordinatePair(
+    ride.pickup.latitude,
+    ride.pickup.longitude,
+  )
+    ? ([ride.pickup.latitude, ride.pickup.longitude] as LatLngTuple)
+    : null;
+
+  const destination = isCoordinatePair(
+    ride.destination.latitude,
+    ride.destination.longitude,
+  )
+    ? ([ride.destination.latitude, ride.destination.longitude] as LatLngTuple)
+    : null;
+
+  const currentLocation = isCoordinatePair(
+    ride.currentLocation?.latitude,
+    ride.currentLocation?.longitude,
+  )
+    ? ([
+        ride.currentLocation?.latitude as number,
+        ride.currentLocation?.longitude as number,
+      ] as LatLngTuple)
+    : null;
+
+  const allPoints = useMemo<LatLngTuple[]>(
+    () => [
+      ...expectedRoute,
+      ...travelledPath,
+      ...(pickup ? [pickup] : []),
+      ...(destination ? [destination] : []),
+      ...(currentLocation ? [currentLocation] : []),
+    ],
+    [currentLocation, destination, expectedRoute, pickup, travelledPath],
+  );
+
+  const center: LatLngTuple =
+    currentLocation ||
+    pickup ||
+    destination ||
+    expectedRoute[0] ||
+    travelledPath[0] ||
+    [-17.301, 31.331];
+
+  if (allPoints.length === 0) {
+    return (
+      <div className="flex h-[390px] items-center justify-center bg-gray-100 px-6 text-center dark:bg-gray-950">
+        <div>
+          <p className="text-sm font-bold text-gray-800 dark:text-gray-100">
+            No map coordinates yet
+          </p>
+          <p className="mt-2 max-w-md text-xs leading-5 text-gray-500 dark:text-gray-400">
+            This ride has no pickup, destination, route, or current-location
+            coordinates in Appwrite yet.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative h-[390px] overflow-hidden bg-gray-100 dark:bg-gray-950">
+      <MapContainer
+        center={center}
+        zoom={14}
+        scrollWheelZoom
+        maxZoom={19}
+        className="h-full w-full"
+      >
+        {mapStyle === "street" ? (
+          <TileLayer
+            attribution="&copy; OpenStreetMap contributors"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            maxZoom={19}
+            keepBuffer={4}
+          />
+        ) : (
+          <>
+            <TileLayer
+              attribution="Tiles &copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community"
+              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+              maxNativeZoom={14}
+              maxZoom={19}
+              keepBuffer={4}
+              updateWhenZooming={false}
+            />
+            <TileLayer
+              attribution="Labels &copy; Esri"
+              url="https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
+              maxNativeZoom={14}
+              maxZoom={19}
+              keepBuffer={4}
+              updateWhenZooming={false}
+              opacity={0.95}
+            />
+          </>
+        )}
+
+        <FitInspectionBounds rideId={ride.id} points={allPoints} />
+
+        {expectedRoute.length > 1 && (
+          <Polyline
+            positions={expectedRoute}
+            pathOptions={{
+              color: "#6b7280",
+              weight: 6,
+              opacity: 0.85,
+              dashArray: "10 10",
+            }}
+          />
+        )}
+
+        {travelledPath.length > 1 && (
+          <Polyline
+            positions={travelledPath}
+            pathOptions={{
+              color: "#2563eb",
+              weight: 7,
+              opacity: 0.95,
+            }}
+          />
+        )}
+
+        {pickup && (
+          <CircleMarker
+            center={pickup}
+            radius={9}
+            pathOptions={{
+              color: "#2563eb",
+              fillColor: "#ffffff",
+              fillOpacity: 1,
+              weight: 5,
+            }}
+          >
+            <Popup>
+              <strong>Pickup</strong>
+              <br />
+              {ride.pickup.address || "Pickup point"}
+            </Popup>
+          </CircleMarker>
+        )}
+
+        {destination && (
+          <CircleMarker
+            center={destination}
+            radius={9}
+            pathOptions={{
+              color: "#111827",
+              fillColor: "#ffffff",
+              fillOpacity: 1,
+              weight: 5,
+            }}
+          >
+            <Popup>
+              <strong>Destination</strong>
+              <br />
+              {ride.destination.address || "Destination point"}
+            </Popup>
+          </CircleMarker>
+        )}
+
+        {currentLocation && (
+          <>
+            <CircleMarker
+              center={currentLocation}
+              radius={20}
+              pathOptions={{
+                color: "#2563eb",
+                fillColor: "#2563eb",
+                fillOpacity: 0.16,
+                weight: 1,
+              }}
+            />
+            <CircleMarker
+              center={currentLocation}
+              radius={10}
+              pathOptions={{
+                color: "#ffffff",
+                fillColor: ride.monitoring.hasOpenSafetyAlert
+                  ? "#dc2626"
+                  : "#2563eb",
+                fillOpacity: 1,
+                weight: 4,
+              }}
+            >
+              <Popup>
+                <strong>{ride.driver.name}</strong>
+                <br />
+                Current driver location
+                {ride.currentLocation?.speedKph !== null &&
+                  ride.currentLocation?.speedKph !== undefined && (
+                    <>
+                      <br />
+                      {Math.round(ride.currentLocation.speedKph)} km/h
+                    </>
+                  )}
+              </Popup>
+            </CircleMarker>
+          </>
+        )}
+      </MapContainer>
+
+      <div className="pointer-events-none absolute left-4 top-4 z-[500] rounded-xl border border-gray-200 bg-white/95 px-3 py-2 shadow-sm backdrop-blur dark:border-gray-700 dark:bg-gray-900/95">
+        <p className="text-xs font-bold text-gray-900 dark:text-white">
+          Live journey map
+        </p>
+        <p className="mt-0.5 text-[10px] text-gray-500 dark:text-gray-400">
+          Blue: travelled path · Gray: expected route
+        </p>
+      </div>
+
+      <div className="absolute right-4 top-4 z-[500] flex rounded-xl border border-gray-200 bg-white/95 p-1 shadow-sm backdrop-blur dark:border-gray-700 dark:bg-gray-900/95">
+        <button
+          type="button"
+          onClick={() => setMapStyle("street")}
+          className={`rounded-lg px-3 py-2 text-xs font-bold transition ${
+            mapStyle === "street"
+              ? "bg-blue-600 text-white"
+              : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+          }`}
+          aria-pressed={mapStyle === "street"}
+        >
+          Street
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setMapStyle("hybrid")}
+          className={`rounded-lg px-3 py-2 text-xs font-bold transition ${
+            mapStyle === "hybrid"
+              ? "bg-blue-600 text-white"
+              : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+          }`}
+          aria-pressed={mapStyle === "hybrid"}
+        >
+          Hybrid
+        </button>
+      </div>
+    </div>
+  );
+}

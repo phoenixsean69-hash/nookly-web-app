@@ -1,0 +1,77 @@
+﻿{
+  "$id": "rides-driver-api",
+  "$createdAt": "2026-07-29T20:14:43.572+00:00",
+  "$updatedAt": "2026-08-04T20:57:11.016+00:00",
+  "execute": [
+    "users"
+  ],
+  "name": "Nookly Rides Driver API",
+  "enabled": true,
+  "live": true,
+  "logging": true,
+  "runtime": "node-22",
+  "deploymentRetention": 0,
+  "deploymentId": "6a723cabe9b978912cd8",
+  "deploymentCreatedAt": "2026-08-04T19:25:32.121+00:00",
+  "latestDeploymentId": "6a72521cbe8322481ef5",
+  "latestDeploymentCreatedAt": "2026-08-04T20:57:00.950+00:00",
+  "latestDeploymentStatus": "ready",
+  "scopes": [
+    "rows.read",
+    "rows.write",
+    "documents.read",
+    "files.write",
+    "executions.write"
+  ],
+  "vars": [
+    {
+      "$id": "6a6a6290002279271ba2",
+      "$createdAt": "2026-07-29T20:29:08.454+00:00",
+      "$updatedAt": "2026-07-29T20:29:08.454+00:00",
+      "key": "APPWRITE_DATABASE_ID",
+      "value": "6990ba1f00247b886338",
+      "secret": "[hidden]",
+      "resourceType": "function",
+      "resourceId": "rides-driver-api"
+    },
+    {
+      "$id": "6a6a629000228f75d894",
+      "$createdAt": "2026-07-29T20:29:08.469+00:00",
+      "$updatedAt": "2026-07-29T20:29:08.469+00:00",
+      "key": "APPWRITE_USERS_COLLECTION_ID",
+      "value": "69a205ed001b60197a88",
+      "secret": "[hidden]",
+      "resourceType": "function",
+      "resourceId": "rides-driver-api"
+    },
+    {
+      "$id": "6a6cfec30001b9061eae",
+      "$createdAt": "2026-07-31T20:00:03.615+00:00",
+      "$updatedAt": "2026-07-31T20:00:03.615+00:00",
+      "key": "APPWRITE_ORGANIZATIONS_COLLECTION_ID",
+      "value": "6a2c1643001faac686e9",
+      "secret": "[hidden]",
+      "resourceType": "function",
+      "resourceId": "rides-driver-api"
+    },
+    {
+      "$id": "6a709cd3002d32c6c4ba",
+      "$createdAt": "2026-08-03T13:51:19.662+00:00",
+      "$updatedAt": "2026-08-03T13:51:19.662+00:00",
+      "key": "NOOKLY_RIDES_PUSH_SECRET",
+      "secret": "[hidden]",
+      "resourceType": "function",
+      "resourceId": "rides-driver-api"
+    }
+  ],
+  "events": [],
+  "timeout": 30,
+  "entrypoint": "src/main.js",
+  "commands": "npm install",
+  "version": "v5",
+  "providerSilentMode": false,
+  "providerBranches": [],
+  "providerPaths": [],
+  "buildSpecification": "s-2vcpu-2gb",
+  "runtimeSpecification": "s-0.5vcpu-512mb"
+}
