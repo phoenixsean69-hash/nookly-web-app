@@ -27,7 +27,6 @@ import { Query } from "appwrite";
 
 import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
-import { useSosAlerts } from "@/contexts/sos-alert-context";
 import { databases } from "@/lib/appwrite/config";
 import { listOrganizationQueries } from "@/lib/appwrite/helpers";
 
@@ -116,7 +115,6 @@ export function Sidebar() {
   const pathname = usePathname();
   const { logout, isOffline, organization } = useAuth();
   const { resolvedTheme } = useTheme();
-  const { unreadCount: unreadSosCount } = useSosAlerts();
 
   const [isCollapsed, setIsCollapsed] = useState(getInitialCollapsedState);
   const [isMobile, setIsMobile] = useState(false);
@@ -270,20 +268,12 @@ export function Sidebar() {
         ? unreadMessages
         : itemName === "Tasks"
           ? overdueTasks
-          : itemName === "SOS Calls"
-            ? unreadSosCount
-            : 0;
+          : 0;
 
     if (value <= 0) return null;
 
-    const emergency = itemName === "SOS Calls";
-
     return (
-      <span
-        className={`ml-auto min-w-5 rounded-full px-1.5 py-0.5 text-center text-[10px] font-bold text-white ${
-          emergency ? "bg-red-600 animate-pulse" : "bg-orange-500"
-        }`}
-      >
+      <span className="ml-auto min-w-5 rounded-full bg-orange-500 px-1.5 py-0.5 text-center text-[10px] font-bold text-white">
         {value > 99 ? "99+" : value}
       </span>
     );

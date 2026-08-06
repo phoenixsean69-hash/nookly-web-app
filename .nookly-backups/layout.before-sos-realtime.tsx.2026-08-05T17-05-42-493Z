@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/auth-context";
-import { SosAlertProvider } from "@/contexts/sos-alert-context";
 import { NotificationToast } from '@/components/NotificationToast';
 import { ThemeProvider } from "@/contexts/theme-context";
 import { OfflineBanner } from "@/components/offline-banner";
@@ -39,7 +38,6 @@ export default function RootLayout({
       <body className={`${inter.className} overflow-x-hidden`}>
         <ThemeProvider>
           <AuthProvider>
-            <SosAlertProvider>
             <OfflineBanner />
             <div className="min-h-screen w-full max-w-full overflow-x-hidden">
               {children}
@@ -69,7 +67,6 @@ export default function RootLayout({
                 },
               }}
             />
-            </SosAlertProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

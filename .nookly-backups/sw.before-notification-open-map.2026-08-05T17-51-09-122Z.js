@@ -58,8 +58,8 @@ function destinationFor(data) {
     return notificationId
       ? `/dashboard/sos?alert=${encodeURIComponent(
           notificationId,
-        )}&map=1`
-      : "/dashboard/sos?map=1";
+        )}`
+      : "/dashboard/sos";
   }
 
   if (
@@ -178,20 +178,14 @@ self.addEventListener(
       return;
     }
 
-    const rawUrl =
+    const url =
       event.notification.data?.url ||
-      "/dashboard/sos?map=1";
+      "/dashboard";
 
     const absoluteUrl = new URL(
-      rawUrl,
+      url,
       self.location.origin,
     ).href;
-
-    const relativeUrl =
-      absoluteUrl.startsWith(self.location.origin)
-        ? absoluteUrl.slice(self.location.origin.length) ||
-          "/dashboard/sos?map=1"
-        : "/dashboard/sos?map=1";
 
     event.waitUntil(
       self.clients
@@ -199,51 +193,24 @@ self.addEventListener(
           type: "window",
           includeUncontrolled: true,
         })
-        .then(async (windowClients) => {
-          const nooklyClient =
-            windowClients.find((client) =>
+        .then(async (clients) => {
+          for (const client of clients) {
+            if (
+              "focus" in client &&
               client.url.startsWith(
                 self.location.origin,
-              ),
-            );
-
-          if (nooklyClient) {
-            // Bring the existing Nookly tab to the front first.
-            if ("focus" in nooklyClient) {
-              await nooklyClient.focus();
-            }
-
-            // Tell the mounted Nookly app to select the exact SOS and open its map.
-            nooklyClient.postMessage({
-              type: "student_sos",
-              action: "open-sos-map",
-              url: relativeUrl,
-              alertId:
-                event.notification.data?.alertId ||
-                "",
-              notificationId:
-                event.notification.data?.notificationId ||
-                "",
-            });
-
-            // Fallback when the React listener has not mounted yet.
-            if ("navigate" in nooklyClient) {
-              try {
-                await nooklyClient.navigate(
+              )
+            ) {
+              if ("navigate" in client) {
+                await client.navigate(
                   absoluteUrl,
                 );
-              } catch (caught) {
-                console.warn(
-                  "Unable to navigate the focused Nookly client:",
-                  caught,
-                );
               }
-            }
 
-            return;
+              return client.focus();
+            }
           }
 
-          // No Nookly tab exists, so open one directly at the exact SOS map.
           return self.clients.openWindow(
             absoluteUrl,
           );

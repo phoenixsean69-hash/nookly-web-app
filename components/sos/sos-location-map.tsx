@@ -1,8 +1,18 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { MapPin, X } from "lucide-react";
-import { useEffect } from "react";
+import {
+  Check,
+  CheckCircle2,
+  Loader2,
+  MapPin,
+  X,
+} from "lucide-react";
+import {
+  useEffect,
+  useState,
+} from "react";
+import { createPortal } from "react-dom";
 
 interface SosLocationMapBaseProps {
   latitude: number;
@@ -12,16 +22,23 @@ interface SosLocationMapBaseProps {
   locationDetail: string;
 }
 
-interface SosLocationMapModalProps extends SosLocationMapBaseProps {
+interface SosLocationMapModalProps
+  extends SosLocationMapBaseProps {
   isOpen: boolean;
   onClose: () => void;
   statusLabel: string;
+  isSeen?: boolean;
+  isMarkingSeen?: boolean;
+  onMarkSeen?: () => void | Promise<void>;
 }
 
 const SosLocationMapCanvas = dynamic(
   () =>
-    import("@/components/sos/sos-location-map-canvas").then(
-      (module) => module.SosLocationMapCanvas,
+    import(
+      "@/components/sos/sos-location-map-canvas"
+    ).then(
+      (module) =>
+        module.SosLocationMapCanvas,
     ),
   {
     ssr: false,
@@ -38,10 +55,15 @@ const SosLocationMapCanvas = dynamic(
   },
 );
 
-export function SosLocationMapPreview(props: SosLocationMapBaseProps) {
+export function SosLocationMapPreview(
+  props: SosLocationMapBaseProps,
+) {
   return (
     <div className="relative isolate h-[340px] overflow-hidden bg-gray-100 dark:bg-gray-950">
-      <SosLocationMapCanvas {...props} mode="preview" />
+      <SosLocationMapCanvas
+        {...props}
+        mode="preview"
+      />
     </div>
   );
 }
@@ -50,36 +72,68 @@ export function SosLocationMapModal({
   isOpen,
   onClose,
   statusLabel,
+  isSeen = false,
+  isMarkingSeen = false,
+  onMarkSeen,
   ...mapProps
 }: SosLocationMapModalProps) {
+  const [mounted, setMounted] =
+    useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (!isOpen) return;
 
-    const previousOverflow = document.body.style.overflow;
+    const previousOverflow =
+      document.body.style.overflow;
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+    const handleKeyDown = (
+      event: KeyboardEvent,
+    ) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
     };
 
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow =
+      "hidden";
+
+    window.addEventListener(
+      "keydown",
+      handleKeyDown,
+    );
 
     return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow =
+        previousOverflow;
+
+      window.removeEventListener(
+        "keydown",
+        handleKeyDown,
+      );
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!mounted || !isOpen) {
+    return null;
+  }
 
-  return (
+  const modal = (
     <div
-      className="fixed inset-0 z-[9999] isolate flex items-center justify-center bg-black/70 p-3 backdrop-blur-sm sm:p-5"
+      className="fixed inset-0 z-[2147483000] isolate flex items-center justify-center bg-black/75 p-3 backdrop-blur-sm sm:p-5"
       role="dialog"
       aria-modal="true"
       aria-labelledby="sos-location-map-title"
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
+        if (
+          event.target ===
+          event.currentTarget
+        ) {
+          onClose();
+        }
       }}
     >
       <section className="relative z-0 flex max-h-[94vh] w-full max-w-6xl flex-col overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900">
@@ -87,18 +141,28 @@ export function SosLocationMapModal({
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <MapPin className="h-5 w-5 shrink-0 text-red-600" />
+
               <h2
                 id="sos-location-map-title"
                 className="truncate text-lg font-black sm:text-xl"
               >
                 {mapProps.title}
               </h2>
-              <span className="rounded-full border border-red-200 bg-red-50 px-2.5 py-1 text-[10px] font-bold text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300">
+
+              <span
+                className={`rounded-full border px-2.5 py-1 text-[10px] font-black ${
+                  isSeen
+                    ? "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-300"
+                    : "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300"
+                }`}
+              >
                 {statusLabel}
               </span>
             </div>
+
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              {mapProps.locationName} · {mapProps.locationDetail}
+              {mapProps.locationName} ·{" "}
+              {mapProps.locationDetail}
             </p>
           </div>
 
@@ -113,28 +177,75 @@ export function SosLocationMapModal({
         </header>
 
         <div className="relative isolate h-[68vh] min-h-[420px] max-h-[680px] overflow-hidden bg-gray-100 dark:bg-gray-950">
-          <SosLocationMapCanvas {...mapProps} mode="modal" />
+          <SosLocationMapCanvas
+            {...mapProps}
+            mode="modal"
+          />
         </div>
 
-        <footer className="flex flex-col gap-3 border-t border-gray-200 px-4 py-4 dark:border-gray-800 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <footer className="flex flex-col gap-4 border-t border-gray-200 px-4 py-4 dark:border-gray-800 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div>
             <p className="text-xs font-black">
-              {mapProps.latitude}, {mapProps.longitude}
+              {mapProps.latitude},{" "}
+              {mapProps.longitude}
             </p>
             <p className="mt-0.5 text-[10px] text-gray-500 dark:text-gray-400">
-              Dummy emergency coordinates for the UI prototype
+              Exact coordinates attached to
+              this student SOS
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={onClose}
-            className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[var(--accent-700)] px-5 py-2.5 text-sm font-bold text-white transition hover:opacity-90"
-          >
-            Back to SOS case
-          </button>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            {onMarkSeen && (
+              <button
+                type="button"
+                onClick={() =>
+                  void onMarkSeen()
+                }
+                disabled={
+                  isSeen ||
+                  isMarkingSeen
+                }
+                className={`inline-flex min-w-[150px] items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-black transition disabled:cursor-not-allowed ${
+                  isSeen
+                    ? "border border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900 dark:bg-blue-950/30 dark:text-blue-300"
+                    : "bg-red-600 text-white hover:bg-red-700 disabled:opacity-60"
+                }`}
+              >
+                {isMarkingSeen ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Saving…
+                  </>
+                ) : isSeen ? (
+                  <>
+                    <CheckCircle2 className="h-4 w-4" />
+                    Seen
+                  </>
+                ) : (
+                  <>
+                    <Check className="h-4 w-4" />
+                    Mark as seen
+                  </>
+                )}
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="inline-flex shrink-0 items-center justify-center rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-bold transition hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+            >
+              Back to SOS case
+            </button>
+          </div>
         </footer>
       </section>
     </div>
+  );
+
+  return createPortal(
+    modal,
+    document.body,
   );
 }

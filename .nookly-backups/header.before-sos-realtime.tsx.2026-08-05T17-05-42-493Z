@@ -2,7 +2,6 @@
 
 import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
-import { SosHeaderButton } from "@/components/sos/sos-header-button";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
@@ -659,8 +658,6 @@ export function Header() {
 
               <div className="h-6 w-px bg-gray-200 dark:bg-gray-700" />
 
-              <SosHeaderButton />
-
               {/* Notifications */}
               <div className="relative">
                 <button
@@ -815,8 +812,6 @@ export function Header() {
             >
               {resolvedTheme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-
-            <SosHeaderButton mobile />
 
             {/* Notifications - Mobile */}
             <div className="relative">
