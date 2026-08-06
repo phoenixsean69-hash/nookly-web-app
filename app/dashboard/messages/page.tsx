@@ -549,7 +549,7 @@ export default function MessagesPage() {
                               void updateStatus(selectedInquiry, "pending")
                             }
                             disabled={saving}
-                            className="rounded-lg border border-yellow-200 px-2.5 py-1.5 text-xs font-semibold text-yellow-700 dark:border-yellow-900 dark:text-yellow-300"
+                            className="rounded-lg border border-yellow-200 px-2.5 py-1.5 text-xs font-semibold text-yellow-900 dark:border-yellow-900 dark:text-yellow-300"
                           >
                             <Clock className="mr-1 inline h-3.5 w-3.5" />
                             Pending

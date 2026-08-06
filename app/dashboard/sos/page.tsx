@@ -380,17 +380,11 @@ function SosPageFallback() {
 
 function SosControlCentreContent() {
   const router = useRouter();
-  const searchParams =
-    useSearchParams();
+  const searchParams = useSearchParams();
 
-  const { organization } =
-    useAuth();
-
-  const { resolvedTheme } =
-    useTheme();
-
-  const margin =
-    useDashboardMargin();
+  const { organization } = useAuth();
+  const { resolvedTheme } = useTheme();
+  const margin = useDashboardMargin();
 
   const {
     alerts,
@@ -406,265 +400,133 @@ function SosControlCentreContent() {
     enableBrowserNotifications,
   } = useSosAlerts();
 
-  const [
-    selectedAlertId,
-    setSelectedAlertId,
-  ] = useState("");
+  const [selectedAlertId, setSelectedAlertId] = useState("");
+  const [mapAlertId, setMapAlertId] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<SosFilter>("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [markingSeenId, setMarkingSeenId] = useState<string | null>(null);
 
-  const [
-    mapAlertId,
-    setMapAlertId,
-  ] = useState<string | null>(
-    null,
-  );
+  const dark = resolvedTheme === "dark";
+  const organizationName = organization?.name || "University";
 
-  const [
-    activeFilter,
-    setActiveFilter,
-  ] = useState<SosFilter>(
-    "all",
-  );
-
-  const [
-    searchTerm,
-    setSearchTerm,
-  ] = useState("");
-
-  const [
-    markingSeenId,
-    setMarkingSeenId,
-  ] = useState<string | null>(
-    null,
-  );
-
-  const dark =
-    resolvedTheme === "dark";
-
-  const organizationName =
-    organization?.name ||
-    "University";
-
-  const sortedAlerts =
-    useMemo(
-      () =>
-        sortNewestFirst(alerts),
-      [alerts],
-    );
+  const sortedAlerts = useMemo(() => sortNewestFirst(alerts), [alerts]);
 
   useEffect(() => {
-    if (
-      sortedAlerts.length === 0
-    ) {
+    if (sortedAlerts.length === 0) {
       setSelectedAlertId("");
       setMapAlertId(null);
       return;
     }
 
-    const requestedId =
-      searchParams.get("alert");
+    const requestedId = searchParams.get("alert");
+    const requestedAlert = requestedId
+      ? sortedAlerts.find(
+          (alert) =>
+            alert.notificationId === requestedId || alert.alertId === requestedId
+        )
+      : null;
 
-    const requestedAlert =
-      requestedId
-        ? sortedAlerts.find(
-            (alert) =>
-              alert.notificationId ===
-                requestedId ||
-              alert.alertId ===
-                requestedId,
-          )
-        : null;
+    setSelectedAlertId((currentId) => {
+      const currentStillExists = sortedAlerts.some(
+        (alert) => alert.notificationId === currentId
+      );
 
-    setSelectedAlertId(
-      (currentId) => {
-        const currentStillExists =
-          sortedAlerts.some(
-            (alert) =>
-              alert.notificationId ===
-              currentId,
-          );
+      if (requestedAlert) {
+        return requestedAlert.notificationId;
+      }
 
-        if (requestedAlert) {
-          return requestedAlert.notificationId;
-        }
+      if (currentStillExists) {
+        return currentId;
+      }
 
-        if (currentStillExists) {
-          return currentId;
-        }
+      return sortedAlerts[0].notificationId;
+    });
 
-        return sortedAlerts[0]
-          .notificationId;
-      },
-    );
+    if (searchParams.get("map") === "1") {
+      const target = requestedAlert || sortedAlerts[0];
 
-    if (
-      searchParams.get("map") ===
-      "1"
-    ) {
-      const target =
-        requestedAlert ||
-        sortedAlerts[0];
-
-      if (
-        target.latitude !== null &&
-        target.longitude !== null
-      ) {
-        setMapAlertId(
-          target.notificationId,
-        );
+      if (target.latitude !== null && target.longitude !== null) {
+        setMapAlertId(target.notificationId);
       }
     }
-  }, [
-    searchParams,
-    sortedAlerts,
-  ]);
+  }, [searchParams, sortedAlerts]);
 
-  const selectedAlert =
-    sortedAlerts.find(
-      (alert) =>
-        alert.notificationId ===
-        selectedAlertId,
-    ) || null;
+  const selectedAlert = sortedAlerts.find(
+    (alert) => alert.notificationId === selectedAlertId
+  ) || null;
 
-  const mapAlert =
-    sortedAlerts.find(
-      (alert) =>
-        alert.notificationId ===
-        mapAlertId,
-    ) || null;
+  const mapAlert = sortedAlerts.find(
+    (alert) => alert.notificationId === mapAlertId
+  ) || null;
 
-  const newestAlert =
-    sortedAlerts[0] || null;
+  const newestAlert = sortedAlerts[0] || null;
 
   const counts = useMemo(
     () => ({
-      total:
-        sortedAlerts.length,
-      unseen:
-        sortedAlerts.filter(
-          (alert) =>
-            !alert.read,
-        ).length,
-      seen:
-        sortedAlerts.filter(
-          (alert) =>
-            alert.read,
-        ).length,
-      today:
-        sortedAlerts.filter(
-          (alert) => {
-            const date = validDate(
-              alert.reportedAt ||
-                alert.createdAt,
-            );
+      total: sortedAlerts.length,
+      unseen: sortedAlerts.filter((alert) => !alert.read).length,
+      seen: sortedAlerts.filter((alert) => alert.read).length,
+      today: sortedAlerts.filter((alert) => {
+        const date = validDate(alert.reportedAt || alert.createdAt);
+        const today = new Date();
 
-            const today =
-              new Date();
-
-            return Boolean(
-              date &&
-                date.getFullYear() ===
-                  today.getFullYear() &&
-                date.getMonth() ===
-                  today.getMonth() &&
-                date.getDate() ===
-                  today.getDate(),
-            );
-          },
-        ).length,
+        return Boolean(
+          date &&
+            date.getFullYear() === today.getFullYear() &&
+            date.getMonth() === today.getMonth() &&
+            date.getDate() === today.getDate()
+        );
+      }).length,
     }),
-    [sortedAlerts],
+    [sortedAlerts]
   );
 
-  const filteredAlerts =
-    useMemo(() => {
-      const normalized =
-        searchTerm
-          .trim()
-          .toLowerCase();
+  const filteredAlerts = useMemo(() => {
+    const normalized = searchTerm.trim().toLowerCase();
 
-      return sortedAlerts.filter(
-        (alert) => {
-          const filterMatches =
-            activeFilter ===
-              "all" ||
-            (activeFilter ===
-              "unseen" &&
-              !alert.read) ||
-            (activeFilter ===
-              "seen" &&
-              alert.read);
+    return sortedAlerts.filter((alert) => {
+      const filterMatches =
+        activeFilter === "all" ||
+        (activeFilter === "unseen" && !alert.read) ||
+        (activeFilter === "seen" && alert.read);
 
-          if (!filterMatches) {
-            return false;
-          }
+      if (!filterMatches) {
+        return false;
+      }
 
-          if (!normalized) {
-            return true;
-          }
+      if (!normalized) {
+        return true;
+      }
 
-          return [
-            alert.alertId,
-            alert.studentName,
-            alert.studentId,
-            alert.incidentLabel,
-            alert.address,
-          ]
-            .join(" ")
-            .toLowerCase()
-            .includes(normalized);
-        },
-      );
-    }, [
-      activeFilter,
-      searchTerm,
-      sortedAlerts,
-    ]);
+      return [alert.alertId, alert.studentName, alert.studentId, alert.incidentLabel, alert.address]
+        .join(" ")
+        .toLowerCase()
+        .includes(normalized);
+    });
+  }, [activeFilter, searchTerm, sortedAlerts]);
 
-  const selectAlert = (
-    alert: StudentSosAlert,
-  ) => {
-    setSelectedAlertId(
-      alert.notificationId,
-    );
+  const selectAlert = (alert: StudentSosAlert) => {
+    setSelectedAlertId(alert.notificationId);
 
-    router.replace(
-      `/dashboard/sos?alert=${encodeURIComponent(
-        alert.notificationId,
-      )}`,
-      {
-        scroll: false,
-      },
-    );
+    router.replace(`/dashboard/sos?alert=${encodeURIComponent(alert.notificationId)}`, {
+      scroll: false,
+    });
   };
 
-  const openMap = (
-    alert: StudentSosAlert,
-  ) => {
-    if (
-      alert.latitude === null ||
-      alert.longitude === null
-    ) {
-      toast.error(
-        "This SOS has no valid map coordinates.",
-      );
+  const openMap = (alert: StudentSosAlert) => {
+    if (alert.latitude === null || alert.longitude === null) {
+      toast.error("This SOS has no valid map coordinates.");
       return;
     }
 
-    setSelectedAlertId(
-      alert.notificationId,
-    );
-
-    setMapAlertId(
-      alert.notificationId,
-    );
+    setSelectedAlertId(alert.notificationId);
+    setMapAlertId(alert.notificationId);
 
     router.replace(
-      `/dashboard/sos?alert=${encodeURIComponent(
-        alert.notificationId,
-      )}&map=1`,
+      `/dashboard/sos?alert=${encodeURIComponent(alert.notificationId)}&map=1`,
       {
         scroll: false,
-      },
+      }
     );
   };
 
@@ -673,89 +535,58 @@ function SosControlCentreContent() {
 
     if (selectedAlert) {
       router.replace(
-        `/dashboard/sos?alert=${encodeURIComponent(
-          selectedAlert.notificationId,
-        )}`,
+        `/dashboard/sos?alert=${encodeURIComponent(selectedAlert.notificationId)}`,
         {
           scroll: false,
-        },
+        }
       );
     } else {
-      router.replace(
-        "/dashboard/sos",
-        {
-          scroll: false,
-        },
-      );
+      router.replace("/dashboard/sos", {
+        scroll: false,
+      });
     }
   };
 
-  const markAlertSeen =
-    async (
-      alert: StudentSosAlert,
-    ) => {
-      if (alert.read) {
-        return;
-      }
+  const markAlertSeen = async (alert: StudentSosAlert) => {
+    if (alert.read) {
+      return;
+    }
 
-      setMarkingSeenId(
-        alert.notificationId,
+    setMarkingSeenId(alert.notificationId);
+
+    try {
+      await markAsRead(alert.notificationId);
+      toast.success(`${alert.studentName}'s SOS marked as seen.`);
+    } catch (caught) {
+      toast.error(
+        caught instanceof Error ? caught.message : "Unable to mark this SOS as seen."
       );
+    } finally {
+      setMarkingSeenId(null);
+    }
+  };
 
-      try {
-        await markAsRead(
-          alert.notificationId,
-        );
+  const handleEnableBrowserAlerts = async () => {
+    const granted = await enableBrowserNotifications();
 
-        toast.success(
-          `${alert.studentName}'s SOS marked as seen.`,
-        );
-      } catch (caught) {
-        toast.error(
-          caught instanceof Error
-            ? caught.message
-            : "Unable to mark this SOS as seen.",
-        );
-      } finally {
-        setMarkingSeenId(null);
-      }
-    };
+    if (granted) {
+      toast.success("Browser SOS alerts enabled.");
+    } else {
+      toast.error("Browser notifications were not enabled.");
+    }
+  };
 
-  const handleEnableBrowserAlerts =
-    async () => {
-      const granted =
-        await enableBrowserNotifications();
-
-      if (granted) {
-        toast.success(
-          "Browser SOS alerts enabled.",
-        );
-      } else {
-        toast.error(
-          "Browser notifications were not enabled.",
-        );
-      }
-    };
-
-  if (
-    organization &&
-    organization.type_of !==
-      "school"
-  ) {
+  if (organization && organization.type_of !== "school") {
     return (
       <ProtectedRoute>
         <div
           className={`min-h-screen ${
-            dark
-              ? "bg-gray-950 text-white"
-              : "bg-gray-50 text-gray-900"
+            dark ? "bg-gray-950 text-white" : "bg-gray-50 text-gray-900"
           }`}
         >
           <Sidebar />
 
-          <div
-            className={`${margin} transition-all duration-300`}
-          >
+          <div className={`${margin} transition-all duration-300`}>
             <Header />
 
             <main className="flex min-h-[75vh] items-center justify-center p-5">
@@ -767,9 +598,8 @@ function SosControlCentreContent() {
                 </h1>
 
                 <p className="mt-3 text-sm leading-6 text-gray-500 dark:text-gray-400">
-                  This emergency workspace
-                  is available to university
-                  and school organizations.
+                  This emergency workspace is available to university and school
+                  organizations.
                 </p>
               </div>
             </main>
@@ -779,28 +609,19 @@ function SosControlCentreContent() {
     );
   }
 
-  const realtime =
-    realtimeMeta(
-      realtimeState,
-    );
-
-  const RealtimeIcon =
-    realtime.icon;
+  const realtime = realtimeMeta(realtimeState);
+  const RealtimeIcon = realtime.icon;
 
   return (
     <ProtectedRoute>
       <div
         className={`min-h-screen ${
-          dark
-            ? "bg-gray-950 text-white"
-            : "bg-gray-50 text-gray-900"
+          dark ? "bg-gray-950 text-white" : "bg-gray-50 text-gray-900"
         }`}
       >
         <Sidebar />
 
-        <div
-          className={`${margin} transition-all duration-300`}
-        >
+        <div className={`${margin} transition-all duration-300`}>
           <Header />
 
           <main className="p-3 sm:p-5 lg:p-6">
@@ -834,10 +655,8 @@ function SosControlCentreContent() {
                       </div>
 
                       <p className="mt-2 max-w-3xl text-sm leading-6 text-gray-500 dark:text-gray-400">
-                        Live student emergencies
-                        for {organizationName}.
-                        The newest SOS is always
-                        placed first.
+                        Live student emergencies for {organizationName}. The
+                        newest SOS is always placed first.
                       </p>
                     </div>
                   </div>
@@ -847,14 +666,12 @@ function SosControlCentreContent() {
                       <button
                         type="button"
                         onClick={() =>
-                          void markAllAsRead().catch(
-                            (caught) =>
-                              toast.error(
-                                caught instanceof
-                                  Error
-                                  ? caught.message
-                                  : "Unable to mark all SOS alerts as seen.",
-                              ),
+                          void markAllAsRead().catch((caught) =>
+                            toast.error(
+                              caught instanceof Error
+                                ? caught.message
+                                : "Unable to mark all SOS alerts as seen."
+                            )
                           )
                         }
                         className="inline-flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2.5 text-xs font-bold transition hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
@@ -866,19 +683,11 @@ function SosControlCentreContent() {
 
                     <button
                       type="button"
-                      onClick={() =>
-                        void refreshAlerts()
-                      }
+                      onClick={() => void refreshAlerts()}
                       disabled={refreshing}
                       className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent-700)] px-3 py-2.5 text-xs font-black text-white transition hover:opacity-90 disabled:opacity-50"
                     >
-                      <RefreshCw
-                        className={`h-4 w-4 ${
-                          refreshing
-                            ? "animate-spin"
-                            : ""
-                        }`}
-                      />
+                      <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
                       Refresh
                     </button>
                   </div>
@@ -916,21 +725,17 @@ function SosControlCentreContent() {
                 </div>
               </section>
 
-              {notificationPermission !==
-                "granted" &&
-                notificationPermission !==
-                  "unsupported" && (
+              {notificationPermission !== "granted" &&
+                notificationPermission !== "unsupported" && (
                   <section
                     className={`mt-4 flex flex-col gap-4 rounded-2xl border p-4 sm:flex-row sm:items-center sm:justify-between ${
-                      notificationPermission ===
-                      "denied"
+                      notificationPermission === "denied"
                         ? "border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950/25"
                         : "border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/25"
                     }`}
                   >
                     <div className="flex items-start gap-3">
-                      {notificationPermission ===
-                      "denied" ? (
+                      {notificationPermission === "denied" ? (
                         <BellOff className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
                       ) : (
                         <Bell className="mt-0.5 h-5 w-5 shrink-0 text-blue-600" />
@@ -938,28 +743,23 @@ function SosControlCentreContent() {
 
                       <div>
                         <p className="text-sm font-black">
-                          {notificationPermission ===
-                          "denied"
+                          {notificationPermission === "denied"
                             ? "Browser SOS alerts are blocked"
                             : "Enable browser SOS alerts"}
                         </p>
 
                         <p className="mt-1 text-xs leading-5 text-gray-600 dark:text-gray-300">
-                          {notificationPermission ===
-                          "denied"
+                          {notificationPermission === "denied"
                             ? "Allow notifications in this site's browser settings. Realtime dashboard alerts and the buzzer will still work while Nookly is active."
                             : "Receive the SOS popup and open its exact map while working in another browser tab."}
                         </p>
                       </div>
                     </div>
 
-                    {notificationPermission ===
-                      "default" && (
+                    {notificationPermission === "default" && (
                       <button
                         type="button"
-                        onClick={() =>
-                          void handleEnableBrowserAlerts()
-                        }
+                        onClick={() => void handleEnableBrowserAlerts()}
                         className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-black text-white transition hover:bg-blue-700"
                       >
                         <Bell className="h-4 w-4" />
@@ -988,13 +788,12 @@ function SosControlCentreContent() {
               )}
 
               <section className="mt-5 grid gap-5 xl:grid-cols-[400px_minmax(0,1fr)]">
+                {/* ====== UPDATED: LEFT SIDEBAR WITH HORIZONTAL CARDS ====== */}
                 <aside className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
                   <div className="border-b border-gray-200 p-4 dark:border-gray-800">
                     <div className="flex items-center justify-between gap-3">
                       <div>
-                        <h2 className="font-black">
-                          Emergency queue
-                        </h2>
+                        <h2 className="font-black">Emergency queue</h2>
 
                         <p className="mt-1 flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
                           <Clock3 className="h-3.5 w-3.5" />
@@ -1013,11 +812,7 @@ function SosControlCentreContent() {
                       <input
                         type="search"
                         value={searchTerm}
-                        onChange={(event) =>
-                          setSearchTerm(
-                            event.target.value,
-                          )
-                        }
+                        onChange={(event) => setSearchTerm(event.target.value)}
                         placeholder="Search student, case or location…"
                         className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-10 text-sm outline-none transition focus:border-[var(--accent-500)] focus:ring-2 focus:ring-[var(--accent-500)]/15 dark:border-gray-700 dark:bg-gray-950"
                       />
@@ -1025,9 +820,7 @@ function SosControlCentreContent() {
                       {searchTerm && (
                         <button
                           type="button"
-                          onClick={() =>
-                            setSearchTerm("")
-                          }
+                          onClick={() => setSearchTerm("")}
                           className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800"
                           aria-label="Clear SOS search"
                         >
@@ -1039,109 +832,85 @@ function SosControlCentreContent() {
                     <div className="mt-3 flex gap-2">
                       {(
                         [
-                          {
-                            id: "all",
-                            label: "All",
-                            count:
-                              counts.total,
-                          },
-                          {
-                            id: "unseen",
-                            label: "Unseen",
-                            count:
-                              counts.unseen,
-                          },
-                          {
-                            id: "seen",
-                            label: "Seen",
-                            count:
-                              counts.seen,
-                          },
-                        ] as Array<{
-                          id: SosFilter;
-                          label: string;
-                          count: number;
-                        }>
-                      ).map(
-                        (filter) => (
-                          <button
-                            key={filter.id}
-                            type="button"
-                            onClick={() =>
-                              setActiveFilter(
-                                filter.id,
-                              )
-                            }
-                            className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border px-2 py-2 text-xs font-bold transition ${
-                              activeFilter ===
-                              filter.id
-                                ? "border-[var(--accent-700)] bg-[var(--accent-700)] text-white"
-                                : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+                          { id: "all", label: "All", count: counts.total },
+                          { id: "unseen", label: "Unseen", count: counts.unseen },
+                          { id: "seen", label: "Seen", count: counts.seen },
+                        ] as Array<{ id: SosFilter; label: string; count: number }>
+                      ).map((filter) => (
+                        <button
+                          key={filter.id}
+                          type="button"
+                          onClick={() => setActiveFilter(filter.id)}
+                          className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border px-2 py-2 text-xs font-bold transition ${
+                            activeFilter === filter.id
+                              ? "border-[var(--accent-700)] bg-[var(--accent-700)] text-white"
+                              : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+                          }`}
+                        >
+                          {filter.label}
+
+                          <span
+                            className={`rounded-full px-1.5 py-0.5 text-[9px] ${
+                              activeFilter === filter.id
+                                ? "bg-white/20 text-white"
+                                : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-300"
                             }`}
                           >
-                            {filter.label}
-
-                            <span
-                              className={`rounded-full px-1.5 py-0.5 text-[9px] ${
-                                activeFilter ===
-                                filter.id
-                                  ? "bg-white/20 text-white"
-                                  : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-300"
-                              }`}
-                            >
-                              {filter.count}
-                            </span>
-                          </button>
-                        ),
-                      )}
+                            {filter.count}
+                          </span>
+                        </button>
+                      ))}
                     </div>
                   </div>
 
-                  <div className="max-h-[930px] space-y-3 overflow-y-auto p-3">
+                  {/* ====== HORIZONTAL SCROLLABLE CARDS ====== */}
+                  <div className="overflow-x-auto p-3">
                     {loading ? (
-                      <QueueLoading />
-                    ) : filteredAlerts.length >
-                      0 ? (
-                      filteredAlerts.map(
-                        (alert) => (
-                          <SosCaseCard
-                            key={
-                              alert.notificationId
-                            }
-                            alert={alert}
-                            selected={
-                              alert.notificationId ===
-                              selectedAlert?.notificationId
-                            }
-                            newest={
-                              alert.notificationId ===
-                              newestAlert?.notificationId
-                            }
-                            onSelect={() =>
-                              selectAlert(
-                                alert,
-                              )
-                            }
-                            onOpenMap={() =>
-                              openMap(alert)
-                            }
-                          />
-                        ),
-                      )
+                      <div className="flex gap-3">
+                        {Array.from({ length: 4 }).map((_, index) => (
+                          <div
+                            key={index}
+                            className="min-w-[280px] animate-pulse rounded-2xl border border-gray-200 p-4 dark:border-gray-800"
+                          >
+                            <div className="flex gap-3">
+                              <div className="h-11 w-11 rounded-xl bg-gray-200 dark:bg-gray-800" />
+
+                              <div className="flex-1">
+                                <div className="h-3 w-1/2 rounded bg-gray-200 dark:bg-gray-800" />
+                                <div className="mt-2 h-2.5 w-1/3 rounded bg-gray-200 dark:bg-gray-800" />
+                                <div className="mt-4 h-2.5 w-full rounded bg-gray-200 dark:bg-gray-800" />
+                                <div className="mt-2 h-2.5 w-4/5 rounded bg-gray-200 dark:bg-gray-800" />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : filteredAlerts.length > 0 ? (
+                      <div className="flex gap-3">
+                        {filteredAlerts.map((alert) => (
+                          <div key={alert.notificationId} className="min-w-[280px] max-w-[320px]">
+                            <SosCaseCard
+                              alert={alert}
+                              selected={alert.notificationId === selectedAlert?.notificationId}
+                              newest={alert.notificationId === newestAlert?.notificationId}
+                              onSelect={() => selectAlert(alert)}
+                              onOpenMap={() => openMap(alert)}
+                            />
+                          </div>
+                        ))}
+                      </div>
                     ) : (
-                      <div className="rounded-2xl border border-dashed border-gray-300 p-8 text-center dark:border-gray-700">
+                      <div className="min-h-[200px] rounded-2xl border border-dashed border-gray-300 p-8 text-center dark:border-gray-700">
                         <Siren className="mx-auto h-9 w-9 text-gray-300 dark:text-gray-600" />
 
                         <p className="mt-3 text-sm font-black">
-                          {sortedAlerts.length ===
-                          0
+                          {sortedAlerts.length === 0
                             ? "No student SOS records yet"
                             : "No matching SOS cases"}
                         </p>
 
                         <p className="mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400">
-                          {sortedAlerts.length ===
-                          0
+                          {sortedAlerts.length === 0
                             ? "New SOS reports will appear here immediately."
                             : "Change the filter or clear the search."}
                         </p>
@@ -1153,24 +922,10 @@ function SosControlCentreContent() {
                 {selectedAlert ? (
                   <SelectedSosCase
                     alert={selectedAlert}
-                    newest={
-                      selectedAlert.notificationId ===
-                      newestAlert?.notificationId
-                    }
-                    markingSeen={
-                      markingSeenId ===
-                      selectedAlert.notificationId
-                    }
-                    onOpenMap={() =>
-                      openMap(
-                        selectedAlert,
-                      )
-                    }
-                    onMarkSeen={() =>
-                      void markAlertSeen(
-                        selectedAlert,
-                      )
-                    }
+                    newest={selectedAlert.notificationId === newestAlert?.notificationId}
+                    markingSeen={markingSeenId === selectedAlert.notificationId}
+                    onOpenMap={() => openMap(selectedAlert)}
+                    onMarkSeen={() => void markAlertSeen(selectedAlert)}
                   />
                 ) : (
                   <section className="flex min-h-[520px] items-center justify-center rounded-3xl border border-gray-200 bg-white p-8 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
@@ -1182,9 +937,7 @@ function SosControlCentreContent() {
                       </h2>
 
                       <p className="mt-2 max-w-md text-sm leading-6 text-gray-500 dark:text-gray-400">
-                        Select an emergency
-                        from the newest-first
-                        queue.
+                        Select an emergency from the newest-first queue.
                       </p>
                     </div>
                   </section>
@@ -1194,48 +947,21 @@ function SosControlCentreContent() {
           </main>
         </div>
 
-        {mapAlert &&
-          mapAlert.latitude !==
-            null &&
-          mapAlert.longitude !==
-            null && (
-            <SosLocationMapModal
-              isOpen
-              onClose={closeMap}
-              latitude={
-                mapAlert.latitude
-              }
-              longitude={
-                mapAlert.longitude
-              }
-              title={`${mapAlert.studentName} · ${mapAlert.alertId}`}
-              locationName={
-                locationParts(
-                  mapAlert,
-                ).name
-              }
-              locationDetail={
-                locationParts(
-                  mapAlert,
-                ).detail
-              }
-              statusLabel={
-                mapAlert.read
-                  ? "Seen"
-                  : "New SOS"
-              }
-              isSeen={mapAlert.read}
-              isMarkingSeen={
-                markingSeenId ===
-                mapAlert.notificationId
-              }
-              onMarkSeen={() =>
-                markAlertSeen(
-                  mapAlert,
-                )
-              }
-            />
-          )}
+        {mapAlert && mapAlert.latitude !== null && mapAlert.longitude !== null && (
+          <SosLocationMapModal
+            isOpen
+            onClose={closeMap}
+            latitude={mapAlert.latitude}
+            longitude={mapAlert.longitude}
+            title={`${mapAlert.studentName} · ${mapAlert.alertId}`}
+            locationName={locationParts(mapAlert).name}
+            locationDetail={locationParts(mapAlert).detail}
+            statusLabel={mapAlert.read ? "Seen" : "New SOS"}
+            isSeen={mapAlert.read}
+            isMarkingSeen={markingSeenId === mapAlert.notificationId}
+            onMarkSeen={() => markAlertSeen(mapAlert)}
+          />
+        )}
       </div>
     </ProtectedRoute>
   );
@@ -1645,25 +1371,13 @@ function SosCaseCard({
   onSelect: () => void;
   onOpenMap: () => void;
 }) {
-  const Icon =
-    incidentIcon(
-      alert.incidentType,
-    );
-
-  const location =
-    locationParts(alert);
-
-  const hasMap =
-    alert.latitude !== null &&
-    alert.longitude !== null;
+  const Icon = incidentIcon(alert.incidentType);
+  const location = locationParts(alert);
+  const hasMap = alert.latitude !== null && alert.longitude !== null;
 
   return (
     <article
-      className={`overflow-hidden rounded-2xl border border-l-4 transition ${
-        alert.read
-          ? "border-l-gray-300 dark:border-l-gray-700"
-          : "border-l-red-600"
-      } ${
+      className={`rounded-2xl border transition ${
         selected
           ? "border-[var(--accent-300)] bg-[var(--accent-50)] shadow-sm dark:border-[var(--accent-800)] dark:bg-[var(--accent-950)]/25"
           : "border-gray-200 bg-white hover:border-gray-300 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-gray-700"
@@ -1695,22 +1409,18 @@ function SosCaseCard({
 
                   {newest && (
                     <span className="rounded-full bg-red-600 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wide text-white">
-                      Latest
+                      LATEST
                     </span>
                   )}
                 </div>
 
                 <p className="mt-0.5 truncate text-xs text-gray-500 dark:text-gray-400">
-                  {alert.studentId ||
-                    alert.alertId}
+                  {alert.studentId || alert.alertId}
                 </p>
               </div>
 
               <span className="shrink-0 text-[10px] font-bold text-gray-400">
-                {formatRelativeTime(
-                  alert.reportedAt ||
-                    alert.createdAt,
-                )}
+                {formatRelativeTime(alert.reportedAt || alert.createdAt)}
               </span>
             </div>
 
@@ -1730,9 +1440,7 @@ function SosCaseCard({
                     : "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-red-300"
                 }`}
               >
-                {alert.read
-                  ? "Seen"
-                  : "Needs attention"}
+                {alert.read ? "Seen" : "Needs attention"}
               </span>
 
               <ChevronRight className="h-4 w-4 text-gray-300 dark:text-gray-600" />
@@ -1741,6 +1449,7 @@ function SosCaseCard({
         </div>
       </button>
 
+      {/* Bottom section with location */}
       <div className="border-t border-gray-200 bg-white/70 p-3 dark:border-gray-800 dark:bg-gray-900/60">
         <div className="flex items-start gap-2">
           <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-red-600" />
