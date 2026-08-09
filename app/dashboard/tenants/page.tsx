@@ -32,6 +32,7 @@ import { ProtectedRoute } from "@/components/protected-route";
 import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
 import { databases } from "@/lib/appwrite/config";
+import { buildTenantWriteData } from "@/lib/tenant-write-schema";
 import {
   getOwnedRequest,
   getOwnedTenant,
@@ -312,9 +313,10 @@ export default function TenantsPage() {
         ],
       );
 
-      const tenantData = {
+      const tenantData = buildTenantWriteData({
         organizationId: organization.$id,
         name: request.tenantName,
+        tenantId: request.tenantId,
         identifier: `TENANT-${Date.now()}-${Math.random()
           .toString(36)
           .slice(2, 8)
@@ -322,12 +324,13 @@ export default function TenantsPage() {
         phone: request.tenantPhone ?? "",
         email: request.tenantEmail,
         propertyName: request.propertyName,
+        propertyId: request.propertyId,
         status: "active",
         monthlyRent: request.proposedPrice,
         leaseStartDate:
           request.moveInDate || new Date().toISOString().slice(0, 10),
         avatar: request.tenantAvatar ?? "",
-      };
+      });
 
       if (existing.documents.length > 0) {
         const current = existing.documents[0];
@@ -338,9 +341,6 @@ export default function TenantsPage() {
           current.$id,
           {
             ...tenantData,
-            identifier:
-              String(current.identifier ?? current.Identifier ?? "") ||
-              tenantData.identifier,
           },
         );
       } else {

@@ -1440,6 +1440,243 @@ const notifyPropertyRequest = async (
   };
 };
 
+// NOOKLY_REQUEST_RESPONSE_PUSH_V1_FUNCTION
+const notifyPropertyRequestResponse = async (
+  req,
+  tables,
+  body,
+  diagnosticLog,
+) => {
+  const ownerAccountId = requireAuthenticatedUser(req);
+
+  const requestsTableId = requireConfiguredTable(
+    REQUESTS_TABLE_ID,
+    "Requests table",
+  );
+
+  const propertiesTableId = requireConfiguredTable(
+    PROPERTIES_TABLE_ID,
+    "Properties table",
+  );
+
+  requireConfiguredTable(USERS_TABLE_ID, "Users table");
+  requireConfiguredTable(
+    NOTIFICATIONS_TABLE_ID,
+    "Notifications table",
+  );
+
+  const requestId = String(body.requestId ?? "").trim();
+
+  if (!requestId) {
+    throw statusError(400, "requestId is required.");
+  }
+
+  const requestRow = await getRowOrNull(
+    tables,
+    requestsTableId,
+    requestId,
+  );
+
+  if (!requestRow) {
+    throw statusError(404, "The rental request could not be found.");
+  }
+
+  const propertyId = String(requestRow.propertyId ?? "").trim();
+
+  if (!propertyId) {
+    throw statusError(
+      409,
+      "The rental request does not contain a valid property ID.",
+    );
+  }
+
+  const property = await getRowOrNull(
+    tables,
+    propertiesTableId,
+    propertyId,
+  );
+
+  if (!property) {
+    throw statusError(404, "The requested property could not be found.");
+  }
+
+  const storedOwnerId = String(property.creatorId ?? "").trim();
+
+  if (!storedOwnerId || storedOwnerId !== ownerAccountId) {
+    throw statusError(
+      403,
+      "Only the property owner can send this rental-request response.",
+    );
+  }
+
+  const rawStatus = String(requestRow.status ?? "")
+    .trim()
+    .toLowerCase();
+
+  const status =
+    rawStatus === "accepted" || rawStatus === "approved"
+      ? "accepted"
+      : rawStatus === "rejected"
+        ? "rejected"
+        : "";
+
+  if (!status) {
+    throw statusError(
+      409,
+      "The rental request must be approved, accepted, or rejected first.",
+    );
+  }
+
+  const tenantAccountId = String(requestRow.tenantId ?? "").trim();
+
+  if (!tenantAccountId) {
+    throw statusError(
+      409,
+      "The rental request does not contain a valid tenant account ID.",
+    );
+  }
+
+  const ownerUser = await getUserRowByReference(
+    tables,
+    ownerAccountId,
+  );
+
+  const tenantUser = await getUserRowByReference(
+    tables,
+    tenantAccountId,
+  );
+
+  const organizationName = String(
+    ownerUser?.name ??
+      ownerUser?.organizationName ??
+      "The property organization",
+  ).trim() || "The property organization";
+
+  const tenantName = String(
+    requestRow.tenantName ?? tenantUser?.name ?? "Tenant",
+  ).trim() || "Tenant";
+
+  const propertyName = String(
+    requestRow.propertyName ??
+      property.propertyName ??
+      "Property",
+  ).trim() || "Property";
+
+  const rejectionReason = String(
+    requestRow.rejectionReason ?? "",
+  ).trim().slice(0, 500);
+
+  const notificationData = {
+    type: "request_response",
+    screen: "/myRequests",
+    source: "nookly_web_organization",
+    requestId,
+    propertyId,
+    propertyName,
+    tenantId: tenantAccountId,
+    tenantName,
+    organizationId: ownerAccountId,
+    organizationName,
+    status,
+    ...(status === "rejected" && rejectionReason
+      ? { rejectionReason }
+      : {}),
+    respondedAt:
+      requestRow.$updatedAt ?? new Date().toISOString(),
+  };
+
+  const title =
+    status === "accepted"
+      ? "Rental Request Accepted! 🎉"
+      : "Rental Request Declined";
+
+  const message =
+    status === "accepted"
+      ? 'Your rental request for "' +
+        propertyName +
+        '" has been accepted by ' +
+        organizationName +
+        "."
+      : 'Your rental request for "' +
+        propertyName +
+        '" was declined by ' +
+        organizationName +
+        "." +
+        (rejectionReason
+          ? " Reason: " + rejectionReason
+          : "");
+
+  const notificationRowId = (
+    "reqresp_" +
+    requestId +
+    "_" +
+    (status === "accepted" ? "ok" : "no")
+  ).slice(0, 36);
+
+  const inApp = await createInAppNotification(
+    tables,
+    {
+      rowId: notificationRowId,
+      recipientUserId: tenantAccountId,
+      title,
+      message,
+      type: "request",
+      data: notificationData,
+    },
+  );
+
+  if (!inApp.created) {
+    diagnosticLog(
+      JSON.stringify({
+        event: "property-request-response-duplicate",
+        requestId,
+        propertyId,
+        ownerAccountId,
+        tenantAccountId,
+        status,
+        notificationRowId,
+      }),
+    );
+
+    return {
+      skipped: true,
+      duplicate: true,
+      reason:
+        "This rental-request response notification was already processed.",
+      notificationRowId,
+      recipientUserId: tenantAccountId,
+      requestId,
+      propertyId,
+      status,
+      data: notificationData,
+    };
+  }
+
+  const push = await sendToUser(
+    tables,
+    tenantAccountId,
+    validateNotification({
+      title,
+      body: message,
+      data: notificationData,
+    }),
+    diagnosticLog,
+  );
+
+  return {
+    skipped: false,
+    duplicate: false,
+    notificationCreated: true,
+    notificationRowId,
+    recipientUserId: tenantAccountId,
+    requestId,
+    propertyId,
+    status,
+    data: notificationData,
+    push,
+  };
+};
+
 const notifyPropertyReview = async (
   req,
   tables,
@@ -2364,6 +2601,22 @@ export default async ({
       return ok(
         res,
         await notifyPropertyRequest(
+          req,
+          tables,
+          body,
+          log,
+        ),
+      );
+    }
+
+    // NOOKLY_REQUEST_RESPONSE_PUSH_V1_ROUTE
+    if (
+      method === "POST" &&
+      path === "/property-request-response"
+    ) {
+      return ok(
+        res,
+        await notifyPropertyRequestResponse(
           req,
           tables,
           body,

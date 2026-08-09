@@ -249,7 +249,7 @@ export async function listStudentSosAlerts(
       .map(parseStudentSosRow)
       .filter(
         (alert): alert is StudentSosAlert =>
-          Boolean(alert) &&
+          alert !== null &&
           alert.recipientUserId === normalizedUserId,
       ),
   );
@@ -278,7 +278,9 @@ export function subscribeToStudentSosAlerts({
   onState,
 }: {
   recipientUserId: string;
-  onEvent: (event: SosRealtimeEvent) => void;
+  onEvent: (
+    event: SosRealtimeEvent,
+  ) => void;
   onState: (
     state: SosRealtimeState,
     error?: Error,
@@ -287,93 +289,230 @@ export function subscribeToStudentSosAlerts({
   requireConfiguration();
 
   let active = true;
-  let subscription: RealtimeSubscription | null = null;
 
-  const channel = Channel.tablesdb(DATABASE_ID)
-    .table(NOTIFICATIONS_TABLE_ID)
-    .row();
+  let subscription:
+    | RealtimeSubscription
+    | null = null;
 
-  const subscribe = rawRealtime.subscribe.bind(
-    rawRealtime,
-  ) as unknown as (
-    channels: string | string[],
-    callback: (event: RealtimeEnvelope) => void,
-  ) => Promise<RealtimeSubscription>;
+  let retryTimer:
+    | ReturnType<
+        typeof setTimeout
+      >
+    | null = null;
 
-  onState("connecting");
+  let retryAttempt = 0;
 
-  void subscribe(channel, (event) => {
-    const events = Array.isArray(event.events)
-      ? event.events
-      : [];
-    const payload = event.payload;
+  const channel =
+    Channel.tablesdb(
+      DATABASE_ID,
+    )
+      .table(
+        NOTIFICATIONS_TABLE_ID,
+      )
+      .row();
 
-    const action: SosRealtimeEvent["action"] =
-      events.some((name) => name.endsWith(".delete"))
+  const subscribe =
+    rawRealtime.subscribe.bind(
+      rawRealtime,
+    ) as unknown as (
+      channels: unknown,
+      callback: (
+        event:
+          RealtimeEnvelope,
+      ) => void,
+    ) => Promise<
+      RealtimeSubscription
+    >;
+
+  const handleRealtimeEvent = (
+    event: RealtimeEnvelope,
+  ) => {
+    const events =
+      Array.isArray(
+        event.events,
+      )
+        ? event.events
+        : [];
+
+    const payload =
+      event.payload;
+
+    const action:
+      SosRealtimeEvent["action"] =
+      events.some(
+        (name) =>
+          name.endsWith(
+            ".delete",
+          ),
+      )
         ? "delete"
-        : events.some((name) => name.endsWith(".create"))
+        : events.some(
+              (name) =>
+                name.endsWith(
+                  ".create",
+                ),
+            )
           ? "create"
           : "update";
 
     const payloadRecord =
       payload &&
-      typeof payload === "object" &&
-      !Array.isArray(payload)
-        ? (payload as NotificationRow)
+      typeof payload ===
+        "object" &&
+      !Array.isArray(
+        payload,
+      )
+        ? (
+            payload as
+              NotificationRow
+          )
         : null;
 
-    const notificationId = text(payloadRecord?.$id);
-    const alert = parseStudentSosRow(payloadRecord);
+    const notificationId =
+      text(
+        payloadRecord?.$id,
+      );
 
-    if (action === "delete") {
-      if (notificationId) {
+    const alert =
+      parseStudentSosRow(
+        payloadRecord,
+      );
+
+    if (
+      action === "delete"
+    ) {
+      if (
+        notificationId
+      ) {
         onEvent({
           action,
           notificationId,
           alert: null,
         });
       }
+
       return;
     }
 
     if (
       !alert ||
-      alert.recipientUserId !== recipientUserId
+      alert.recipientUserId !==
+        recipientUserId
     ) {
       return;
     }
 
     onEvent({
       action,
-      notificationId: alert.notificationId,
+      notificationId:
+        alert.notificationId,
       alert,
     });
-  })
-    .then((nextSubscription) => {
+  };
+
+  const scheduleRetry = (
+    error: Error,
+  ) => {
+    if (!active) {
+      return;
+    }
+
+    onState(
+      "error",
+      error,
+    );
+
+    const delay =
+      Math.min(
+        30_000,
+        1_000 *
+          2 **
+            Math.min(
+              retryAttempt,
+              5,
+            ),
+      );
+
+    retryAttempt += 1;
+
+    retryTimer =
+      setTimeout(
+        () => {
+          retryTimer =
+            null;
+
+          void connect();
+        },
+        delay,
+      );
+  };
+
+  const connect =
+    async (): Promise<void> => {
       if (!active) {
-        void nextSubscription.unsubscribe();
         return;
       }
 
-      subscription = nextSubscription;
-      onState("connected");
-    })
-    .catch((caught) => {
-      const error =
-        caught instanceof Error
-          ? caught
-          : new Error(
-              "Unable to start the SOS realtime subscription.",
-            );
+      onState(
+        "connecting",
+      );
 
-      onState("error", error);
-    });
+      try {
+        const nextSubscription =
+          await subscribe(
+            channel,
+            handleRealtimeEvent,
+          );
+
+        if (!active) {
+          await nextSubscription
+            .unsubscribe();
+
+          return;
+        }
+
+        subscription =
+          nextSubscription;
+
+        retryAttempt = 0;
+
+        onState(
+          "connected",
+        );
+      } catch (caught) {
+        const error =
+          caught instanceof Error
+            ? caught
+            : new Error(
+                "Unable to start the SOS realtime subscription.",
+              );
+
+        scheduleRetry(
+          error,
+        );
+      }
+    };
+
+  void connect();
 
   return () => {
     active = false;
 
+    if (retryTimer) {
+      clearTimeout(
+        retryTimer,
+      );
+
+      retryTimer =
+        null;
+    }
+
     if (subscription) {
-      void subscription.unsubscribe();
+      void subscription
+        .unsubscribe();
+
+      subscription =
+        null;
     }
   };
 }

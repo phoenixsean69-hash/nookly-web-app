@@ -15,7 +15,6 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
-import { RealtimeResponseEvent } from "appwrite";
 import {
   useCallback,
   useEffect,
@@ -30,13 +29,12 @@ import { Sidebar } from "@/components/dashboard/sidebar";
 import { ProtectedRoute } from "@/components/protected-route";
 import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
-import client, { databases } from "@/lib/appwrite/config";
+import { databases } from "@/lib/appwrite/config";
 import {
   getOrganizationPropertyReferences,
   listOrganizationProperties,
   listOrganizationQueries,
 } from "@/lib/appwrite/helpers";
-import { notificationService } from "@/lib/notification-service";
 
 type InquiryStatus = "pending" | "in-progress" | "resolved";
 type InquiryCategory = "information" | "complaint" | "other";
@@ -202,37 +200,49 @@ export default function MessagesPage() {
   }, [loadInquiries]);
 
   useEffect(() => {
-    if (!organization?.userId) return;
+    const refreshFromRealtime = () => {
+      void loadInquiries(false);
+    };
 
-    const unsubscribe = client.subscribe<
-      RealtimeResponseEvent<Record<string, unknown>>
-    >(
-      `databases.${process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID}.collections.${process.env.NEXT_PUBLIC_APPWRITE_QUERIES_COLLECTION_ID}.documents`,
-      (event) => {
-        const payload = event.payload;
-        const reference = String(payload?.referenceProperty ?? "");
-
-        if (!ownedReferences.current.has(reference)) {
-          return;
-        }
-
-        if (event.events.some((name) => name.includes("documents.create"))) {
-          const writer = String(payload.writer ?? "A Nookly user");
-          notificationService.sendPropertyRequestNotification(
-            writer,
-            reference || "your property",
-            String(payload.body ?? ""),
-            String(payload.$id ?? ""),
-          );
-        }
-
-        void loadInquiries(false);
-        window.dispatchEvent(new CustomEvent("messagesUpdated"));
-      },
+    window.addEventListener(
+      "messagesUpdated",
+      refreshFromRealtime,
     );
 
-    return unsubscribe;
-  }, [loadInquiries, organization?.userId]);
+    return () => {
+      window.removeEventListener(
+        "messagesUpdated",
+        refreshFromRealtime,
+      );
+    };
+  }, [loadInquiries]);
+
+  useEffect(() => {
+    if (
+      typeof window === "undefined" ||
+      inquiries.length === 0
+    ) {
+      return;
+    }
+
+    const requestedMessageId =
+      new URLSearchParams(
+        window.location.search,
+      ).get("message");
+
+    if (
+      requestedMessageId &&
+      inquiries.some(
+        (inquiry) =>
+          inquiry.$id ===
+          requestedMessageId,
+      )
+    ) {
+      setSelectedId(
+        requestedMessageId,
+      );
+    }
+  }, [inquiries]);
 
   useEffect(() => {
     setResponseText(selectedInquiry?.response ?? "");
@@ -635,7 +645,7 @@ export default function MessagesPage() {
                           disabled={saving || !responseText.trim()}
                           className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent-700)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 disabled:opacity-50"
                         >
-                          <Send className="h-4 w-4" />
+                          
                           {saving ? "Saving…" : "Save response"}
                         </button>
                       </div>

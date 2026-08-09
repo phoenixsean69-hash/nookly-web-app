@@ -24,6 +24,8 @@ import {
   UserRound,
   WifiOff,
   X,
+  Flame,
+  TrendingUp,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -57,6 +59,21 @@ type SosFilter =
   | "all"
   | "unseen"
   | "seen";
+
+// ====== HEATMAP DATA STRUCTURE ======
+interface HeatmapDataPoint {
+  lat: number;
+  lng: number;
+  weight: number;
+  incidentType: string;
+}
+
+interface HeatmapStats {
+  totalAlerts: number;
+  uniqueLocations: number;
+  hotZones: HeatmapDataPoint[];
+  topLocations: { name: string; count: number }[];
+}
 
 function useDashboardMargin(): string {
   const [collapsed, setCollapsed] =
@@ -355,6 +372,64 @@ function realtimeMeta(
   }
 }
 
+// ====== HEATMAP UTILITY FUNCTIONS ======
+function generateHeatmapData(
+  alerts: StudentSosAlert[],
+): HeatmapStats {
+  const validAlerts = alerts.filter(
+    (alert) =>
+      alert.latitude !== null &&
+      alert.longitude !== null
+  );
+
+  // Group by location (rounded to 3 decimal places ~100m accuracy)
+  const locationGroups = new Map<string, { count: number; lat: number; lng: number; incidentTypes: string[] }>();
+
+  validAlerts.forEach((alert) => {
+    const key = `${alert.latitude!.toFixed(3)},${alert.longitude!.toFixed(3)}`;
+    const existing = locationGroups.get(key);
+
+    if (existing) {
+      existing.count += 1;
+      if (!existing.incidentTypes.includes(alert.incidentType)) {
+        existing.incidentTypes.push(alert.incidentType);
+      }
+    } else {
+      locationGroups.set(key, {
+        count: 1,
+        lat: alert.latitude!,
+        lng: alert.longitude!,
+        incidentTypes: [alert.incidentType],
+      });
+    }
+  });
+
+  const hotZones: HeatmapDataPoint[] = Array.from(locationGroups.entries()).map(
+    ([key, data]) => ({
+      lat: data.lat,
+      lng: data.lng,
+      weight: data.count,
+      incidentType: data.incidentTypes.join(", "),
+    })
+  );
+
+  // Sort by weight (highest first)
+  hotZones.sort((a, b) => b.weight - a.weight);
+
+  // Get top locations with names
+  const topLocations = hotZones.slice(0, 5).map((zone) => ({
+    name: `Location ${zone.lat.toFixed(3)}, ${zone.lng.toFixed(3)}`,
+    count: zone.weight,
+  }));
+
+  return {
+    totalAlerts: validAlerts.length,
+    uniqueLocations: locationGroups.size,
+    hotZones,
+    topLocations,
+  };
+}
+
 export default function SosControlCentrePage() {
   return (
     <Suspense
@@ -400,20 +475,25 @@ function SosControlCentreContent() {
     enableBrowserNotifications,
   } = useSosAlerts();
 
-  const [selectedAlertId, setSelectedAlertId] = useState("");
+  const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
   const [mapAlertId, setMapAlertId] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<SosFilter>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [markingSeenId, setMarkingSeenId] = useState<string | null>(null);
+  const [showHeatmap, setShowHeatmap] = useState(false);
 
   const dark = resolvedTheme === "dark";
   const organizationName = organization?.name || "University";
 
   const sortedAlerts = useMemo(() => sortNewestFirst(alerts), [alerts]);
 
+  // Generate heatmap data
+  const heatmapStats = useMemo(() => generateHeatmapData(alerts), [alerts]);
+
+  // Handle URL params and selection
   useEffect(() => {
     if (sortedAlerts.length === 0) {
-      setSelectedAlertId("");
+      setSelectedAlertId(null);
       setMapAlertId(null);
       return;
     }
@@ -426,34 +506,24 @@ function SosControlCentreContent() {
         )
       : null;
 
-    setSelectedAlertId((currentId) => {
-      const currentStillExists = sortedAlerts.some(
-        (alert) => alert.notificationId === currentId
-      );
-
-      if (requestedAlert) {
-        return requestedAlert.notificationId;
-      }
-
-      if (currentStillExists) {
-        return currentId;
-      }
-
-      return sortedAlerts[0].notificationId;
-    });
+    if (requestedAlert) {
+      setSelectedAlertId(requestedAlert.notificationId);
+    } else if (selectedAlertId === null) {
+      // Don't auto-select
+    }
 
     if (searchParams.get("map") === "1") {
       const target = requestedAlert || sortedAlerts[0];
 
-      if (target.latitude !== null && target.longitude !== null) {
+      if (target?.latitude !== null && target?.longitude !== null) {
         setMapAlertId(target.notificationId);
       }
     }
   }, [searchParams, sortedAlerts]);
 
-  const selectedAlert = sortedAlerts.find(
-    (alert) => alert.notificationId === selectedAlertId
-  ) || null;
+  const selectedAlert = selectedAlertId
+    ? sortedAlerts.find((alert) => alert.notificationId === selectedAlertId) || null
+    : null;
 
   const mapAlert = sortedAlerts.find(
     (alert) => alert.notificationId === mapAlertId
@@ -509,6 +579,13 @@ function SosControlCentreContent() {
     setSelectedAlertId(alert.notificationId);
 
     router.replace(`/dashboard/sos?alert=${encodeURIComponent(alert.notificationId)}`, {
+      scroll: false,
+    });
+  };
+
+  const closeModal = () => {
+    setSelectedAlertId(null);
+    router.replace("/dashboard/sos", {
       scroll: false,
     });
   };
@@ -662,6 +739,19 @@ function SosControlCentreContent() {
                   </div>
 
                   <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowHeatmap(!showHeatmap)}
+                      className={`inline-flex items-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-bold transition ${
+                        showHeatmap
+                          ? "border-red-500 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950/30 dark:text-red-300"
+                          : "border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+                      }`}
+                    >
+                      <Flame className="h-4 w-4" />
+                      {showHeatmap ? "Hide" : "Show"} hotspots
+                    </button>
+
                     {unreadCount > 0 && (
                       <button
                         type="button"
@@ -725,6 +815,138 @@ function SosControlCentreContent() {
                 </div>
               </section>
 
+              {/* ====== HEATMAP SECTION ====== */}
+              {showHeatmap && (
+                <section className="mt-4 overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+                  <div className="border-b border-gray-200 p-4 dark:border-gray-800">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100 text-red-600 dark:bg-red-950/40 dark:text-red-400">
+                          <Flame className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <h2 className="font-black">Emergency Hotspots</h2>
+                          <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                            {heatmapStats.totalAlerts} SOS calls from {heatmapStats.uniqueLocations} unique locations
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400">
+                        <span>Low</span>
+                        <div className="flex gap-0.5">
+                          <div className="h-3 w-4 rounded-sm bg-blue-200 dark:bg-blue-900" />
+                          <div className="h-3 w-4 rounded-sm bg-yellow-200 dark:bg-yellow-900" />
+                          <div className="h-3 w-4 rounded-sm bg-orange-300 dark:bg-orange-800" />
+                          <div className="h-3 w-4 rounded-sm bg-red-500 dark:bg-red-700" />
+                        </div>
+                        <span>High</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4">
+                    {heatmapStats.hotZones.length > 0 ? (
+                      <div className="space-y-4">
+                        {/* Heatmap visualization */}
+                        <div className="relative h-[300px] w-full overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-950">
+                          {/* Simplified heatmap visualization */}
+                          <div className="absolute inset-0 flex items-center justify-center p-4">
+                            <div className="relative h-full w-full">
+                              {/* Grid of heat spots */}
+                              {heatmapStats.hotZones.slice(0, 20).map((zone, index) => {
+                                // Calculate position based on lat/lng (simplified)
+                                const x = ((zone.lng + 180) / 360) * 100;
+                                const y = ((90 - zone.lat) / 180) * 100;
+                                const size = Math.min(zone.weight * 8, 80);
+                                const opacity = Math.min(zone.weight / 10, 0.9);
+
+                                // Color based on weight
+                                let color = "bg-blue-400";
+                                if (zone.weight >= 5) color = "bg-red-500";
+                                else if (zone.weight >= 3) color = "bg-orange-400";
+                                else if (zone.weight >= 2) color = "bg-yellow-400";
+
+                                return (
+                                  <div
+                                    key={index}
+                                    className={`absolute rounded-full ${color} transition-all`}
+                                    style={{
+                                      left: `${x}%`,
+                                      top: `${y}%`,
+                                      width: `${size}px`,
+                                      height: `${size}px`,
+                                      opacity: opacity,
+                                      transform: "translate(-50%, -50%)",
+                                      boxShadow: `0 0 ${size * 2}px ${color.replace("bg-", "")}80`,
+                                    }}
+                                  >
+                                    <div className="absolute inset-0 flex items-center justify-center text-[8px] font-black text-white">
+                                      {zone.weight > 1 ? zone.weight : ""}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+
+                              {/* Grid lines */}
+                              <div className="absolute inset-0 pointer-events-none">
+                                <div className="absolute left-1/4 top-0 bottom-0 border-l border-gray-300/30 dark:border-gray-700/30" />
+                                <div className="absolute left-2/4 top-0 bottom-0 border-l border-gray-300/30 dark:border-gray-700/30" />
+                                <div className="absolute left-3/4 top-0 bottom-0 border-l border-gray-300/30 dark:border-gray-700/30" />
+                                <div className="absolute top-1/4 left-0 right-0 border-t border-gray-300/30 dark:border-gray-700/30" />
+                                <div className="absolute top-2/4 left-0 right-0 border-t border-gray-300/30 dark:border-gray-700/30" />
+                                <div className="absolute top-3/4 left-0 right-0 border-t border-gray-300/30 dark:border-gray-700/30" />
+                              </div>
+
+                              {/* Legend label */}
+                              <div className="absolute bottom-2 left-2 rounded-lg bg-black/60 px-2 py-1 text-[8px] font-bold text-white backdrop-blur-sm">
+                                Approximate heatmap · {heatmapStats.uniqueLocations} clusters
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Top locations */}
+                        {heatmapStats.topLocations.length > 0 && (
+                          <div className="rounded-xl border border-gray-200 p-4 dark:border-gray-700">
+                            <h4 className="mb-3 flex items-center gap-2 text-xs font-black">
+                              <TrendingUp className="h-4 w-4 text-red-500" />
+                              Top SOS hotspots
+                            </h4>
+                            <div className="space-y-2">
+                              {heatmapStats.topLocations.map((location, index) => (
+                                <div
+                                  key={index}
+                                  className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2 dark:bg-gray-950/60"
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-100 text-[9px] font-black text-red-600 dark:bg-red-950/40 dark:text-red-300">
+                                      {index + 1}
+                                    </span>
+                                    <span className="text-xs font-bold">{location.name}</span>
+                                  </div>
+                                  <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-black text-red-600 dark:bg-red-950/40 dark:text-red-300">
+                                    {location.count} SOS
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="flex min-h-[200px] flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 p-8 text-center dark:border-gray-700">
+                        <MapPin className="h-10 w-10 text-gray-300 dark:text-gray-600" />
+                        <p className="mt-3 text-sm font-black">No location data available</p>
+                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                          SOS alerts with GPS coordinates will appear here as a heatmap.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </section>
+              )}
+
               {notificationPermission !== "granted" &&
                 notificationPermission !== "unsupported" && (
                   <section
@@ -787,8 +1009,8 @@ function SosControlCentreContent() {
                 </section>
               )}
 
-              <section className="mt-5 grid gap-5 xl:grid-cols-[400px_minmax(0,1fr)]">
-                {/* ====== UPDATED: LEFT SIDEBAR WITH HORIZONTAL CARDS ====== */}
+              {/* ====== QUEUE SECTION - NO DETAILS PANEL ====== */}
+              <section className="mt-5">
                 <aside className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
                   <div className="border-b border-gray-200 p-4 dark:border-gray-800">
                     <div className="flex items-center justify-between gap-3">
@@ -918,35 +1140,24 @@ function SosControlCentreContent() {
                     )}
                   </div>
                 </aside>
-
-                {selectedAlert ? (
-                  <SelectedSosCase
-                    alert={selectedAlert}
-                    newest={selectedAlert.notificationId === newestAlert?.notificationId}
-                    markingSeen={markingSeenId === selectedAlert.notificationId}
-                    onOpenMap={() => openMap(selectedAlert)}
-                    onMarkSeen={() => void markAlertSeen(selectedAlert)}
-                  />
-                ) : (
-                  <section className="flex min-h-[520px] items-center justify-center rounded-3xl border border-gray-200 bg-white p-8 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                    <div>
-                      <Siren className="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600" />
-
-                      <h2 className="mt-4 text-xl font-black">
-                        No SOS case selected
-                      </h2>
-
-                      <p className="mt-2 max-w-md text-sm leading-6 text-gray-500 dark:text-gray-400">
-                        Select an emergency from the newest-first queue.
-                      </p>
-                    </div>
-                  </section>
-                )}
               </section>
             </div>
           </main>
         </div>
 
+        {/* ====== SOS DETAILS MODAL ====== */}
+        {selectedAlert && (
+          <SosDetailsModal
+            alert={selectedAlert}
+            newest={selectedAlert.notificationId === newestAlert?.notificationId}
+            markingSeen={markingSeenId === selectedAlert.notificationId}
+            onClose={closeModal}
+            onOpenMap={() => openMap(selectedAlert)}
+            onMarkSeen={() => void markAlertSeen(selectedAlert)}
+          />
+        )}
+
+        {/* ====== MAP MODAL ====== */}
         {mapAlert && mapAlert.latitude !== null && mapAlert.longitude !== null && (
           <SosLocationMapModal
             isOpen
@@ -967,7 +1178,82 @@ function SosControlCentreContent() {
   );
 }
 
-function SelectedSosCase({
+// ====== SOS DETAILS MODAL ======
+function SosDetailsModal({
+  alert,
+  newest,
+  markingSeen,
+  onClose,
+  onOpenMap,
+  onMarkSeen,
+}: {
+  alert: StudentSosAlert;
+  newest: boolean;
+  markingSeen: boolean;
+  onClose: () => void;
+  onOpenMap: () => void;
+  onMarkSeen: () => void;
+}) {
+  // Close modal on Escape key
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
+
+  return (
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      {/* Modal */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-3xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900">
+          {/* Close button */}
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute right-4 top-4 z-10 rounded-full bg-gray-100 p-2 text-gray-500 transition hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+            aria-label="Close details"
+          >
+            <X className="h-5 w-5" />
+          </button>
+
+          {/* Content */}
+          <div className="p-6">
+            <SelectedSosCaseContent
+              alert={alert}
+              newest={newest}
+              markingSeen={markingSeen}
+              onOpenMap={onOpenMap}
+              onMarkSeen={onMarkSeen}
+            />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ====== SELECTED SOS CASE CONTENT ======
+function SelectedSosCaseContent({
   alert,
   newest,
   markingSeen,
@@ -980,20 +1266,12 @@ function SelectedSosCase({
   onOpenMap: () => void;
   onMarkSeen: () => void;
 }) {
-  const Icon =
-    incidentIcon(
-      alert.incidentType,
-    );
-
-  const location =
-    locationParts(alert);
-
-  const hasMap =
-    alert.latitude !== null &&
-    alert.longitude !== null;
+  const Icon = incidentIcon(alert.incidentType);
+  const location = locationParts(alert);
+  const hasMap = alert.latitude !== null && alert.longitude !== null;
 
   return (
-    <section className="space-y-5">
+    <div className="space-y-5">
       <article
         className={`overflow-hidden rounded-3xl border bg-white shadow-sm dark:bg-gray-900 ${
           alert.read
@@ -1354,10 +1632,11 @@ function SelectedSosCase({
           </article>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 
+// ====== SOS CASE CARD ======
 function SosCaseCard({
   alert,
   selected,
@@ -1480,6 +1759,7 @@ function SosCaseCard({
   );
 }
 
+// ====== QUEUE LOADING ======
 function QueueLoading() {
   return (
     <div className="space-y-3">
@@ -1506,6 +1786,7 @@ function QueueLoading() {
   );
 }
 
+// ====== SUMMARY CARD ======
 function SummaryCard({
   icon: Icon,
   label,
@@ -1556,6 +1837,7 @@ function SummaryCard({
   );
 }
 
+// ====== QUICK DETAIL ======
 function QuickDetail({
   icon: Icon,
   label,
@@ -1586,6 +1868,7 @@ function QuickDetail({
   );
 }
 
+// ====== RECORD ROW ======
 function RecordRow({
   label,
   value,

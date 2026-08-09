@@ -3,8 +3,8 @@ import type { Models } from "appwrite";
 export interface Tenant extends Models.Document {
   organizationId: string;
   name: string;
-  identifier: string;
-  phone: string;
+  identifier?: string;
+  phone?: string;
   email?: string;
   propertyName: string;
   status: "active" | "inactive" | "pending" | "pending_request";

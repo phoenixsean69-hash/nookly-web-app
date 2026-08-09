@@ -300,3 +300,34 @@ export async function sendDriverReinstatedPushNotification(
     },
   });
 }
+
+// NOOKLY_REQUEST_RESPONSE_PUSH_V1_SERVICE
+export interface RentalRequestResponseNotificationResult {
+  skipped: boolean;
+  duplicate?: boolean;
+  reason?: string;
+  notificationCreated?: boolean;
+  notificationRowId: string;
+  recipientUserId: string;
+  requestId: string;
+  propertyId: string;
+  status: "accepted" | "rejected";
+  data?: Record<string, unknown>;
+  push?: PushDeliveryResult;
+}
+
+export async function sendRentalRequestResponsePushNotification(
+  input: { requestId: string },
+): Promise<RentalRequestResponseNotificationResult> {
+  const requestId = input.requestId.trim();
+
+  if (!requestId) {
+    throw new Error("A valid rental request ID is required.");
+  }
+
+  return executePushRequest<RentalRequestResponseNotificationResult>(
+    "/property-request-response",
+    { requestId },
+  );
+}
+

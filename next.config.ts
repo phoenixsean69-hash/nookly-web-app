@@ -1,3 +1,4 @@
+import path from "node:path";
 import type { NextConfig } from "next";
 
 const remotePatterns: NonNullable<
@@ -20,33 +21,53 @@ const remotePatterns: NonNullable<
   },
 ];
 
-const endpoint = process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT;
+const endpoint =
+  process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT;
 
 if (endpoint) {
   try {
-    const endpointUrl = new URL(endpoint);
+    const endpointUrl =
+      new URL(endpoint);
 
     if (
       !remotePatterns.some(
         (pattern) =>
           typeof pattern !== "string" &&
-          pattern.hostname === endpointUrl.hostname,
+          pattern.hostname ===
+            endpointUrl.hostname,
       )
     ) {
       remotePatterns.push({
-        protocol: endpointUrl.protocol.replace(":", "") as "http" | "https",
-        hostname: endpointUrl.hostname,
-        port: endpointUrl.port,
-        pathname: "/v1/storage/buckets/**",
+        protocol:
+          endpointUrl.protocol.replace(
+            ":",
+            "",
+          ) as "http" | "https",
+        hostname:
+          endpointUrl.hostname,
+        port:
+          endpointUrl.port,
+        pathname:
+          "/v1/storage/buckets/**",
       });
     }
   } catch {
-    console.warn("NEXT_PUBLIC_APPWRITE_ENDPOINT is not a valid URL.");
+    console.warn(
+      "NEXT_PUBLIC_APPWRITE_ENDPOINT is not a valid URL.",
+    );
   }
 }
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["localhost", "127.0.0.1"],
+  allowedDevOrigins: [
+    "localhost",
+    "127.0.0.1",
+  ],
+
+  turbopack: {
+    root: path.resolve(__dirname),
+  },
+
   images: {
     remotePatterns,
   },

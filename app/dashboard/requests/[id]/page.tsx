@@ -26,10 +26,12 @@ import { ProtectedRoute } from "@/components/protected-route";
 import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
 import { databases } from "@/lib/appwrite/config";
+import { buildTenantWriteData } from "@/lib/tenant-write-schema";
 import {
   getOwnedRequest,
   listOrganizationProperties,
 } from "@/lib/appwrite/helpers";
+import { sendRentalRequestResponsePushNotification } from "@/lib/push-notification.service";
 import type { Property } from "@/types/property";
 
 interface RentalRequest {
@@ -168,6 +170,41 @@ export default function RequestDetailsPage() {
     );
   };
 
+  // NOOKLY_REQUEST_RESPONSE_PUSH_V1_HELPER
+  const notifyTenantOfDecision = async (requestId: string) => {
+    try {
+      const result = await sendRentalRequestResponsePushNotification({
+        requestId,
+      });
+
+      console.log("✅ Rental-request response notification processed:", {
+        skipped: result.skipped,
+        duplicate: result.duplicate ?? false,
+        notificationRowId: result.notificationRowId,
+        recipientUserId: result.recipientUserId,
+        status: result.status,
+        acceptedPushes: result.push?.accepted ?? 0,
+        failedPushes: result.push?.failed ?? 0,
+      });
+
+      if (result.skipped && result.reason) {
+        console.warn(
+          "⚠️ Rental-request response notification skipped:",
+          result.reason,
+        );
+      }
+    } catch (notificationError) {
+      console.error(
+        "❌ Rental-request response notification failed:",
+        notificationError,
+      );
+
+      toast.error(
+        "The request was updated, but the tenant notification could not be delivered.",
+      );
+    }
+  };
+
   const approve = async () => {
     if (!organization || !request || !property) return;
 
@@ -186,9 +223,10 @@ export default function RequestDetailsPage() {
         ],
       );
 
-      const tenantData = {
+      const tenantData = buildTenantWriteData({
         organizationId: organization.$id,
         name: request.tenantName,
+        tenantId: request.tenantId,
         identifier: `TENANT-${Date.now()}-${Math.random()
           .toString(36)
           .slice(2, 8)
@@ -196,12 +234,13 @@ export default function RequestDetailsPage() {
         email: request.tenantEmail,
         phone: request.tenantPhone ?? "",
         propertyName: request.propertyName,
+        propertyId: request.propertyId,
         status: "active",
         monthlyRent: request.proposedPrice,
         leaseStartDate:
           request.moveInDate || new Date().toISOString().slice(0, 10),
         avatar: request.tenantAvatar ?? "",
-      };
+      });
 
       if (existing.documents.length > 0) {
         const current = existing.documents[0];
@@ -239,6 +278,16 @@ export default function RequestDetailsPage() {
         updatePropertyAvailability(property, request.propertyName),
       ]);
 
+      // NOOKLY_REQUEST_RESPONSE_PUSH_V1_APPROVE
+      await notifyTenantOfDecision(request.$id).catch(
+        (notificationError) => {
+          console.warn(
+            "Rental request decision was saved, but its tenant push notification failed.",
+            notificationError,
+          );
+        },
+      );
+
       toast.success("Rental request approved.");
       await loadRequest();
       window.dispatchEvent(new CustomEvent("cacheRefreshed"));
@@ -267,6 +316,16 @@ export default function RequestDetailsPage() {
         {
           status: "rejected",
           rejectionReason: rejectionReason.trim(),
+        },
+      );
+
+      // NOOKLY_REQUEST_RESPONSE_PUSH_V1_REJECT
+      await notifyTenantOfDecision(request.$id).catch(
+        (notificationError) => {
+          console.warn(
+            "Rental request decision was saved, but its tenant push notification failed.",
+            notificationError,
+          );
         },
       );
 

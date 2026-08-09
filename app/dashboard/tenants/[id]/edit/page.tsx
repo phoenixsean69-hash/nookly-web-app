@@ -22,6 +22,7 @@ import { ProtectedRoute } from "@/components/protected-route";
 import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
 import { databases } from "@/lib/appwrite/config";
+import { buildTenantWriteData } from "@/lib/tenant-write-schema";
 import {
   getOwnedTenant,
   listOrganizationProperties,
@@ -206,17 +207,18 @@ export default function EditTenantPage() {
         process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
         process.env.NEXT_PUBLIC_APPWRITE_ORGANIZATION_TENANTS_COLLECTION_ID!,
         tenantId,
-        {
+        buildTenantWriteData({
           organizationId: organization.$id,
           name: form.name.trim(),
           identifier: form.identifier.trim(),
           email: form.email.trim(),
           phone: form.phone.trim(),
           propertyName: form.propertyName,
+          propertyId: form.propertyId,
           status: form.status,
           monthlyRent: Number(form.monthlyRent || 0),
           leaseStartDate: form.leaseStartDate,
-        },
+        }),
       );
 
       await Promise.allSettled([

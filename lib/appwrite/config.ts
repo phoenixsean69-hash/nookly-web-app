@@ -1,5 +1,7 @@
 "use client";
 
+import { sanitizeTenantWriteData } from "./tenant-write-sanitizer";
+
 import {
   Account as AppwriteAccount,
   Client,
@@ -143,7 +145,10 @@ class DatabasesAdapter {
       databaseId,
       collectionId,
       documentId,
-      data,
+      data: sanitizeTenantWriteData(
+        collectionId,
+        data,
+      ),
       permissions,
     });
   }
@@ -159,7 +164,10 @@ class DatabasesAdapter {
       databaseId,
       collectionId,
       documentId,
-      data,
+      data: sanitizeTenantWriteData(
+        collectionId,
+        data,
+      ),
       permissions,
     });
   }

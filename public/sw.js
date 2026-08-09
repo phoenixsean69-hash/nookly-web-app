@@ -43,6 +43,47 @@ function notificationData(payload) {
 
 function destinationFor(data) {
   if (
+    data.type === "request"
+  ) {
+    const requestId =
+      String(
+        data.requestId ||
+        data.request ||
+        "",
+      ).trim();
+
+    if (requestId) {
+      return `/dashboard/requests/${encodeURIComponent(
+        requestId,
+      )}`;
+    }
+
+    const legacyUrl =
+      typeof data.url === "string"
+        ? data.url.trim()
+        : "";
+
+    const legacyMatch =
+      legacyUrl.match(
+        /[?&](?:request|requestId)=([^&#]+)/,
+      );
+
+    if (legacyMatch?.[1]) {
+      try {
+        return `/dashboard/requests/${encodeURIComponent(
+          decodeURIComponent(
+            legacyMatch[1],
+          ),
+        )}`;
+      } catch {
+        return `/dashboard/requests/${encodeURIComponent(
+          legacyMatch[1],
+        )}`;
+      }
+    }
+  }
+
+  if (
     typeof data.url === "string" &&
     data.url.trim()
   ) {

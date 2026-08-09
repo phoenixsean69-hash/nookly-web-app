@@ -12,6 +12,7 @@ import { ID, Models, Query } from "appwrite";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
+import { deactivateCurrentWebPushSubscription } from "@/lib/web-push.service";
 import { account, databases } from "@/lib/appwrite/config";
 import { cacheService } from "@/lib/cache.service";
 import { CACHE_KEYS } from "@/lib/cache-keys";
@@ -243,6 +244,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = useCallback(async () => {
     try {
       if (navigator.onLine) {
+        try {
+          await deactivateCurrentWebPushSubscription({
+            userId: user?.$id,
+            unsubscribe: true,
+          });
+        } catch (pushError) {
+          console.error(
+            "Unable to deactivate this browser's PushSubscription:",
+            pushError,
+          );
+        }
+
         await account.deleteSession("current");
       }
     } catch (error) {
@@ -251,7 +264,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       clearLocalSession();
       router.replace("/login");
     }
-  }, [clearLocalSession, router]);
+  }, [clearLocalSession, router, user?.$id]);
 
   const register = useCallback(
     async (data: RegisterData) => {

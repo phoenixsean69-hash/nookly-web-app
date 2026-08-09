@@ -25,6 +25,7 @@ import {
   markStudentSosRead,
   subscribeToStudentSosAlerts,
 } from "@/lib/sos-alert.service";
+import { hasRegisteredWebPush } from "@/lib/web-push.service";
 import { notificationService } from "@/lib/notification-service";
 import type {
   SosNotificationPermission,
@@ -342,7 +343,9 @@ export function SosAlertProvider({
         ]);
       }
 
-      void showBrowserNotification(alert);
+      if (!hasRegisteredWebPush(user?.$id)) {
+        void showBrowserNotification(alert);
+      }
     },
     [playBuzzer, showBrowserNotification],
   );
@@ -620,7 +623,10 @@ export function SosAlertProvider({
         setRealtimeState(state);
 
         if (stateError) {
-          setError(stateError.message);
+          console.warn(
+            "SOS Realtime is reconnecting. Web Push and periodic refresh remain active.",
+            stateError,
+          );
         } else if (state === "connected") {
           setError("");
         }
