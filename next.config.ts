@@ -1,9 +1,13 @@
 import path from "node:path";
-import type { NextConfig } from "next";
 
-const remotePatterns: NonNullable<
-  NonNullable<NextConfig["images"]>["remotePatterns"]
-> = [
+type RemoteImagePattern = {
+  protocol: "http" | "https";
+  hostname: string;
+  port?: string;
+  pathname: string;
+};
+
+const remotePatterns: RemoteImagePattern[] = [
   {
     protocol: "https",
     hostname: "cloud.appwrite.io",
@@ -21,35 +25,27 @@ const remotePatterns: NonNullable<
   },
 ];
 
-const endpoint =
-  process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT;
+const endpoint = process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT;
 
 if (endpoint) {
   try {
-    const endpointUrl =
-      new URL(endpoint);
+    const endpointUrl = new URL(endpoint);
 
     if (
       !remotePatterns.some(
-        (pattern) =>
-          typeof pattern !== "string" &&
-          pattern.hostname ===
-            endpointUrl.hostname,
+        (pattern) => pattern.hostname === endpointUrl.hostname,
       )
     ) {
-      remotePatterns.push({
-        protocol:
-          endpointUrl.protocol.replace(
-            ":",
-            "",
-          ) as "http" | "https",
-        hostname:
-          endpointUrl.hostname,
-        port:
-          endpointUrl.port,
-        pathname:
-          "/v1/storage/buckets/**",
-      });
+      const protocol = endpointUrl.protocol.replace(":", "");
+
+      if (protocol === "http" || protocol === "https") {
+        remotePatterns.push({
+          protocol,
+          hostname: endpointUrl.hostname,
+          port: endpointUrl.port,
+          pathname: "/v1/storage/buckets/**",
+        });
+      }
     }
   } catch {
     console.warn(
@@ -58,11 +54,8 @@ if (endpoint) {
   }
 }
 
-const nextConfig: NextConfig = {
-  allowedDevOrigins: [
-    "localhost",
-    "127.0.0.1",
-  ],
+const nextConfig = {
+  allowedDevOrigins: ["localhost", "127.0.0.1"],
 
   turbopack: {
     root: path.resolve(__dirname),

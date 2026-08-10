@@ -5,13 +5,26 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  // Override default ignores of eslint-config-next.
+
   globalIgnores([
-    // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
+
+    // Nookly local repair/backup artifacts are not deployable source.
+    ".nookly-backups/**",
+    "nookly-sos-buzzer-until-seen/**",
+    "**/*.before-*.js",
+
+    // One-off local audit/install scripts.
+    "audit-*.cjs",
+    "install-*.cjs",
+    "remove-*.cjs",
+
+    // Temporary source copies created during repair work.
+    "drivers-page-with-inspect-rides-ui.tsx",
+    "organization-handler-with-inspect-rides.js",
   ]),
 ]);
 
