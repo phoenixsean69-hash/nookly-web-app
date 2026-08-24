@@ -173,13 +173,12 @@ body {
 /* NOOKLY_UNIVERSAL_POPPINS_START */
 
 /*
- * Universal Nookly typography
- * Poppins is loaded once by app/layout.tsx through next/font.
+ * Universal Nookly typography.
+ * --font-nookly is supplied at <html> by next/font.
  */
 :root {
   --nookly-font:
-    var(--font-nookly),
-    "Poppins",
+    var(--font-nookly, "Poppins"),
     ui-sans-serif,
     system-ui,
     -apple-system,
@@ -193,10 +192,11 @@ body {
   font-family: var(--nookly-font) !important;
 }
 
-/*
- * Native browser controls do not always inherit body typography,
- * so make them explicit.
- */
+body,
+body * {
+  font-family: var(--nookly-font) !important;
+}
+
 button,
 input,
 select,
@@ -217,41 +217,6 @@ td {
   font-family: var(--nookly-font) !important;
 }
 
-/* Text/content elements */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-span,
-a,
-div,
-section,
-article,
-aside,
-nav,
-header,
-footer,
-main,
-small,
-strong,
-b,
-em,
-i,
-blockquote,
-code,
-pre,
-kbd,
-samp {
-  font-family: var(--nookly-font) !important;
-}
-
-/*
- * Leaflet ships its own font-family defaults.
- * Override them so maps feel like the rest of Nookly.
- */
 .leaflet-container,
 .leaflet-control,
 .leaflet-popup,
@@ -259,11 +224,7 @@ samp {
 .leaflet-tooltip,
 .leaflet-bar,
 .leaflet-control-zoom,
-.leaflet-control-attribution {
-  font-family: var(--nookly-font) !important;
-}
-
-/* Toasts, dialogs and portal UI */
+.leaflet-control-attribution,
 [role="dialog"],
 [role="alert"],
 [role="status"],
@@ -272,14 +233,6 @@ samp {
 [role="tooltip"],
 [data-sonner-toaster],
 [data-hot-toast] {
-  font-family: var(--nookly-font) !important;
-}
-
-/*
- * Ensure nested UI inherits Poppins even where a component library
- * has placed its own font-family declaration.
- */
-body * {
   font-family: var(--nookly-font) !important;
 }
 

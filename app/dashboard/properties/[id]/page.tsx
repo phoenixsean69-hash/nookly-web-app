@@ -29,6 +29,7 @@ import {
   Trash2,
   UserRound,
   Users,
+  Video,
   WalletCards,
   X,
 } from "lucide-react";
@@ -841,6 +842,21 @@ function getBoardingVideos(records: BoardingPlace[]): string[] {
   );
 }
 
+function getPropertyVideos(property: Property): string[] {
+  return Array.from(
+    new Set(
+      [
+        property.video1,
+        property.video2,
+        property.video3,
+      ].filter(
+        (video): video is string =>
+          typeof video === "string" && video.trim().length > 0,
+      ),
+    ),
+  );
+}
+
 function parseCoordinate(value: unknown): number | null {
   if (typeof value === "number" && Number.isFinite(value)) {
     return value;
@@ -1112,7 +1128,14 @@ export default function PropertyDetailsPage() {
       );
 
       await Promise.allSettled(
-        [property.image1, property.image2, property.image3]
+        [
+          property.image1,
+          property.image2,
+          property.image3,
+          property.video1,
+          property.video2,
+          property.video3,
+        ]
           .filter((url): url is string => Boolean(url))
           .map(async (url) => {
             const fileId = fileIdFromUrl(url);
@@ -1448,6 +1471,8 @@ export default function PropertyDetailsPage() {
     property.image3,
   ].filter((image): image is string => Boolean(image));
 
+  const propertyVideos = getPropertyVideos(property);
+
   const facilities = parseFacilities(property.facilities);
 
   const declaredCapacity = Math.max(
@@ -1532,7 +1557,9 @@ export default function PropertyDetailsPage() {
     boardingPlaces.length > 0;
 
   const boardingRooms = getBoardingRoomSummaries(boardingPlaces);
-  const boardingVideos = getBoardingVideos(boardingPlaces);
+  const boardingVideos = getBoardingVideos(boardingPlaces).filter(
+    (video) => !propertyVideos.includes(video),
+  );
   const campusDistances = calculateCampusDistances(property, boardingPlaces);
   const nearestCampus = campusDistances[0] ?? null;
 
@@ -1926,6 +1953,45 @@ export default function PropertyDetailsPage() {
                   </section>
                 </aside>
               </section>
+
+              {/* NOOKLY_PROPERTY_VIDEO_DETAILS_STAGE1 */}
+              {propertyVideos.length > 0 && (
+                <section className="mt-5 rounded-3xl bg-white p-5 dark:bg-gray-900 sm:p-6">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <Video className="h-5 w-5 text-[var(--accent-700)]" />
+                        <h2 className="text-lg font-black">
+                          Property walk-through videos
+                        </h2>
+                      </div>
+                      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Compressed verification clips uploaded with this property.
+                      </p>
+                    </div>
+
+                    <span className="self-start rounded-full bg-gray-100 px-3 py-1 text-xs font-bold dark:bg-gray-800">
+                      {propertyVideos.length} video
+                      {propertyVideos.length === 1 ? "" : "s"}
+                    </span>
+                  </div>
+
+                  <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                    {propertyVideos.map((video, index) => (
+                      <video
+                        key={`${video}-${index}`}
+                        src={video}
+                        controls
+                        playsInline
+                        preload="metadata"
+                        className="aspect-video w-full rounded-2xl bg-black object-contain"
+                      >
+                        Your browser does not support video playback.
+                      </video>
+                    ))}
+                  </div>
+                </section>
+              )}
 
               <section className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <StatTile

@@ -61,6 +61,11 @@ import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
 import { databases, storage } from "@/lib/appwrite/config";
 import { updateOrganizationPropertyCount } from "@/lib/appwrite/helpers";
+import {
+  compressPropertyVideo,
+  inspectPropertyVideo,
+} from "@/lib/video-compression";
+import type { PropertyVideoInfo } from "@/lib/video-compression";
 
 const PROPERTY_BUCKET_ID =
   process.env.NEXT_PUBLIC_APPWRITE_PROPERTIES_BUCKET_ID!;
@@ -113,11 +118,15 @@ const curfewOptions = [
 ];
 
 type ImageKey = "image1" | "image2" | "image3";
+type VideoKey = "video1" | "video2" | "video3";
 type SlotField = "totalSlots" | "occupiedSlots" | "availableSlots";
 type RoomTypeCode = (typeof roomOptions)[number]["value"];
 
 type MediaFileState = Record<ImageKey, File | null>;
 type MediaPreviewState = Record<ImageKey, string>;
+type VideoFileState = Record<VideoKey, File | null>;
+type VideoPreviewState = Record<VideoKey, string>;
+type VideoInfoState = Record<VideoKey, PropertyVideoInfo | null>;
 
 interface FormState {
   propertyName: string;
@@ -314,6 +323,14 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+function formatVideoDuration(seconds: number): string {
+  const totalSeconds = Math.max(0, Math.ceil(seconds));
+  const minutes = Math.floor(totalSeconds / 60);
+  const remaining = String(totalSeconds % 60).padStart(2, "0");
+
+  return `${minutes}:${remaining}`;
+}
+
 function formatMoney(value: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -435,6 +452,26 @@ export default function NewPropertyPage() {
     image3: "",
   });
 
+  const [videoFiles, setVideoFiles] = useState<VideoFileState>({
+    video1: null,
+    video2: null,
+    video3: null,
+  });
+
+  const [videoPreviews, setVideoPreviews] = useState<VideoPreviewState>({
+    video1: "",
+    video2: "",
+    video3: "",
+  });
+
+  const [videoInfo, setVideoInfo] = useState<VideoInfoState>({
+    video1: null,
+    video2: null,
+    video3: null,
+  });
+
+  const [videoChecking, setVideoChecking] = useState<VideoKey | null>(null);
+
   const [showMapPicker, setShowMapPicker] = useState(false);
   const [mapMessage, setMapMessage] = useState("");
   const [showCustomFacility, setShowCustomFacility] = useState(false);
@@ -480,10 +517,15 @@ export default function NewPropertyPage() {
     [imageFiles],
   );
 
+  const selectedVideoCount = useMemo(
+    () => Object.values(videoFiles).filter(Boolean).length,
+    [videoFiles],
+  );
+
   const completedSteps = useMemo(() => {
     let completed = 0;
 
-    if (imageFiles.image1) completed += 1;
+    if (imageFiles.image1 && selectedVideoCount >= 2) completed += 1;
     if (
       form.propertyName.trim() &&
       form.type &&
@@ -506,6 +548,7 @@ export default function NewPropertyPage() {
     form.propertyName,
     form.type,
     imageFiles.image1,
+    selectedVideoCount,
     isBoarding,
     occupiedSlots,
     totalSlots,
@@ -568,6 +611,90 @@ export default function NewPropertyPage() {
   const removeImage = (key: ImageKey) => {
     setImageFiles((current) => ({ ...current, [key]: null }));
     removeObjectPreview(key);
+  };
+
+  const setVideoObjectPreview = useCallback(
+    (key: VideoKey, file: File) => {
+      setVideoPreviews((current) => {
+        const previous = current[key];
+
+        if (previous) {
+          URL.revokeObjectURL(previous);
+          previewUrls.current.delete(previous);
+        }
+
+        const next = URL.createObjectURL(file);
+        previewUrls.current.add(next);
+
+        return { ...current, [key]: next };
+      });
+    },
+    [],
+  );
+
+  const removeVideoObjectPreview = useCallback((key: VideoKey) => {
+    setVideoPreviews((current) => {
+      const previous = current[key];
+
+      if (previous) {
+        URL.revokeObjectURL(previous);
+        previewUrls.current.delete(previous);
+      }
+
+      return { ...current, [key]: "" };
+    });
+  }, []);
+
+  const selectVideo = async (key: VideoKey, file: File | null) => {
+    if (!file) return;
+
+    setError("");
+    setVideoChecking(key);
+
+    try {
+      const info = await inspectPropertyVideo(file);
+
+      setVideoFiles((current) => ({
+        ...current,
+        [key]: file,
+      }));
+
+      setVideoInfo((current) => ({
+        ...current,
+        [key]: info,
+      }));
+
+      setVideoObjectPreview(key, file);
+    } catch (selectionError) {
+      setError(
+        selectionError instanceof Error
+          ? selectionError.message
+          : "The selected video could not be checked.",
+      );
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    } finally {
+      setVideoChecking((current) =>
+        current === key ? null : current,
+      );
+    }
+  };
+
+  const removeVideo = (key: VideoKey) => {
+    setVideoFiles((current) => ({
+      ...current,
+      [key]: null,
+    }));
+
+    setVideoInfo((current) => ({
+      ...current,
+      [key]: null,
+    }));
+
+    removeVideoObjectPreview(key);
   };
 
   const updateAddress = (
@@ -866,6 +993,18 @@ export default function NewPropertyPage() {
       return "Image 1 is required.";
     }
 
+    if (videoChecking) {
+      return "Wait for Nookly to finish checking the selected video.";
+    }
+
+    if (selectedVideoCount < 2) {
+      return "Add at least 2 property verification videos.";
+    }
+
+    if (selectedVideoCount > 3) {
+      return "You can upload no more than 3 property verification videos.";
+    }
+
     const price = Number(form.price);
     const priceThreshold = Number(form.priceThreshold || 0);
     const area = Number(form.area);
@@ -975,6 +1114,12 @@ export default function NewPropertyPage() {
       image3: "",
     };
 
+    const uploadedVideos: Record<VideoKey, string> = {
+      video1: "",
+      video2: "",
+      video3: "",
+    };
+
     const listingDocumentId = ID.unique();
     let propertyCreated = false;
     let boardingCreated = false;
@@ -1002,12 +1147,33 @@ export default function NewPropertyPage() {
         },
       );
 
+      const videoQueue = (Object.keys(videoFiles) as VideoKey[])
+        .map((key, index) => ({
+          key,
+          index,
+          file: videoFiles[key],
+        }))
+        .filter(
+          (
+            item,
+          ): item is {
+            key: VideoKey;
+            index: number;
+            file: File;
+          } => Boolean(item.file),
+        );
+
+      const totalUploadSteps =
+        uploadQueue.length + videoQueue.length * 2 + 1;
+
+      let completedUploadSteps = 0;
+
       for (let index = 0; index < uploadQueue.length; index += 1) {
         const item = uploadQueue[index];
 
         setUploadProgress({
-          current: index + 1,
-          total: uploadQueue.length,
+          current: completedUploadSteps + 1,
+          total: totalUploadSteps,
           label: item.label,
         });
 
@@ -1019,6 +1185,50 @@ export default function NewPropertyPage() {
 
         uploadedFiles.push(uploaded);
         uploadedImages[item.key] = uploaded.url;
+        completedUploadSteps += 1;
+      }
+
+      for (const item of videoQueue) {
+        const videoNumber = item.index + 1;
+
+        setUploadProgress({
+          current: completedUploadSteps + 1,
+          total: totalUploadSteps,
+          label: `Compressing Video ${videoNumber} (0%)`,
+        });
+
+        const compressed = await compressPropertyVideo(
+          item.file,
+          ({ progress }) => {
+            setUploadProgress({
+              current: completedUploadSteps + 1,
+              total: totalUploadSteps,
+              label: `Compressing Video ${videoNumber} (${Math.round(
+                progress * 100,
+              )}%)`,
+            });
+          },
+        );
+
+        completedUploadSteps += 1;
+
+        setUploadProgress({
+          current: completedUploadSteps + 1,
+          total: totalUploadSteps,
+          label: `Uploading Video ${videoNumber} · ${formatFileSize(
+            compressed.originalBytes,
+          )} → ${formatFileSize(compressed.compressedBytes)}`,
+        });
+
+        const uploaded = await uploadFile(
+          compressed.file,
+          PROPERTY_BUCKET_ID,
+          `Video ${videoNumber}`,
+        );
+
+        uploadedFiles.push(uploaded);
+        uploadedVideos[item.key] = uploaded.url;
+        completedUploadSteps += 1;
       }
 
       const price = Number(form.price);
@@ -1044,8 +1254,8 @@ export default function NewPropertyPage() {
       );
 
       setUploadProgress({
-        current: uploadQueue.length,
-        total: uploadQueue.length,
+        current: completedUploadSteps + 1,
+        total: totalUploadSteps,
         label: "Saving property",
       });
 
@@ -1068,6 +1278,9 @@ export default function NewPropertyPage() {
           image1: uploadedImages.image1,
           image2: uploadedImages.image2,
           image3: uploadedImages.image3,
+          video1: uploadedVideos.video1,
+          video2: uploadedVideos.video2,
+          video3: uploadedVideos.video3,
           isAvailable,
           roomFor,
           curfew: form.curfew,
@@ -1088,8 +1301,8 @@ export default function NewPropertyPage() {
 
       if (isBoarding) {
         setUploadProgress({
-          current: uploadQueue.length,
-          total: uploadQueue.length,
+          current: completedUploadSteps + 1,
+          total: totalUploadSteps,
           label: "Saving boarding details",
         });
 
@@ -1243,7 +1456,11 @@ export default function NewPropertyPage() {
 
                 <div className="mt-4 grid gap-2 sm:grid-cols-5">
                   {[
-                    ["1", "Media", Boolean(imageFiles.image1)],
+                    [
+                      "1",
+                      "Media",
+                      Boolean(imageFiles.image1 && selectedVideoCount >= 2),
+                    ],
                     [
                       "2",
                       "Details",
@@ -1292,18 +1509,20 @@ export default function NewPropertyPage() {
                 </div>
               </div>
 
-              {/* Video Verification Notice */}
-              <div className="mb-5 rounded-2xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-900 dark:bg-blue-950/30">
+              {/* NOOKLY_PROPERTY_VIDEO_UPLOAD_STAGE1 */}
+              <div className="mb-5 rounded-2xl bg-blue-50 p-4 dark:bg-blue-950/30">
                 <div className="flex items-center gap-3">
                   <div className="rounded-full bg-blue-100 p-2 dark:bg-blue-900/50">
                     <Video className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div>
                     <p className="font-semibold text-blue-700 dark:text-blue-300">
-                      Video verification coming soon
+                      Compressed verification videos enabled
                     </p>
                     <p className="text-sm text-blue-600 dark:text-blue-400">
-                      Upload videos of your property to give tenants a virtual tour. This feature will be available in the next update.
+                      Add 2–3 walk-through clips. Nookly checks each clip first,
+                      then compresses it to a 720p MP4 before Appwrite upload.
+                      Your original large video is never uploaded.
                     </p>
                   </div>
                 </div>
@@ -1463,6 +1682,144 @@ export default function NewPropertyPage() {
                         );
                       },
                     )}
+                  </div>
+                </SectionCard>
+
+
+                <SectionCard
+                  icon={Video}
+                  title="Property Verification Videos"
+                  description="Add 2–3 short walk-through videos. Each video must be 90 seconds or shorter. Nookly compresses every clip before upload."
+                  cardClass={cardClass}
+                >
+                  <div className="mb-4 rounded-xl bg-blue-50 p-3 text-xs leading-5 text-blue-700 dark:bg-blue-950/30 dark:text-blue-300">
+                    Videos are converted locally to a web-friendly MP4,
+                    capped at 720p / 30 FPS and compressed before they are sent
+                    to Appwrite. Keep this tab open while publishing.
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-3">
+                    {(["video1", "video2", "video3"] as VideoKey[]).map(
+                      (key, index) => {
+                        const file = videoFiles[key];
+                        const preview = videoPreviews[key];
+                        const info = videoInfo[key];
+                        const required = index < 2;
+                        const checking = videoChecking === key;
+
+                        return (
+                          <div key={key}>
+                            <label className="mb-2 block text-sm font-semibold">
+                              Video {index + 1}
+                              {required ? (
+                                <span className="ml-1 text-red-500">*</span>
+                              ) : (
+                                <span className="ml-1 text-xs font-normal text-gray-400">
+                                  optional
+                                </span>
+                              )}
+                            </label>
+
+                            <div className="relative aspect-video overflow-hidden rounded-2xl bg-gray-100 dark:bg-black">
+                              {preview ? (
+                                <>
+                                  <video
+                                    src={preview}
+                                    controls
+                                    playsInline
+                                    preload="metadata"
+                                    className="h-full w-full bg-black object-contain"
+                                  >
+                                    Your browser does not support video playback.
+                                  </video>
+
+                                  <div className="absolute right-2 top-2 flex gap-2">
+                                    <label className="cursor-pointer rounded-xl bg-black/75 px-3 py-2 text-xs font-semibold text-white backdrop-blur">
+                                      Replace
+                                      <input
+                                        type="file"
+                                        accept="video/mp4,video/quicktime,video/webm,.m4v"
+                                        className="hidden"
+                                        disabled={submitting || checking}
+                                        onChange={(event) => {
+                                          void selectVideo(
+                                            key,
+                                            event.target.files?.[0] ?? null,
+                                          );
+                                          event.currentTarget.value = "";
+                                        }}
+                                      />
+                                    </label>
+
+                                    <button
+                                      type="button"
+                                      onClick={() => removeVideo(key)}
+                                      disabled={submitting || checking}
+                                      className="rounded-xl bg-red-600 p-2 text-white disabled:opacity-50"
+                                      aria-label={`Remove video ${index + 1}`}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                </>
+                              ) : (
+                                <label className="flex h-full cursor-pointer flex-col items-center justify-center gap-2 p-4 text-center text-gray-500">
+                                  <Video className="h-8 w-8" />
+
+                                  <span className="text-sm font-semibold">
+                                    {checking
+                                      ? "Checking video…"
+                                      : `Choose video ${index + 1}`}
+                                  </span>
+
+                                  <span className="text-xs">
+                                    MP4, MOV, M4V or WebM · max 90 sec
+                                  </span>
+
+                                  <input
+                                    type="file"
+                                    accept="video/mp4,video/quicktime,video/webm,.m4v"
+                                    className="hidden"
+                                    disabled={submitting || checking}
+                                    onChange={(event) => {
+                                      void selectVideo(
+                                        key,
+                                        event.target.files?.[0] ?? null,
+                                      );
+                                      event.currentTarget.value = "";
+                                    }}
+                                  />
+                                </label>
+                              )}
+                            </div>
+
+                            {file && info && (
+                              <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                <p className="truncate">
+                                  {file.name}
+                                </p>
+                                <p className="mt-0.5">
+                                  {formatVideoDuration(info.durationSeconds)}
+                                  {" · "}
+                                  {formatFileSize(file.size)}
+                                  {" · "}
+                                  {info.width}×{info.height}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      },
+                    )}
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap gap-2 text-xs">
+                    <span className="rounded-full bg-gray-100 px-3 py-1.5 font-semibold text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                      {selectedVideoCount}/3 selected
+                    </span>
+                    <span className="rounded-full bg-gray-100 px-3 py-1.5 font-semibold text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                      Minimum 2 required
+                    </span>
                   </div>
                 </SectionCard>
 

@@ -18,6 +18,9 @@ export interface Property extends Models.Document {
   image1: string;
   image2: string;
   image3: string;
+  video1?: string;
+  video2?: string;
+  video3?: string;
   creatorId: string;
   organizationApproved?: boolean | null;
   rating?: number;

@@ -47,10 +47,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      className={poppins.variable}
       suppressHydrationWarning
     >
       <body
-        className={`${poppins.className} ${poppins.variable} overflow-x-hidden`}
+        className={`${poppins.className} overflow-x-hidden`}
       >
         <ThemeProvider>
           <AuthProvider>
