@@ -426,7 +426,7 @@ export function InspectRidesPanel() {
 
               <p className="mt-1 text-sm leading-6 text-gray-600 dark:text-gray-300">
                 Monitor boarding, active, and delayed rides connected to your
-                organization. Data comes from the live rides-driver-api.
+                organization.
               </p>
             </div>
           </div>

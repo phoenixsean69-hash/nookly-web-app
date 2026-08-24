@@ -490,42 +490,238 @@ html[data-nookly-sidebar-collapsed="true"] .nookly-figma-workspace {
   }
 }
 
-/* NOOKLY_UNIFIED_DARK_BLUE_START */
+/* NOOKLY_UI_BG_0E131A_START */
 
 /*
- * One continuous dashboard blue.
- * Matches the dominant main-canvas colour from the current UI.
+ * FINAL NOOKLY BACKGROUND SYSTEM
+ *
+ * LIGHT MODE
+ *   Main application: #FFFFFF
+ *   Sidebar:          #0E131A
+ *
+ * DARK MODE
+ *   Main application: #0E131A
+ *   Sidebar:          #0E131A
  */
+
+:root {
+  --nookly-app-bg: #FFFFFF;
+
+  --nf-shell: #FFFFFF;
+  --nf-shell-deep: #FFFFFF;
+  --nf-surface: #FFFFFF;
+  --nf-surface-soft: #F7F9FC;
+  --nf-surface-muted: #EEF2F7;
+  --nf-line: #E5EAF0;
+}
+
 .dark {
-  --nf-shell: #0d1828;
-  --nf-shell-deep: #0d1828;
-  --nf-surface: #0d1828;
+  --nookly-app-bg: #0E131A;
+
+  --nf-shell: #0E131A;
+  --nf-shell-deep: #0E131A;
+  --nf-surface: #0E131A;
+  --nf-surface-soft: #141B24;
+  --nf-surface-muted: #1A222D;
+  --nf-line: #232D3A;
 }
 
-/* Remove the old shell-vs-workspace colour break. */
-.dark .nookly-figma-root {
-  background: #0d1828 !important;
+/* LIGHT MODE — white application canvas, EXCLUDING sidebar */
+html:not(.dark),
+html:not(.dark) body,
+html:not(.dark) .nookly-figma-root,
+html:not(.dark) .nookly-figma-workspace,
+html:not(.dark) [data-nookly-shell-header="true"],
+html:not(.dark) .nookly-figma-page {
+  background: #FFFFFF !important;
 }
 
-.dark .nookly-figma-workspace {
-  background: #0d1828 !important;
+/* DARK MODE — dark application canvas */
+html.dark,
+html.dark body,
+html.dark .nookly-figma-root,
+html.dark .nookly-figma-workspace,
+html.dark [data-nookly-shell-header="true"],
+html.dark .nookly-figma-page {
+  background: #0E131A !important;
 }
 
-.dark [data-nookly-shell-sidebar="true"] {
-  background: #0d1828 !important;
+/*
+ * SIDEBAR NEVER CHANGES MODE.
+ * It remains dark in light mode and dark mode.
+ */
+[data-nookly-shell-sidebar="true"],
+html:not(.dark) [data-nookly-shell-sidebar="true"],
+html.dark [data-nookly-shell-sidebar="true"] {
+  background: #0E131A !important;
+  color: #FFFFFF !important;
 }
 
-.dark [data-nookly-shell-header="true"] {
-  background: #0d1828 !important;
+/* Keep the dark sidebar identity consistent in light mode too. */
+[data-nookly-shell-sidebar="true"] .nf-brand {
+  border-color: rgba(255, 255, 255, 0.07) !important;
 }
 
-.dark .nookly-figma-page {
-  background: #0d1828 !important;
+[data-nookly-shell-sidebar="true"] .nf-profile {
+  border-color: rgba(255, 255, 255, 0.07) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
 }
 
-/* Keep the rounded canvas edge from exposing a second navy. */
-.dark body {
-  background: #0d1828 !important;
+[data-nookly-shell-sidebar="true"] .nf-profile-name,
+[data-nookly-shell-sidebar="true"] .nf-brand-name {
+  color: #FFFFFF !important;
 }
 
-/* NOOKLY_UNIFIED_DARK_BLUE_END */
+[data-nookly-shell-sidebar="true"] .nf-sidebar-footer {
+  border-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+/* Prevent old route wrappers from leaking stale page backgrounds. */
+.nookly-figma-page > .min-h-screen,
+.nookly-figma-page > div.min-h-screen,
+.nookly-figma-page > .min-h-screen > div,
+.nookly-figma-page > div.min-h-screen > div {
+  background: transparent !important;
+}
+
+/* NOOKLY_UI_BG_0E131A_END */
+
+/* NOOKLY_CARD_SURFACE_MAKEOVER_START */
+
+/*
+ * Nookly card makeover
+ *
+ * Dark mode cards:
+ *   background = #272D35
+ *   border     = none
+ *
+ * Light mode cards:
+ *   keep their light background
+ *   border     = none
+ *
+ * Controls are intentionally excluded:
+ * buttons, links, inputs, selects, textareas, badges and map controls
+ * keep their own borders/styling.
+ */
+
+:root {
+  --nookly-card-dark: #272D35;
+}
+
+/* ---------------------------------------------------------
+   CARD BORDER REMOVAL — ALL MODES
+   --------------------------------------------------------- */
+
+/* Large content cards / sections */
+.nookly-figma-page :where(section, article, li, div)[class~="rounded-3xl"][class~="border"],
+.nookly-figma-page :where(section, article, li, div)[class~="rounded-2xl"][class~="border"],
+.nookly-figma-page :where(section, article, li, div)[class~="rounded-xl"][class~="border"] {
+  border-width: 0 !important;
+  border-color: transparent !important;
+}
+
+/* Common Tailwind border variants used by cards */
+.nookly-figma-page :where(section, article, li, div)[class*="border-gray-"],
+.nookly-figma-page :where(section, article, li, div)[class*="border-slate-"] {
+  border-color: transparent !important;
+}
+
+/* Cards should be flat, not framed */
+.nookly-figma-page :where(section, article, li, div)[class~="shadow-sm"],
+.nookly-figma-page :where(section, article, li, div)[class~="shadow-md"],
+.nookly-figma-page :where(section, article, li, div)[class~="shadow-lg"] {
+  box-shadow: none !important;
+}
+
+/* Existing stat-card system */
+[data-nookly-stat-card="true"] {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* ---------------------------------------------------------
+   DARK MODE CARD SURFACE = #272D35
+   --------------------------------------------------------- */
+
+/*
+ * Rounded 2xl / 3xl containers are the dominant Nookly card language.
+ * Requiring a padding/background/border/shadow class avoids recoloring
+ * decorative icon circles and tiny layout wrappers.
+ */
+.dark .nookly-figma-page
+  :where(section, article, li, div)[class~="rounded-3xl"]
+  :is(.nookly-never-match),
+.dark .nookly-figma-page
+  :where(section, article, li, div)[class~="rounded-2xl"]
+  :is(.nookly-never-match) {
+  background: var(--nookly-card-dark) !important;
+}
+
+/* Actual large/medium card containers */
+.dark .nookly-figma-page
+  :where(section, article, li, div)[class~="rounded-3xl"][class*="p-"],
+.dark .nookly-figma-page
+  :where(section, article, li, div)[class~="rounded-2xl"][class*="p-"],
+.dark .nookly-figma-page
+  :where(section, article, li, div)[class~="rounded-3xl"][class~="border"],
+.dark .nookly-figma-page
+  :where(section, article, li, div)[class~="rounded-2xl"][class~="border"],
+.dark .nookly-figma-page
+  :where(section, article, li, div)[class~="rounded-3xl"][class~="shadow-sm"],
+.dark .nookly-figma-page
+  :where(section, article, li, div)[class~="rounded-2xl"][class~="shadow-sm"] {
+  background: var(--nookly-card-dark) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/*
+ * Compact list cards, like each row inside Recent Properties,
+ * commonly use rounded-xl plus padding or a dark background class.
+ */
+.dark .nookly-figma-page
+  :where(section, article, li, div)[class~="rounded-xl"][class*="p-"][class*="bg-"],
+.dark .nookly-figma-page
+  :where(section, article, li, div)[class~="rounded-xl"][class~="border"][class*="bg-"],
+.dark .nookly-figma-page
+  :where(section, article, li, div)[class~="rounded-xl"][class~="shadow-sm"][class*="bg-"] {
+  background: var(--nookly-card-dark) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Explicit legacy dark card classes still present in older pages */
+.dark .nookly-figma-page
+  :where(section, article, li, div)[class~="dark:bg-gray-900"][class*="rounded-"],
+.dark .nookly-figma-page
+  :where(section, article, li, div)[class~="dark:bg-slate-900"][class*="rounded-"],
+.dark .nookly-figma-page
+  :where(section, article, li, div)[class~="bg-gray-900"][class*="rounded-"],
+.dark .nookly-figma-page
+  :where(section, article, li, div)[class~="bg-slate-900"][class*="rounded-"] {
+  background: var(--nookly-card-dark) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Stat cards also join the same dark card surface */
+.dark [data-nookly-stat-card="true"] {
+  background: #272D35 !important;
+}
+
+/* ---------------------------------------------------------
+   LIGHT MODE
+   Keep cards light, but remove visible frames.
+   --------------------------------------------------------- */
+
+html:not(.dark) .nookly-figma-page
+  :where(section, article, li, div)[class~="rounded-3xl"][class~="border"],
+html:not(.dark) .nookly-figma-page
+  :where(section, article, li, div)[class~="rounded-2xl"][class~="border"],
+html:not(.dark) .nookly-figma-page
+  :where(section, article, li, div)[class~="rounded-xl"][class~="border"] {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* NOOKLY_CARD_SURFACE_MAKEOVER_END */
