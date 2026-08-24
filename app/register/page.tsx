@@ -204,7 +204,7 @@ if (
   const initialsColor = formData.name ? getInitialsColor(formData.name) : "#F97316";
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-4 transition-colors duration-300">
+    <div data-nookly-auth="true" className="min-h-screen relative flex items-center justify-center p-4 transition-colors duration-300">
       {/* Background Image */}
       <div className="fixed inset-0 z-0">
         <Image src="/nightHouse2.jpg" alt="Beautiful property" fill className="object-cover" priority />

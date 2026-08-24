@@ -1,0 +1,369 @@
+/* Nookly — Figma Community Dashboard adaptation */
+:root {
+  --nookly-shell: #081a33;
+  --nookly-shell-deep: #061426;
+  --nookly-panel: #ffffff;
+  --nookly-panel-soft: #f5f8fc;
+  --nookly-text: #273240;
+  --nookly-text-strong: #172033;
+  --nookly-muted: #7d8797;
+  --nookly-border: #e7edf5;
+  --nookly-blue: #2563eb;
+  --nookly-blue-strong: #1d4ed8;
+  --nookly-orange: #f97316;
+  --nookly-orange-strong: #ea580c;
+  --nookly-radius-shell: 28px;
+  --nookly-radius-card: 22px;
+  --nookly-radius-control: 14px;
+
+  --accent-50: #fff7ed;
+  --accent-100: #ffedd5;
+  --accent-200: #fed7aa;
+  --accent-300: #fdba74;
+  --accent-400: #fb923c;
+  --accent-500: #f97316;
+  --accent-600: #ea580c;
+  --accent-700: #c2410c;
+  --accent-800: #9a3412;
+  --accent-900: #7c2d12;
+  --accent-950: #431407;
+}
+
+.dark {
+  --nookly-shell: #06111f;
+  --nookly-shell-deep: #030b15;
+  --nookly-panel: #0d1828;
+  --nookly-panel-soft: #111f33;
+  --nookly-text: #e8eef8;
+  --nookly-text-strong: #ffffff;
+  --nookly-muted: #94a3b8;
+  --nookly-border: #203149;
+}
+
+html,
+body {
+  font-family:
+    var(--font-nookly),
+    Poppins,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+body {
+  background: var(--nookly-shell);
+  color: var(--nookly-text);
+}
+
+div:has(> [data-nookly-sidebar="true"]) {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(37, 99, 235, 0.17), transparent 30%),
+    radial-gradient(circle at 5% 100%, rgba(249, 115, 22, 0.11), transparent 26%),
+    var(--nookly-shell) !important;
+}
+
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div {
+  min-height: 100vh;
+  padding: 16px 16px 16px 0;
+  background: transparent !important;
+}
+
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > [data-nookly-header="true"] {
+  top: 16px !important;
+  min-height: 72px;
+  border: 0 !important;
+  border-radius: var(--nookly-radius-shell) var(--nookly-radius-shell) 0 0 !important;
+  background: var(--nookly-panel) !important;
+  box-shadow: none !important;
+  color: var(--nookly-text) !important;
+}
+
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > [data-nookly-header="true"]
+  > div {
+  min-height: 72px;
+  padding: 14px 28px !important;
+}
+
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > main {
+  min-height: calc(100vh - 104px);
+  padding: 28px 32px 36px !important;
+  border-radius: 0 0 var(--nookly-radius-shell) var(--nookly-radius-shell);
+  background: var(--nookly-panel) !important;
+  color: var(--nookly-text);
+}
+
+[data-nookly-header="true"] button,
+[data-nookly-header="true"] a {
+  border-radius: 12px;
+}
+
+[data-nookly-header="true"] button:hover,
+[data-nookly-header="true"] a:hover {
+  background-color: var(--nookly-panel-soft) !important;
+}
+
+[data-nookly-sidebar="true"] {
+  border: 0 !important;
+  background:
+    linear-gradient(180deg, rgba(37, 99, 235, 0.08), transparent 22%),
+    linear-gradient(180deg, var(--nookly-shell) 0%, var(--nookly-shell-deep) 100%) !important;
+  box-shadow: none !important;
+}
+
+[data-nookly-sidebar="true"] [data-nookly-brand="true"] {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-nookly-sidebar="true"] [data-nookly-profile="true"] {
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+[data-nookly-sidebar="true"] [data-nookly-nav-item="true"] {
+  position: relative;
+  color: rgba(255, 255, 255, 0.56) !important;
+  border-radius: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+[data-nookly-sidebar="true"] [data-nookly-nav-item="true"]:hover {
+  color: #ffffff !important;
+  background: rgba(37, 99, 235, 0.11) !important;
+}
+
+[data-nookly-sidebar="true"] [data-nookly-nav-item="true"][data-active="true"] {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.075) !important;
+}
+
+[data-nookly-sidebar="true"]
+  [data-nookly-nav-item="true"][data-active="true"]
+  svg {
+  color: var(--nookly-orange) !important;
+}
+
+[data-nookly-sidebar="true"]
+  [data-nookly-nav-item="true"][data-active="false"]
+  svg {
+  color: #8db6ff !important;
+}
+
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > main h1,
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > main h2,
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > main h3 {
+  color: var(--nookly-text-strong);
+  letter-spacing: -0.025em;
+}
+
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > main .rounded-2xl {
+  border-radius: var(--nookly-radius-card) !important;
+}
+
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > main .rounded-xl {
+  border-radius: 16px !important;
+}
+
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > main .shadow-lg,
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > main .shadow-xl {
+  box-shadow: 0 18px 45px -32px rgba(8, 26, 51, 0.42) !important;
+}
+
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > main .border {
+  border-color: var(--nookly-border) !important;
+}
+
+[data-nookly-stat-card="true"] {
+  min-height: 210px !important;
+  border-radius: var(--nookly-radius-card) !important;
+  border-color: var(--nookly-border) !important;
+  background:
+    linear-gradient(145deg, #ffffff 0%, #f7faff 64%, #fff7ed 100%) !important;
+  box-shadow: none !important;
+}
+
+.dark [data-nookly-stat-card="true"] {
+  background:
+    linear-gradient(145deg, #0f1c2e 0%, #111f33 64%, #24190f 100%) !important;
+}
+
+[data-nookly-stat-card="true"] .text-violet-700,
+[data-nookly-stat-card="true"] .text-violet-600,
+[data-nookly-stat-card="true"] .text-cyan-700,
+[data-nookly-stat-card="true"] .text-cyan-600 {
+  color: var(--nookly-blue) !important;
+}
+
+[data-nookly-stat-card="true"] .bg-violet-600,
+[data-nookly-stat-card="true"] .bg-cyan-600 {
+  background-color: var(--nookly-blue) !important;
+}
+
+[data-nookly-stat-card="true"] .text-orange-700,
+[data-nookly-stat-card="true"] .text-orange-600 {
+  color: var(--nookly-orange) !important;
+}
+
+[data-nookly-stat-card="true"] .bg-orange-500 {
+  background-color: var(--nookly-orange) !important;
+}
+
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > main input:not([type="checkbox"]):not([type="radio"]),
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > main select,
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > main textarea {
+  border-color: var(--nookly-border) !important;
+  border-radius: var(--nookly-radius-control) !important;
+  background: var(--nookly-panel-soft) !important;
+  color: var(--nookly-text) !important;
+  box-shadow: none !important;
+}
+
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > main input:focus,
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > main select:focus,
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > main textarea:focus {
+  border-color: var(--nookly-blue) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+}
+
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > main table {
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 18px;
+}
+
+div:has(> [data-nookly-sidebar="true"])
+  > [data-nookly-sidebar="true"]
+  + div
+  > main thead {
+  background: var(--nookly-panel-soft);
+}
+
+@media (max-width: 767px) {
+  div:has(> [data-nookly-sidebar="true"])
+    > [data-nookly-sidebar="true"]
+    + div {
+    padding: 8px !important;
+  }
+
+  div:has(> [data-nookly-sidebar="true"])
+    > [data-nookly-sidebar="true"]
+    + div
+    > [data-nookly-header="true"] {
+    top: 8px !important;
+    border-radius: 20px 20px 0 0 !important;
+  }
+
+  div:has(> [data-nookly-sidebar="true"])
+    > [data-nookly-sidebar="true"]
+    + div
+    > main {
+    padding: 18px 14px 26px !important;
+    border-radius: 0 0 20px 20px !important;
+  }
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   AUTH SCREENS — same Figma language, adapted for sign-in/register
+   ───────────────────────────────────────────────────────────── */
+
+[data-nookly-auth="true"] {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(37, 99, 235, 0.22), transparent 28%),
+    radial-gradient(circle at 85% 85%, rgba(249, 115, 22, 0.16), transparent 26%),
+    var(--nookly-shell) !important;
+}
+
+[data-nookly-auth="true"] > .fixed.inset-0.z-0 {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+[data-nookly-auth="true"] > .relative.z-10 {
+  width: min(520px, 100%) !important;
+}
+
+[data-nookly-auth="true"] > .relative.z-10 > div:first-child {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--nookly-radius-shell) !important;
+  background: var(--nookly-panel) !important;
+  box-shadow: 0 28px 80px -42px rgba(0, 0, 0, 0.72) !important;
+}
+
+[data-nookly-auth="true"] input,
+[data-nookly-auth="true"] select,
+[data-nookly-auth="true"] textarea {
+  border-radius: var(--nookly-radius-control) !important;
+}
+
+[data-nookly-auth="true"] button[type="submit"] {
+  border-radius: 14px !important;
+  background:
+    linear-gradient(90deg, var(--nookly-blue) 0%, var(--nookly-orange) 100%) !important;
+  box-shadow: 0 12px 28px -16px rgba(249, 115, 22, 0.7);
+}

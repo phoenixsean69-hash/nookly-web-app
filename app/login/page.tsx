@@ -31,7 +31,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-4 transition-colors duration-300">
+    <div data-nookly-auth="true" className="min-h-screen relative flex items-center justify-center p-4 transition-colors duration-300">
       {/* Background Image */}
       <div className="fixed inset-0 z-0">
         <Image

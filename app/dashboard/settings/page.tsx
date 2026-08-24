@@ -187,7 +187,7 @@ export default function SettingsPage() {
   const accentColors = [
     { id: "orange", label: "Orange", class: "bg-orange-500" },
     { id: "blue", label: "Blue", class: "bg-blue-500" },
-    { id: "blue", label: "blue", class: "bg-blue-500" },
+    { id: "green", label: "Green", class: "bg-green-500" },
     { id: "purple", label: "Purple", class: "bg-purple-500" },
     { id: "pink", label: "Pink", class: "bg-pink-500" },
     { id: "teal", label: "Teal", class: "bg-teal-500" },

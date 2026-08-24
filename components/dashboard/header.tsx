@@ -50,7 +50,7 @@ interface Notification {
   reviewerName?: string;
 }
 
-export function Header() {
+function HeaderContent() {
   const { user, organization, logout, isOffline } = useAuth();
   const { resolvedTheme, toggleTheme } = useTheme();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -614,7 +614,7 @@ export function Header() {
   if (!isMobile) {
     return (
       <>
-        <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm sticky top-0 z-30 transition-colors duration-300">
+        <header data-nookly-shell-header="true" data-nookly-header="true" className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm sticky top-0 z-30 transition-colors duration-300">
           <div className="px-4 md:px-6 py-2 md:py-3 flex items-center justify-between">
             {/* Left Section */}
             <div className="flex items-center gap-3 md:gap-4">
@@ -799,7 +799,7 @@ export function Header() {
   // Mobile Header
   return (
     <>
-      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm sticky top-0 z-30 transition-colors duration-300">
+      <header data-nookly-shell-header="true" data-nookly-header="true" className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm sticky top-0 z-30 transition-colors duration-300">
         <div className="flex min-h-14 items-center justify-between py-2 pl-16 pr-3">
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <h1 className="text-sm font-bold text-blue-950 dark:text-blue-300 truncate transition-colors duration-300">
@@ -1015,4 +1015,16 @@ export function Header() {
       )}
     </>
   );
+}
+
+interface HeaderShellProps {
+  shell?: boolean;
+}
+
+export function Header({ shell = false }: HeaderShellProps) {
+  if (!shell) {
+    return null;
+  }
+
+  return <HeaderContent />;
 }
