@@ -59,7 +59,7 @@ export function SosHeaderButton({
       )}
 
       {connected && unreadCount === 0 && (
-        <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full border border-white bg-emerald-500 dark:border-gray-900" />
+        <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full border border-white bg-gray-500 dark:border-gray-900" />
       )}
     </Link>
   );

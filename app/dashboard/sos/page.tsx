@@ -334,7 +334,7 @@ function realtimeMeta(
       return {
         label: "Live connection",
         className:
-          "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-300",
+          "text-gray-700 dark:border-gray-900 dark:bg-gray-950/30 dark:text-gray-300",
         icon: Radio,
       };
 
