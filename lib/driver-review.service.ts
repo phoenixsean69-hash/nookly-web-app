@@ -101,7 +101,7 @@ export async function listDriverReviewApplications(): Promise<
   DriverReviewApplication[]
 > {
   return executeDriverReviewRequest<DriverReviewApplication[]>(
-    "/organization/drivers-fast",
+    "/organization/drivers",
     "GET",
   );
 }
